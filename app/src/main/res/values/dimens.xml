@@ -7,4 +7,5 @@
     <dimen name="margin_21dp">21dp</dimen>
     <dimen name="margin_19dp">19dp</dimen>
     <dimen name="margin_12dp">12dp</dimen>
+    <dimen name="layout_height_61dp">61dp</dimen>
 </resources>
