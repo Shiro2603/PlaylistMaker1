@@ -1,8 +1,11 @@
 package com.practicum.playlistmaker
 
+import android.content.Intent
 import android.media.Image
+import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,9 +23,18 @@ class SettingActivity : AppCompatActivity() {
         }
 
         val buttonArrowBack = findViewById<ImageView>(R.id.button_arrow_back)
-
         buttonArrowBack.setOnClickListener{
             finish()
         }
+
+        val buttonShare = findViewById<TextView>(R.id.button_share)
+        buttonShare.setOnClickListener{
+            val shareIntent = Intent(Intent.ACTION_SENDTO)
+            startActivity(shareIntent)
+        }
+
+
+
+
     }
 }

@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_back"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"/>
+            android:layout_marginTop="@dimen/margin_16dp"
+            app:tint="?attr/colorOnPrimary"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,8 +28,9 @@
             android:layout_marginTop="14dp"
             android:text="@string/setting"
             android:textSize="@dimen/text_size_22sp"
-            android:textColor="@color/black"
-            android:gravity="center"/>
+            android:gravity="center"
+            style="@style/TextStyle"
+            android:fontFamily="@font/ys_display_medium"/>
 
 
     </LinearLayout>
@@ -44,10 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_dark_mode"
-            android:textSize="@dimen/text_size_16sp"
-            android:textColor="@color/black"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            style="@style/TextStyle"/>
 
         <Switch
             android:layout_width="match_parent"
@@ -61,22 +61,20 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/button_share"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/settings_share"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16sp"
-            android:layout_marginStart="@dimen/margin_16dp"
             android:layout_marginTop="@dimen/margin_21dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            style="@style/TextStyle"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_share"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/margin_19dp"
-            android:layout_marginEnd="@dimen/margin_12dp"/>
+            style="@style/ImageSettingStyle"/>
 
     </LinearLayout>
     <LinearLayout
@@ -88,19 +86,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/settings_support"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16sp"
-            android:layout_marginStart="@dimen/margin_16dp"
             android:layout_marginTop="@dimen/margin_21dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            style="@style/TextStyle"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_support"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/margin_19dp"
-            android:layout_marginEnd="@dimen/margin_12dp"/>
+            style="@style/ImageSettingStyle"/>
 
     </LinearLayout>
     <LinearLayout
@@ -112,19 +107,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/settings_user_agreement"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16sp"
-            android:layout_marginStart="@dimen/margin_16dp"
             android:layout_marginTop="@dimen/margin_21dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            style="@style/TextStyle"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_forward"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/margin_19dp"
-            android:layout_marginEnd="@dimen/margin_12dp"/>
+            style="@style/ImageSettingStyle"/>
 
     </LinearLayout>
 
