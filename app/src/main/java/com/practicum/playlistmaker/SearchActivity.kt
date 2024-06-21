@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,6 +16,11 @@ class SearchActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val buttonArrowBack = findViewById<ImageView>(R.id.search_button_arrow_back)
+        buttonArrowBack.setOnClickListener{
+            finish()
         }
     }
 }

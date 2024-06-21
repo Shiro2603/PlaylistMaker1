@@ -28,9 +28,30 @@ class SettingActivity : AppCompatActivity() {
         }
 
         val buttonShare = findViewById<TextView>(R.id.button_share)
+        val buttonSupport = findViewById<TextView>(R.id.button_support)
+        val buttonUserAgreement = findViewById<TextView>(R.id.button_user_agreement)
+
         buttonShare.setOnClickListener{
-            val shareIntent = Intent(Intent.ACTION_SENDTO)
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plan"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.shareMessage))
             startActivity(shareIntent)
+        }
+
+        buttonSupport.setOnClickListener{
+            val supportIntent = Intent(Intent.ACTION_SENDTO)
+            supportIntent.data = Uri.parse("mailto:")
+            supportIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email)))
+            supportIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.themeMail))
+            supportIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.messageMail))
+            startActivity(supportIntent)
+
+        }
+
+        buttonUserAgreement.setOnClickListener{
+            val userAgreement = Intent(Intent.ACTION_VIEW)
+            userAgreement.setData(Uri.parse(getString(R.string.userAgreement)))
+            startActivity(userAgreement)
         }
 
 
