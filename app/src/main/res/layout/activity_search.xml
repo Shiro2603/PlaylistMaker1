@@ -34,18 +34,40 @@
 
     </LinearLayout>
 
-    <EditText
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:paddingStart="@dimen/margin_12dp"
-        android:inputType="text"
-        android:hint="@string/search"
-        android:lines="1"
-        android:layout_marginTop="@dimen/margin_16dp"
-        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:orientation="horizontal"
         android:background="@drawable/share_rounded"
-        android:drawableStart="@drawable/ic_search"
-        android:drawablePadding="8dp"
-        android:textColorHint="?attr/hintTextColor"
-        android:textColor="@color/black"/>
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:hint="@string/search"
+            android:lines="1"
+            android:background="@drawable/share_rounded"
+            android:layout_marginStart="13dp"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:textColorHint="?attr/hintTextColor"
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:id="@+id/search_close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            android:visibility="gone"
+            android:layout_marginHorizontal="@dimen/margin_12dp"
+            app:tint="?attr/tint" />
+
+    </LinearLayout>
+
 </LinearLayout>

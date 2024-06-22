@@ -5,6 +5,7 @@
         <item name="colorPrimaryVariant">@color/blue</item>
         <item name="hintTextColor">@color/light_grey</item>
         <item name="drawableTint">@color/light_grey</item>
+        <item name="tint">@color/light_grey</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
