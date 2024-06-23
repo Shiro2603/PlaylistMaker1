@@ -81,7 +81,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        saveSearchText = savedInstanceState.getString(VALUE_KEY, saveSearchText)
+        saveSearchText = savedInstanceState.getString(VALUE_KEY, "")
         inputTextSearch.setText(saveSearchText)
 
 
