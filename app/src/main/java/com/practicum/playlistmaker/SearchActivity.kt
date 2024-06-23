@@ -14,7 +14,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class SearchActivity : AppCompatActivity() {
-    var saveSearchText = ""
+    private var saveSearchText = ""
+    private lateinit var inputTextSearch: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,7 +31,7 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
-        val inputTextSearch = findViewById<EditText>(R.id.search_edit_text)
+        inputTextSearch = findViewById<EditText>(R.id.search_edit_text)
         inputTextSearch.setSelectAllOnFocus(true)
         val clearButton = findViewById<ImageView>(R.id.search_close_button)
 
@@ -61,17 +62,29 @@ class SearchActivity : AppCompatActivity() {
 
 
         inputTextSearch.addTextChangedListener(textWatcher)
-        savedInstanceState?.let {
-            saveSearchText = it.getString("SearchText", "")
-            inputTextSearch.setText(saveSearchText)
-        }
+
+
+
 
 
 
     }
+
+    companion object {
+        const val VALUE_KEY = "SearchText"
+    }
+
    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("SearchText", saveSearchText)
+        outState.putString(VALUE_KEY, saveSearchText)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        saveSearchText = savedInstanceState.getString(VALUE_KEY, saveSearchText)
+        inputTextSearch.setText(saveSearchText)
+
+
     }
 
 
@@ -80,7 +93,7 @@ class SearchActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    fun clearButtonVisibility(s: CharSequence?):Int {
+    private fun clearButtonVisibility(s: CharSequence?):Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
         } else {

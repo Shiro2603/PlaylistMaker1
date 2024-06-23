@@ -19,7 +19,7 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="elevation">0dp</item>
     </style>
-    <style name="TextStyle">
+    <style name="TextStyleForSettings">
         <item name="android:textSize">@dimen/text_size_16sp</item>
         <item name="android:layout_marginStart">@dimen/margin_16dp</item>
         <item name="android:textColor">@color/black</item>
