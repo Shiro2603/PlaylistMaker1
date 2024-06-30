@@ -12,6 +12,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
     private var saveSearchText = ""
@@ -27,6 +29,44 @@ class SearchActivity : AppCompatActivity() {
         }
 
         val buttonArrowBack = findViewById<ImageView>(R.id.search_button_arrow_back)
+        val recyclerView = findViewById<RecyclerView>(R.id.recycleView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val tracks = listOf(
+            Track(
+                trackName = "Smells Like Teen Spirit",
+                artisName = "Nirvana",
+                trackTime = "5:01",
+                artworkUrl100 = getString(R.string.nirvanaUrlPicture)),
+            Track(
+                trackName = "Billie Jean",
+                artisName = "Michael Jackson",
+                trackTime = "4:35",
+                artworkUrl100 = getString(R.string.jacksonUrlPicture)
+            ),
+            Track(
+                trackName = "Stayin' Alive",
+                artisName = "Bee Gees",
+                trackTime = "4:10",
+                artworkUrl100 = getString(R.string.beeGeesUrlPicture)
+            ),
+            Track(
+                trackName = "Whole Lotta Love",
+                artisName = "Led Zeppelin",
+                trackTime = "5:33",
+                artworkUrl100 = getString(R.string.ledZeppelinUrlPicture)
+            ),
+            Track(
+                trackName = "Sweet Child O'Mine",
+                artisName = "Guns N' Roses",
+                trackTime = "5:03",
+                artworkUrl100 = getString(R.string.gunsUrlPitcture)
+            )
+        )
+
+        val songsAdapter = SongsAdapter(tracks)
+        recyclerView.adapter = songsAdapter
+
         buttonArrowBack.setOnClickListener{
             finish()
         }
@@ -62,6 +102,8 @@ class SearchActivity : AppCompatActivity() {
 
 
         inputTextSearch.addTextChangedListener(textWatcher)
+
+
 
 
 
