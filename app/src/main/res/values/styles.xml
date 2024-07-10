@@ -29,4 +29,14 @@
         <item name="android:layout_marginTop">@dimen/margin_19dp</item>
         <item name="android:layout_marginEnd">@dimen/margin_12dp</item>
     </style>
+    <style name="SongsNameStyle">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="GroupNameStyle">
+        <item name="android:textSize">11sp</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/light_grey</item>
+    </style>
 </resources>

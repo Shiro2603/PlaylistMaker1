@@ -42,7 +42,8 @@
         android:background="@drawable/share_rounded"
         android:layout_marginHorizontal="@dimen/margin_16dp"
         android:layout_marginTop="@dimen/margin_16dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/margin_16dp">
 
         <EditText
             android:id="@+id/search_edit_text"
@@ -69,5 +70,14 @@
             android:layout_gravity="end|center_vertical"/>
 
     </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginStart="@dimen/margin_13dp"
+        android:layout_marginEnd="@dimen/margin_12dp"
+        android:id="@+id/recycleView"/>
+
 
 </LinearLayout>
