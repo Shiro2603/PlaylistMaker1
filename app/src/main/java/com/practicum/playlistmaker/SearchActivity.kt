@@ -4,20 +4,42 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
     private var saveSearchText = ""
     private lateinit var inputTextSearch: EditText
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("https://itunes.apple.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val songsApiService = retrofit.create<SongApi>()
+
+    private val track = ArrayList<Track>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,42 +52,16 @@ class SearchActivity : AppCompatActivity() {
 
         val buttonArrowBack = findViewById<ImageView>(R.id.search_button_arrow_back)
         val recyclerView = findViewById<RecyclerView>(R.id.recycleView)
+        val notInternet = findViewById<LinearLayout>(R.id.errors)
+        val updateButton = findViewById<Button>(R.id.search_update_btt)
+        val notFound = findViewById<LinearLayout>(R.id.search_not_found)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val tracks = listOf(
-            Track(
-                trackName = "Smells Like Teen Spirit",
-                artisName = "Nirvana",
-                trackTime = "5:01",
-                artworkUrl100 = getString(R.string.nirvanaUrlPicture)),
-            Track(
-                trackName = "Billie Jean",
-                artisName = "Michael Jackson",
-                trackTime = "4:35",
-                artworkUrl100 = getString(R.string.jacksonUrlPicture)
-            ),
-            Track(
-                trackName = "Stayin' Alive",
-                artisName = "Bee Gees",
-                trackTime = "4:10",
-                artworkUrl100 = getString(R.string.beeGeesUrlPicture)
-            ),
-            Track(
-                trackName = "Whole Lotta Love",
-                artisName = "Led Zeppelin",
-                trackTime = "5:33",
-                artworkUrl100 = getString(R.string.ledZeppelinUrlPicture)
-            ),
-            Track(
-                trackName = "Sweet Child O'Mine",
-                artisName = "Guns N' Roses",
-                trackTime = "5:03",
-                artworkUrl100 = getString(R.string.gunsUrlPitcture)
-            )
-        )
 
-        val songsAdapter = SongsAdapter(tracks)
+        val songsAdapter = SongsAdapter(track)
         recyclerView.adapter = songsAdapter
+
+
 
         buttonArrowBack.setOnClickListener{
             finish()
@@ -76,10 +72,68 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.search_close_button)
 
 
+
+
         clearButton.setOnClickListener{
             inputTextSearch.setText("")
             hideKeyboard(this, inputTextSearch)
+            track.clear()
+            songsAdapter.notifyDataSetChanged()
 
+        }
+
+
+         inputTextSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
+
+                    override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
+                        if (response.code() == 200) {
+                            recyclerView.visibility = View.VISIBLE
+                            track.clear()
+                            if(response.body()?.results?.isNotEmpty() == true) {
+                                track.addAll(response.body()?.results!!)
+                                songsAdapter.notifyDataSetChanged()
+                            }
+                        }
+                        if(track.isEmpty()) {
+                                recyclerView.visibility = View.GONE
+                                notFound.visibility = View.VISIBLE
+                        }
+                    }
+
+                    override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
+                        recyclerView.visibility = View.GONE
+                        notInternet.visibility = View.VISIBLE
+
+                    }
+                })
+                 true
+            }
+             false
+        }
+
+        updateButton.setOnClickListener {
+            songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
+
+                override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
+                    if (response.code() == 200) {
+                        recyclerView.visibility = View.VISIBLE
+                        track.clear()
+                        if(response.body()?.results?.isNotEmpty() == true) {
+                            track.addAll(response.body()?.results!!)
+                            songsAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
+                    recyclerView.visibility = View.GONE
+                    notInternet.visibility = View.VISIBLE
+                    notFound.visibility = View.VISIBLE
+
+                }
+            })
         }
 
         val textWatcher = object : TextWatcher {
