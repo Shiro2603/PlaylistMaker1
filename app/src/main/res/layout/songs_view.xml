@@ -25,11 +25,13 @@
             android:layout_height="wrap_content"
             tools:text="Название песни"
             android:layout_marginStart="@dimen/margin_8dp"
-            android:layout_marginTop="@dimen/margin_14dp"/>
+            android:layout_marginTop="@dimen/margin_14dp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginStart="@dimen/margin_8dp"
             android:layout_marginTop="1dp"
@@ -41,7 +43,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Группа"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -55,7 +59,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="2:55"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
         </LinearLayout>
 
