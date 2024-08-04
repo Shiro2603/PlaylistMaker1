@@ -16,6 +16,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
@@ -78,7 +79,6 @@ class SearchActivity : AppCompatActivity() {
         recyclerViewForHistory.adapter = historyAdapter
 
 
-        searchHistoryLayout.visibility = if(historyList.isEmpty()) View.GONE else View.VISIBLE
 
 
 
@@ -96,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
 
         inputTextSearch.setSelectAllOnFocus(true)
         inputTextSearch.setOnFocusChangeListener { view, hasFocus ->
-            searchHistoryLayout.visibility = if(hasFocus && inputTextSearch.text.isEmpty() && historyList.isEmpty()) View.GONE else View.VISIBLE
+            searchHistoryLayout.visibility = if(hasFocus && inputTextSearch.text.isEmpty() && historyList.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
 
@@ -106,6 +106,11 @@ class SearchActivity : AppCompatActivity() {
             hideKeyboard(this, inputTextSearch)
             track.clear()
             songsAdapter.notifyDataSetChanged()
+            recyclerView.visibility = View.GONE
+            searchHistoryLayout.visibility = View.VISIBLE
+            historyAdapter.notifyDataSetChanged()
+
+
         }
 
 
@@ -170,7 +175,7 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 saveSearchText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
-                searchHistoryLayout.visibility = if(inputTextSearch.hasFocus() && s?.isEmpty() == true && historyList.isEmpty()) View.VISIBLE else View.GONE
+                searchHistoryLayout.visibility = if(inputTextSearch.hasFocus() && s?.isEmpty() == true && historyList.isNotEmpty()) View.VISIBLE else View.GONE
 
 
 
