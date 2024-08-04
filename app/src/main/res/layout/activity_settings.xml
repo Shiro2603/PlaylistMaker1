@@ -49,10 +49,11 @@
             android:gravity="center"
             style="@style/TextStyleForSettings"/>
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_theme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"/>
+            android:layout_marginEnd="6dp"/>
 
     </LinearLayout>
     <LinearLayout

@@ -5,11 +5,13 @@ import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +24,8 @@ class SettingActivity : AppCompatActivity() {
             insets
         }
 
+
+
         val buttonArrowBack = findViewById<ImageView>(R.id.button_arrow_back)
         buttonArrowBack.setOnClickListener{
             finish()
@@ -30,6 +34,8 @@ class SettingActivity : AppCompatActivity() {
         val buttonShare = findViewById<TextView>(R.id.button_share)
         val buttonSupport = findViewById<TextView>(R.id.button_support)
         val buttonUserAgreement = findViewById<TextView>(R.id.button_user_agreement)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.switch_theme)
+
 
         buttonShare.setOnClickListener{
             val shareIntent = Intent(Intent.ACTION_SEND)
@@ -53,6 +59,15 @@ class SettingActivity : AppCompatActivity() {
             userAgreement.setData(Uri.parse(getString(R.string.userAgreement)))
             startActivity(userAgreement)
         }
+
+        val app = applicationContext as App
+        themeSwitcher.isChecked = app.darkTheme
+
+
+        themeSwitcher.setOnCheckedChangeListener{ switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
+
 
 
 

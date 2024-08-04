@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity"
+    tools:context=".search.SearchActivity"
     android:orientation="vertical">
 
     <LinearLayout
@@ -154,6 +154,46 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="@dimen/margin_16dp"
             android:gravity="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginTop="24dp">
+
+        <TextView
+            android:id="@+id/tv_search_title"
+            style="@style/TextStyleForSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/historyTitle"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/margin_8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_13dp"
+            android:layout_marginEnd="@dimen/margin_12dp"
+            android:layout_gravity="center"
+            />
+
+        <Button
+            style="@style/ButtonStyleForSearch"
+            android:id="@+id/bt_search_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/clearButton"
+            android:layout_marginTop="24dp"
+            />
+
+
 
     </LinearLayout>
 
