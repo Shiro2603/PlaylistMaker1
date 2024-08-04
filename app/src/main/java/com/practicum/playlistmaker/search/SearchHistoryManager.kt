@@ -16,6 +16,7 @@ class SearchHistoryManager(context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     private val gson = Gson()
 
+
     fun addTrackToHistory(track: Track) {
         val history = getSearchHistory().toMutableList()
         history.removeAll { it.trackId == track.trackId }

@@ -37,6 +37,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val songsApiService = retrofit.create<SongApi>()
 
+
     private val track = ArrayList<Track>()
 
 
@@ -60,6 +61,9 @@ class SearchActivity : AppCompatActivity() {
         val recyclerViewForHistory = findViewById<RecyclerView>(R.id.rv_search_history)
         val inputTextSearch = findViewById<EditText>(R.id.search_edit_text)
         val buttonSearchHistory = findViewById<Button>(R.id.bt_search_clear)
+        val searchHistoryLayout = findViewById<LinearLayout>(R.id.search_history)
+
+
 
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -67,10 +71,15 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.adapter = songsAdapter
 
 
-       val searchHistoryManager = SearchHistoryManager(this)
-        val adapter = SongsAdapter(searchHistoryManager.getSearchHistory().toMutableList(),this)
-        recyclerViewForHistory.adapter = adapter
+        val searchHistoryManager = SearchHistoryManager(this)
+        val historyList  = searchHistoryManager.getSearchHistory().toMutableList()
         recyclerViewForHistory.layoutManager = LinearLayoutManager(this)
+        val historyAdapter = SongsAdapter(historyList,this)
+        recyclerViewForHistory.adapter = historyAdapter
+
+
+        searchHistoryLayout.visibility = if(historyList.isEmpty()) View.GONE else View.VISIBLE
+
 
 
         buttonArrowBack.setOnClickListener{
@@ -79,11 +88,17 @@ class SearchActivity : AppCompatActivity() {
 
         buttonSearchHistory.setOnClickListener {
             searchHistoryManager.clearHistory()
-            adapter.notifyDataSetChanged()
+            historyList.clear()
+            historyAdapter.notifyDataSetChanged()
+            searchHistoryLayout.visibility = View.GONE
         }
 
 
         inputTextSearch.setSelectAllOnFocus(true)
+        inputTextSearch.setOnFocusChangeListener { view, hasFocus ->
+            searchHistoryLayout.visibility = if(hasFocus && inputTextSearch.text.isEmpty() && historyList.isEmpty()) View.GONE else View.VISIBLE
+        }
+
 
 
         clearButton.setOnClickListener{
@@ -91,7 +106,6 @@ class SearchActivity : AppCompatActivity() {
             hideKeyboard(this, inputTextSearch)
             track.clear()
             songsAdapter.notifyDataSetChanged()
-
         }
 
 
@@ -156,6 +170,8 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 saveSearchText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
+                searchHistoryLayout.visibility = if(inputTextSearch.hasFocus() && s?.isEmpty() == true && historyList.isEmpty()) View.VISIBLE else View.GONE
+
 
 
             }
