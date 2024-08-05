@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -62,7 +63,7 @@ class SearchActivity : AppCompatActivity() {
         val recyclerViewForHistory = findViewById<RecyclerView>(R.id.rv_search_history)
         val inputTextSearch = findViewById<EditText>(R.id.search_edit_text)
         val buttonSearchHistory = findViewById<Button>(R.id.bt_search_clear)
-        val searchHistoryLayout = findViewById<LinearLayout>(R.id.search_history)
+        val searchHistoryLayout = findViewById<ConstraintLayout>(R.id.search_history)
 
 
 
