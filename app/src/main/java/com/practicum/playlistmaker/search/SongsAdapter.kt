@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.R
 
 
 class SongsAdapter(
-    private val songs : List<Track>
+    private var songs : List<Track>
     ,private val context: Context,
 ) : RecyclerView.Adapter<SongsViewHolder>() {
 
@@ -27,6 +27,7 @@ class SongsAdapter(
         holder.itemView.setOnClickListener {
             searchHistoryManager.addTrackToHistory(track)
 
+
         }
 
     }
@@ -34,4 +35,12 @@ class SongsAdapter(
     override fun getItemCount(): Int {
         return songs.size
     }
+
+
+    fun updateData(newSongs: List<Track>) {
+         songs = newSongs
+        notifyDataSetChanged()
+    }
+
+
 }

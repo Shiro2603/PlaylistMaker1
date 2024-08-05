@@ -80,6 +80,15 @@ class SearchActivity : AppCompatActivity() {
 
 
 
+        searchHistoryLayout.visibility = if(historyList.isEmpty()) View.GONE else View.VISIBLE
+
+         fun updateRecyclerView() {
+            val searchHistoryManagerUpdate = SearchHistoryManager(this)
+            val searchHistory = searchHistoryManagerUpdate.getSearchHistory().toMutableList()
+             historyAdapter.updateData(searchHistory)
+        }
+
+
 
 
         buttonArrowBack.setOnClickListener{
@@ -101,14 +110,18 @@ class SearchActivity : AppCompatActivity() {
 
 
 
+
+
+
         clearButton.setOnClickListener{
             inputTextSearch.setText("")
             hideKeyboard(this, inputTextSearch)
             track.clear()
+            updateRecyclerView()
             songsAdapter.notifyDataSetChanged()
             recyclerView.visibility = View.GONE
             searchHistoryLayout.visibility = View.VISIBLE
-            historyAdapter.notifyDataSetChanged()
+
 
 
         }
@@ -227,6 +240,8 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
     }
+
+
 
 
 
