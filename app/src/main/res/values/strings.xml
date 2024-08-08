@@ -17,4 +17,6 @@
     <string name="errorInternet2">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="buttonUpdate">Обновить</string>
     <string name="notFound">Ничего не нашлось</string>
+    <string name="clearButton">Очистить историю</string>
+    <string name="historyTitle">Вы искали</string>
 </resources>
