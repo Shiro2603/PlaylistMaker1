@@ -10,6 +10,9 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.MediaActivity
 import com.practicum.playlistmaker.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class SongsAdapter(
@@ -33,6 +36,22 @@ class SongsAdapter(
         val track = songs[position]
         holder.itemView.setOnClickListener {
             searchHistoryManager.addTrackToHistory(track)
+            displayIntent.putExtra("TRACK_NAME", track.trackName)
+            displayIntent.putExtra("ARTIST_NAME", track.artistName)
+            displayIntent.putExtra("TRACK_TIME", SimpleDateFormat("mm:ss", Locale.getDefault()).format(
+                Date(track.trackTime)
+            ))
+            displayIntent.putExtra("TRACK_PICTURE", track.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
+            )
+            displayIntent.putExtra("TRACK_COLLECTION", track.collectionName)
+            displayIntent.putExtra(
+                "TRACK_RELEASE_DATE",
+                SimpleDateFormat("yyyy", Locale.getDefault()).format(
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(track.releaseDate)!!
+                )
+            )
+            displayIntent.putExtra("TRACK_GENRE", track.primaryGenreName)
+            displayIntent.putExtra("TRACK_COUNTRY", track.country)
             context.startActivity(displayIntent)
 
 

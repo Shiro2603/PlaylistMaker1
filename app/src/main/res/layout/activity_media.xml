@@ -12,22 +12,22 @@
         style="@style/TextStyleForMediaInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
         android:layout_marginStart="@dimen/margin_16dp"
-        android:text="Страна"
+        android:layout_marginBottom="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:text="Страна" />
 
     <TextView
         android:id="@+id/countrySong"
         style="@style/TextStyleForMediaSongs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
         android:layout_marginEnd="@dimen/margin_16dp"
-        android:text="Великобритания"
+        android:layout_marginBottom="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Великобритания" />
 
     <TextView
         android:id="@+id/genre"
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
         android:layout_marginEnd="@dimen/margin_16dp"
-        android:text="Rock"
+        tools:text="Rock"
         app:layout_constraintBottom_toTopOf="@id/countrySong"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
         android:layout_marginEnd="@dimen/margin_16dp"
-        android:text="1965"
+        tools:text="1965"
         app:layout_constraintBottom_toTopOf="@id/genreSong"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
         android:layout_marginEnd="@dimen/margin_16dp"
-        android:text="Yesterday(Remastered 2009)"
+        tools:text="Yesterday(Remastered 2009)"
         app:layout_constraintBottom_toTopOf="@id/yearSong"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -113,7 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
         android:layout_marginEnd="@dimen/margin_16dp"
-        android:text="5:35"
+        tools:text="5:35"
         app:layout_constraintBottom_toTopOf="@id/albumSong"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -122,7 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="3:10"
+        tools:text="3:10"
         android:textSize="14sp"
         android:fontFamily="@font/ys_display_medium"
         app:layout_constraintEnd_toEndOf="@+id/btnPlay"
@@ -165,7 +165,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:layout_marginHorizontal="24dp"
-        android:text="The Beatles"
+        tools:text="The Beatles"
         android:textSize="14sp"
         android:fontFamily="@font/ys_display_medium"
         app:layout_constraintBottom_toTopOf="@+id/btnPlay"
@@ -177,7 +177,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
-        android:text="Yesterday (Remastered 2009)"
+        tools:text="Yesterday (Remastered 2009)"
         android:textSize="@dimen/text_size_22sp"
         android:fontFamily="@font/ys_display_medium"
         app:layout_constraintBottom_toTopOf="@+id/trackGroup"
@@ -185,16 +185,17 @@
 
     <ImageView
         android:id="@+id/trackPicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_placeholder_media"
         app:layout_constraintBottom_toTopOf="@+id/trackName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/btnArrayBackMedia" />
 
     <ImageView
         android:id="@+id/btnArrayBackMedia"
