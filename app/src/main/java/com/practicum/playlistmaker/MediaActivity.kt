@@ -62,7 +62,6 @@ class MediaActivity : AppCompatActivity() {
         Glide.with(trackPicture)
             .load(trackPictureIntent)
             .placeholder(R.drawable.ic_placeholder_media)
-            .centerCrop()
             .transform(RoundedCorners(dpToPx(8f, this)))
             .into(trackPicture)
 
