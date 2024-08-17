@@ -20,12 +20,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-private val retrofit = Retrofit.Builder()
-    .baseUrl("https://itunes.apple.com/")
-    .addConverterFactory(GsonConverterFactory.create())
-    .build()
-
-private val songsApiService = retrofit.create<SongApi>()
 
 class MediaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
