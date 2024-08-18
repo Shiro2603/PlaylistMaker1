@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mediaLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -17,11 +19,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginBottom="28dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="@dimen/margin_18dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/country"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/genre"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
@@ -30,12 +31,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginBottom="28dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="@dimen/margin_18dp"
+            android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/genreSong"
-            tools:text="Великобритания" />
+            android:text="Великобритания" />
 
         <TextView
             android:id="@+id/genre"
@@ -43,9 +43,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginTop="9dp"
-            android:text="@string/ganre"
+            android:layout_marginBottom="@dimen/margin_18dp"
+            android:layout_marginTop="@dimen/margin_18dp"
+            android:text="@string/genre"
+            app:layout_constraintBottom_toTopOf="@id/country"
             app:layout_constraintTop_toBottomOf="@id/year"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -54,10 +55,11 @@
             style="@style/TextStyleForMediaSongs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="@dimen/margin_18dp"
             android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginBottom="9dp"
+            android:layout_marginBottom="@dimen/margin_18dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/countrySong"
             app:layout_constraintTop_toBottomOf="@id/yearSong"
             tools:text="Rock" />
 
@@ -67,8 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginBottom="@dimen/margin_18dp"
+            android:layout_marginTop="@dimen/margin_18dp"
             android:text="@string/year"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/albumSong" />
@@ -78,7 +80,7 @@
             style="@style/TextStyleForMediaSongs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="@dimen/margin_18dp"
             android:layout_marginEnd="@dimen/margin_16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/albumSong"
@@ -90,8 +92,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginBottom="@dimen/margin_18dp"
+            android:layout_marginTop="@dimen/margin_18dp"
             android:text="@string/album"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/duration" />
@@ -102,7 +104,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="@dimen/margin_18dp"
             android:textAlignment="viewEnd"
             app:layout_constrainedWidth="true"
             app:layout_constraintBaseline_toBaselineOf="@+id/album"
@@ -117,7 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/margin_39dp"
             android:text="@string/duration"
             app:layout_constraintBottom_toTopOf="@+id/album"
             app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +130,7 @@
             style="@style/TextStyleForMediaSongs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/margin_39dp"
             android:layout_marginEnd="@dimen/margin_16dp"
             android:layout_marginBottom="9dp"
             app:layout_constraintBaseline_toBaselineOf="@+id/duration"
@@ -216,7 +218,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="42dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="24dp"
             android:src="@drawable/ic_placeholder_media"

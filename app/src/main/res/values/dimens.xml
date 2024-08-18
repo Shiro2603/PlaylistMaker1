@@ -12,6 +12,7 @@
     <dimen name="margin_13dp">13dp</dimen>
     <dimen name="margin_14dp">14dp</dimen>
     <dimen name="margin_18dp">18dp</dimen>
+    <dimen name="margin_39dp">39dp</dimen>
     <dimen name="layout_height_61dp">61dp</dimen>
     <dimen name="icon_padding_8dp">8dp</dimen>
     <dimen name="picture_45dp">45dp</dimen>

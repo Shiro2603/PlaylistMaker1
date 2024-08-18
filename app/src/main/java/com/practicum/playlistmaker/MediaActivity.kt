@@ -1,8 +1,11 @@
 package com.practicum.playlistmaker
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +24,8 @@ import java.util.Date
 import java.util.Locale
 
 
+
+
 class MediaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,15 +37,18 @@ class MediaActivity : AppCompatActivity() {
             insets
         }
 
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
 
-        val trackNameIntent = intent.getStringExtra("TRACK_NAME")
-        val trackArtistIntent = intent.getStringExtra("ARTIST_NAME")
-        val trackTimeIntent = intent.getStringExtra("TRACK_TIME")
-        val trackPictureIntent = intent.getStringExtra("TRACK_PICTURE")
-        val trackCollectionIntent = intent.getStringExtra("TRACK_COLLECTION")
-        val trackReleaseDateIntent = intent.getStringExtra("TRACK_RELEASE_DATE")
-        val trackGenreIntent = intent.getStringExtra("TRACK_GENRE")
-        val trackCountryIntent = intent.getStringExtra("TRACK_COUNTRY")
+
+        val savedTrackName = sharedPreferences.getString("TRACK_NAME", null)
+        val savedTrackArtist = sharedPreferences.getString("ARTIST_NAME", null)
+        val savedTrackTime = sharedPreferences.getString("TRACK_TIME", null)
+        val savedTrackPicture = sharedPreferences.getString("TRACK_PICTURE", null)
+        val savedTrackCollection = sharedPreferences.getString("TRACK_COLLECTION", null)
+        val savedTrackReleaseDate = sharedPreferences.getString("TRACK_RELEASE_DATE", null)
+        val savedTrackGenre = sharedPreferences.getString("TRACK_GENRE", null)
+        val savedTrackCountry = sharedPreferences.getString("TRACK_COUNTRY", null)
+
 
         val buttonBack = findViewById<ImageView>(R.id.btnArrayBackMedia)
         val countrySong = findViewById<TextView>(R.id.countrySong)
@@ -52,23 +60,27 @@ class MediaActivity : AppCompatActivity() {
         val trackGroup = findViewById<TextView>(R.id.trackGroup)
         val trackTime = findViewById<TextView>(R.id.trackTime)
         val trackPicture = findViewById<ImageView>(R.id.trackPicture)
+        val mediaLayout = findViewById<ScrollView>(R.id.mediaLayout)
+
+
+        mediaLayout.visibility = if(savedTrackName == null) View.GONE else View.VISIBLE
 
 
 
 
-        trackName.text = trackNameIntent
-        trackGroup.text = trackArtistIntent
-        durationSong.text = trackTimeIntent
+        trackName.text = savedTrackName
+        trackGroup.text = savedTrackArtist
+        durationSong.text = savedTrackTime
         Glide.with(trackPicture)
-            .load(trackPictureIntent)
+            .load(savedTrackPicture)
             .placeholder(R.drawable.ic_placeholder_media)
             .transform(RoundedCorners(dpToPx(8f, this)))
             .into(trackPicture)
 
-        albumSong.text = trackCollectionIntent
-        yearSong.text = trackReleaseDateIntent
-        genreSong.text = trackGenreIntent
-        countrySong.text = trackCountryIntent
+        albumSong.text = savedTrackCollection
+        yearSong.text = savedTrackReleaseDate
+        genreSong.text = savedTrackGenre
+        countrySong.text = savedTrackCountry
 
 
 
@@ -79,18 +91,10 @@ class MediaActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
+
+
+
+
+
 }
