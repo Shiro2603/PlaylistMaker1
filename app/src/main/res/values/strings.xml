@@ -19,4 +19,10 @@
     <string name="notFound">Ничего не нашлось</string>
     <string name="clearButton">Очистить историю</string>
     <string name="historyTitle">Вы искали</string>
+    <string name="album">Альбом</string>
+    <string name="duration">Длительность</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
+    <string name="_3_10">0:30</string>
 </resources>

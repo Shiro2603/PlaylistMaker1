@@ -8,4 +8,5 @@ interface SongApi {
     @GET("/search?entity=song")
 
     fun search(@Query("term") text : String) : Call<SongsResponse>
+
 }
