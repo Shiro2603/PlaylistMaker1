@@ -173,11 +173,15 @@ class SearchActivity : AppCompatActivity() {
 
 
         updateButton.setOnClickListener {
+            if(inputTextSearch.text.isNotEmpty()) {
+                progressBar.visibility = View.VISIBLE
+            }
             songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
 
                 override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
                     if (response.code() == 200) {
                         recyclerView.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
                         track.clear()
                         if(response.body()?.results?.isNotEmpty() == true) {
                             track.addAll(response.body()?.results!!)

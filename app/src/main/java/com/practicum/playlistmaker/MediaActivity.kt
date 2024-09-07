@@ -39,33 +39,13 @@ class MediaActivity : AppCompatActivity() {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
+        private const val DELAY = 1000L
     }
 
     private var playerState = STATE_DEFAULT
-    private lateinit var buttonPlay : Button
-
-    fun starPlayer() {
-        mediaPlayer.start()
-        buttonPlay.setBackgroundResource(R.drawable.ic_button_stop)
-        playerState = STATE_PLAYING
-    }
-
-    fun pausePlayer() {
-        mediaPlayer.pause()
-        buttonPlay.setBackgroundResource(R.drawable.ic_button_play)
-        playerState = STATE_PAUSED
-    }
-
-    fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                starPlayer()
-            }
-        }
-    }
+    private lateinit var buttonPlay: ImageView
+    private lateinit var trackTime: TextView
+    private var handler: Handler? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +59,7 @@ class MediaActivity : AppCompatActivity() {
         }
 
         val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        handler = Handler(Looper.getMainLooper())
 
 
         val savedTrackName = sharedPreferences.getString("TRACK_NAME", null)
@@ -100,21 +81,23 @@ class MediaActivity : AppCompatActivity() {
         val durationSong = findViewById<TextView>(R.id.durationSong)
         val trackName = findViewById<TextView>(R.id.trackName)
         val trackGroup = findViewById<TextView>(R.id.trackGroup)
-        val trackTime = findViewById<TextView>(R.id.trackTime)
+        trackTime = findViewById(R.id.trackTime)
         val trackPicture = findViewById<ImageView>(R.id.trackPicture)
         val mediaLayout = findViewById<ScrollView>(R.id.mediaLayout)
         buttonPlay = findViewById(R.id.btnPlay)
 
 
-        mediaLayout.visibility = if(savedTrackName == null) View.GONE else View.VISIBLE
+        mediaLayout.visibility = if (savedTrackName == null) View.GONE else View.VISIBLE
 
         fun preparePlayer() {
             mediaPlayer.setDataSource(savedTrackPreview)
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
-                playerState = STATE_DEFAULT
+                buttonPlay.isEnabled = true
+                playerState = STATE_PREPARED
             }
             mediaPlayer.setOnCompletionListener {
+                buttonPlay.setImageResource(R.drawable.ic_button_play)
                 playerState = STATE_PREPARED
             }
         }
@@ -151,8 +134,31 @@ class MediaActivity : AppCompatActivity() {
         }
 
 
+    }
 
+    fun starPlayer() {
+        mediaPlayer.start()
+        buttonPlay.setImageResource(R.drawable.ic_button_stop)
+        playerState = STATE_PLAYING
+        startTimer()
+    }
 
+    fun pausePlayer() {
+        mediaPlayer.pause()
+        buttonPlay.setImageResource(R.drawable.ic_button_play)
+        playerState = STATE_PAUSED
+    }
+
+    fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            STATE_PREPARED, STATE_PAUSED -> {
+                starPlayer()
+            }
+        }
     }
 
     override fun onPause() {
@@ -165,13 +171,50 @@ class MediaActivity : AppCompatActivity() {
         mediaPlayer.release()
     }
 
+    fun updateTimerTask(): Runnable {
+        return object : Runnable {
+            override fun run() {
+                var remainingTime = mediaPlayer.currentPosition
 
+                if (remainingTime > 0) {
+                    trackTime.text = SimpleDateFormat(
+                        "mm:ss",
+                        Locale.getDefault()
+                    ).format(mediaPlayer.currentPosition)
+                    handler?.postDelayed(this, DELAY)
+                }
 
+            }
+        }
+    }
 
-
-
-
-
-
+    fun startTimer() {
+        handler?.post(
+            updateTimerTask()
+        )
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
