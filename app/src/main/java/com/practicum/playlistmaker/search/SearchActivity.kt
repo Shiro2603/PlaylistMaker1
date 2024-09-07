@@ -3,6 +3,8 @@ package com.practicum.playlistmaker.search
 import SearchHistoryManager
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -42,7 +44,9 @@ class SearchActivity : AppCompatActivity() {
 
     private val track = ArrayList<Track>()
 
-
+    companion object {
+        const val VALUE_KEY = "SearchText"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -211,9 +215,6 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    companion object {
-        const val VALUE_KEY = "SearchText"
-    }
 
    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

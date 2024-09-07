@@ -3,6 +3,8 @@ package com.practicum.playlistmaker.search
 import SearchHistoryManager
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -23,6 +25,24 @@ class SongsAdapter(
 
     val searchHistoryManager = SearchHistoryManager(context)
     val displayIntent = Intent(context, MediaActivity::class.java)
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val VALUE_KEY = "SearchText"
+    }
+
+    private var isClickAllowed = true
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({isClickAllowed = true}, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
 
 
 
