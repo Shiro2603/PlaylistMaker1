@@ -68,6 +68,7 @@ class SongsAdapter(
             ))
             editor.putString("TRACK_GENRE", track.primaryGenreName)
             editor.putString("TRACK_COUNTRY", track.country)
+            editor.putString("TRACK_PREVIEW", track.previewUrl)
             editor.apply()
 
 

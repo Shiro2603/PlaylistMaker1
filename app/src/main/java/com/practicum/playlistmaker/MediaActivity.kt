@@ -2,10 +2,12 @@ package com.practicum.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
@@ -30,6 +32,40 @@ import java.util.Locale
 
 class MediaActivity : AppCompatActivity() {
 
+    private var mediaPlayer = MediaPlayer()
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+    }
+
+    private var playerState = STATE_DEFAULT
+    private lateinit var buttonPlay : Button
+
+    fun starPlayer() {
+        mediaPlayer.start()
+        buttonPlay.setBackgroundResource(R.drawable.ic_button_stop)
+        playerState = STATE_PLAYING
+    }
+
+    fun pausePlayer() {
+        mediaPlayer.pause()
+        buttonPlay.setBackgroundResource(R.drawable.ic_button_play)
+        playerState = STATE_PAUSED
+    }
+
+    fun playbackControl() {
+        when(playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+            STATE_PREPARED, STATE_PAUSED -> {
+                starPlayer()
+            }
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +89,7 @@ class MediaActivity : AppCompatActivity() {
         val savedTrackReleaseDate = sharedPreferences.getString("TRACK_RELEASE_DATE", null)
         val savedTrackGenre = sharedPreferences.getString("TRACK_GENRE", null)
         val savedTrackCountry = sharedPreferences.getString("TRACK_COUNTRY", null)
+        val savedTrackPreview = sharedPreferences.getString("TRACK_PREVIEW", null)
 
 
         val buttonBack = findViewById<ImageView>(R.id.btnArrayBackMedia)
@@ -66,10 +103,30 @@ class MediaActivity : AppCompatActivity() {
         val trackTime = findViewById<TextView>(R.id.trackTime)
         val trackPicture = findViewById<ImageView>(R.id.trackPicture)
         val mediaLayout = findViewById<ScrollView>(R.id.mediaLayout)
+        buttonPlay = findViewById(R.id.btnPlay)
 
 
         mediaLayout.visibility = if(savedTrackName == null) View.GONE else View.VISIBLE
 
+        fun preparePlayer() {
+            mediaPlayer.setDataSource(savedTrackPreview)
+            mediaPlayer.prepareAsync()
+            mediaPlayer.setOnPreparedListener {
+                playerState = STATE_DEFAULT
+            }
+            mediaPlayer.setOnCompletionListener {
+                playerState = STATE_PREPARED
+            }
+        }
+
+        preparePlayer()
+
+
+
+
+        buttonPlay.setOnClickListener {
+            playbackControl()
+        }
 
 
 
@@ -97,6 +154,21 @@ class MediaActivity : AppCompatActivity() {
 
 
     }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+    }
+
+
+
+
+
 
 
 
