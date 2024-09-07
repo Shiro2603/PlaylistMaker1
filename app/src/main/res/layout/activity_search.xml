@@ -208,6 +208,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="140dp"
         android:layout_marginHorizontal="158dp"
+        android:indeterminateTint="@color/blue"
         android:visibility="gone"/>
 
 

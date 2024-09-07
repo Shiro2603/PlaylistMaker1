@@ -99,6 +99,7 @@ class MediaActivity : AppCompatActivity() {
             mediaPlayer.setOnCompletionListener {
                 buttonPlay.setImageResource(R.drawable.ic_button_play)
                 playerState = STATE_PREPARED
+                trackTime.text = getString(R.string.trackTimer)
             }
         }
 
@@ -164,17 +165,19 @@ class MediaActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         pausePlayer()
+        handler?.removeCallbacks(updateTimerTask())
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
+        handler?.removeCallbacks(updateTimerTask())
     }
 
     fun updateTimerTask(): Runnable {
         return object : Runnable {
             override fun run() {
-                var remainingTime = mediaPlayer.currentPosition
+                val remainingTime = mediaPlayer.currentPosition
 
                 if (remainingTime > 0) {
                     trackTime.text = SimpleDateFormat(
