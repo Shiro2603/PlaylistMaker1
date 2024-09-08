@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -23,6 +24,7 @@ import com.practicum.playlistmaker.search.SongApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -90,16 +92,27 @@ class MediaActivity : AppCompatActivity() {
         mediaLayout.visibility = if (savedTrackName == null) View.GONE else View.VISIBLE
 
         fun preparePlayer() {
-            mediaPlayer.setDataSource(savedTrackPreview)
-            mediaPlayer.prepareAsync()
-            mediaPlayer.setOnPreparedListener {
-                buttonPlay.isEnabled = true
-                playerState = STATE_PREPARED
+            if (savedTrackPreview.isNullOrEmpty()) {
+                Toast.makeText(this, "Песня отсутствует", Toast.LENGTH_SHORT).show()
+                buttonPlay.isEnabled = false
+                return
             }
-            mediaPlayer.setOnCompletionListener {
-                buttonPlay.setImageResource(R.drawable.ic_button_play)
-                playerState = STATE_PREPARED
-                trackTime.text = getString(R.string.trackTimer)
+
+            try {
+                mediaPlayer.setDataSource(savedTrackPreview)
+                mediaPlayer.prepareAsync()
+                mediaPlayer.setOnPreparedListener {
+                    buttonPlay.isEnabled = true
+                    playerState = STATE_PREPARED
+                }
+                mediaPlayer.setOnCompletionListener {
+                    buttonPlay.setImageResource(R.drawable.ic_button_play)
+                    playerState = STATE_PREPARED
+                    trackTime.text = getString(R.string.trackTimer)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, "Не удалось воспроизвести трек", Toast.LENGTH_SHORT).show()
             }
         }
 
