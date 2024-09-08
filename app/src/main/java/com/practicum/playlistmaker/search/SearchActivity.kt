@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -70,7 +71,7 @@ class SearchActivity : AppCompatActivity() {
         val recyclerViewForHistory = findViewById<RecyclerView>(R.id.rv_search_history)
         val inputTextSearch = findViewById<EditText>(R.id.search_edit_text)
         val buttonSearchHistory = findViewById<Button>(R.id.bt_search_clear)
-        val searchHistoryLayout = findViewById<ConstraintLayout>(R.id.search_history)
+        val searchHistoryLayout = findViewById<ScrollView>(R.id.search_history)
         val progressBar = findViewById<ProgressBar>(R.id.pb_search_history)
 
         val handler = Handler(Looper.getMainLooper())
@@ -118,8 +119,6 @@ class SearchActivity : AppCompatActivity() {
         inputTextSearch.setOnFocusChangeListener { view, hasFocus ->
             searchHistoryLayout.visibility = if(hasFocus && inputTextSearch.text.isEmpty() && historyList.isNotEmpty()) View.VISIBLE else View.GONE
         }
-
-
 
 
 
@@ -250,6 +249,7 @@ class SearchActivity : AppCompatActivity() {
                 if (s.isNullOrEmpty()) {
                     notFound.visibility = View.GONE
                     recyclerView.visibility = View.GONE
+                    updateRecyclerView()
                     searchHistoryLayout.visibility = if (historyList.isNotEmpty()) View.VISIBLE else View.GONE
                 }
             }
