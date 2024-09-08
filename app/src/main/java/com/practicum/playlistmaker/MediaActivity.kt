@@ -99,6 +99,7 @@ class MediaActivity : AppCompatActivity() {
             mediaPlayer.setOnCompletionListener {
                 buttonPlay.setImageResource(R.drawable.ic_button_play)
                 playerState = STATE_PREPARED
+                trackTime.text = getString(R.string.trackTimer)
             }
         }
 
@@ -136,20 +137,20 @@ class MediaActivity : AppCompatActivity() {
 
     }
 
-    fun starPlayer() {
+    private fun starPlayer() {
         mediaPlayer.start()
         buttonPlay.setImageResource(R.drawable.ic_button_stop)
         playerState = STATE_PLAYING
         startTimer()
     }
 
-    fun pausePlayer() {
+    private fun pausePlayer() {
         mediaPlayer.pause()
         buttonPlay.setImageResource(R.drawable.ic_button_play)
         playerState = STATE_PAUSED
     }
 
-    fun playbackControl() {
+    private fun playbackControl() {
         when (playerState) {
             STATE_PLAYING -> {
                 pausePlayer()
@@ -164,19 +165,21 @@ class MediaActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         pausePlayer()
+        handler?.removeCallbacksAndMessages(null)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
+        handler?.removeCallbacksAndMessages(null)
     }
 
-    fun updateTimerTask(): Runnable {
+    private fun updateTimerTask(): Runnable {
         return object : Runnable {
             override fun run() {
-                var remainingTime = mediaPlayer.currentPosition
+                val remainingTime = mediaPlayer.currentPosition
 
-                if (remainingTime > 0) {
+                if (playerState == STATE_PLAYING) {
                     trackTime.text = SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
@@ -188,7 +191,7 @@ class MediaActivity : AppCompatActivity() {
         }
     }
 
-    fun startTimer() {
+    private fun startTimer() {
         handler?.post(
             updateTimerTask()
         )

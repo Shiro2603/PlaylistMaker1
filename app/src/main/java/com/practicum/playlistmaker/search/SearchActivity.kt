@@ -110,6 +110,7 @@ class SearchActivity : AppCompatActivity() {
             historyList.clear()
             historyAdapter.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.GONE
+            notInternet.visibility = View.GONE
         }
 
 
@@ -130,9 +131,8 @@ class SearchActivity : AppCompatActivity() {
             updateRecyclerView()
             songsAdapter.notifyDataSetChanged()
             recyclerView.visibility = View.GONE
+            notFound.visibility = View.GONE
             searchHistoryLayout.visibility = View.VISIBLE
-
-
 
         }
 
@@ -140,34 +140,46 @@ class SearchActivity : AppCompatActivity() {
 
         fun searchRequest() {
 
+            notFound.visibility = View.GONE
+
+
             if(inputTextSearch.text.isNotEmpty()) {
                 progressBar.visibility = View.VISIBLE
+
             }
 
-            songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
+            if(inputTextSearch.text.isNotEmpty()) {
+                songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
+                    override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
+                        if (response.code() == 200) {
+                            progressBar.visibility = View.GONE
+                            recyclerView.visibility = View.VISIBLE
+                            track.clear()
+                            if(response.body()?.results?.isNotEmpty() == true) {
+                                track.addAll(response.body()?.results!!)
+                                songsAdapter.notifyDataSetChanged()
+                            }
+                        }
 
-                override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
-                    if (response.code() == 200) {
-                        progressBar.visibility = View.GONE
-                        recyclerView.visibility = View.VISIBLE
-                        track.clear()
-                        if(response.body()?.results?.isNotEmpty() == true) {
-                            track.addAll(response.body()?.results!!)
+                        if(track.isEmpty()) {
+                            updateRecyclerView()
                             songsAdapter.notifyDataSetChanged()
+                            recyclerView.visibility = View.GONE
+                            notFound.visibility = View.VISIBLE
+                        } else {
+                            recyclerView.visibility = View.VISIBLE
+                            notFound.visibility = View.GONE
                         }
                     }
-                    if(track.isEmpty()) {
+
+                    override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
                         recyclerView.visibility = View.GONE
-                        notFound.visibility = View.VISIBLE
+                        notInternet.visibility = View.VISIBLE
+
                     }
-                }
+                })
+            }
 
-                override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
-                    recyclerView.visibility = View.GONE
-                    notInternet.visibility = View.VISIBLE
-
-                }
-            })
         }
 
 
@@ -175,28 +187,37 @@ class SearchActivity : AppCompatActivity() {
         updateButton.setOnClickListener {
             if(inputTextSearch.text.isNotEmpty()) {
                 progressBar.visibility = View.VISIBLE
-            }
-            songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
 
-                override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
-                    if (response.code() == 200) {
-                        recyclerView.visibility = View.VISIBLE
-                        progressBar.visibility = View.GONE
-                        track.clear()
-                        if(response.body()?.results?.isNotEmpty() == true) {
-                            track.addAll(response.body()?.results!!)
+                songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
+
+                    override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
+                        if (response.code() == 200) {
+                            progressBar.visibility = View.GONE
+                            recyclerView.visibility = View.VISIBLE
+                            track.clear()
+                            if(response.body()?.results?.isNotEmpty() == true) {
+                                track.addAll(response.body()?.results!!)
+                                songsAdapter.notifyDataSetChanged()
+                            }
+                        }
+                        if(track.isEmpty()) {
+                            updateRecyclerView()
                             songsAdapter.notifyDataSetChanged()
+                            recyclerView.visibility = View.GONE
+                            notFound.visibility = View.VISIBLE
+                        } else {
+                            recyclerView.visibility = View.VISIBLE
+                            notFound.visibility = View.GONE
                         }
                     }
-                }
 
-                override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
-                    recyclerView.visibility = View.GONE
-                    notInternet.visibility = View.VISIBLE
-                    notFound.visibility = View.VISIBLE
+                    override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
+                        recyclerView.visibility = View.GONE
+                        notInternet.visibility = View.VISIBLE
+                    }
+                })
+            }
 
-                }
-            })
         }
 
         val searchRunnable = Runnable { searchRequest() }
@@ -204,6 +225,7 @@ class SearchActivity : AppCompatActivity() {
         fun searchDebounce() {
             handler.removeCallbacks(searchRunnable)
             handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+
         }
 
 
@@ -218,26 +240,23 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = clearButtonVisibility(s)
                 searchHistoryLayout.visibility = if(inputTextSearch.hasFocus() && s?.isEmpty() == true && historyList.isNotEmpty()) View.VISIBLE else View.GONE
                 searchDebounce()
-
-
+                if (s.isNullOrEmpty()) {
+                    updateRecyclerView()
+                }
 
             }
 
             override fun afterTextChanged(s: Editable?) {
+                if (s.isNullOrEmpty()) {
+                    notFound.visibility = View.GONE
+                    recyclerView.visibility = View.GONE
+                    searchHistoryLayout.visibility = if (historyList.isNotEmpty()) View.VISIBLE else View.GONE
+                }
             }
 
         }
 
-
         inputTextSearch.addTextChangedListener(textWatcher)
-
-
-
-
-
-
-
-
 
     }
 
