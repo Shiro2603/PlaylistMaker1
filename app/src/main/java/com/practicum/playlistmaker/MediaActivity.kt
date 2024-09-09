@@ -2,11 +2,16 @@ package com.practicum.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -19,6 +24,7 @@ import com.practicum.playlistmaker.search.SongApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,6 +33,23 @@ import java.util.Locale
 
 
 class MediaActivity : AppCompatActivity() {
+
+    private var mediaPlayer = MediaPlayer()
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val DELAY = 1000L
+    }
+
+    private var playerState = STATE_DEFAULT
+    private lateinit var buttonPlay: ImageView
+    private lateinit var trackTime: TextView
+    private var handler: Handler? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,6 +61,7 @@ class MediaActivity : AppCompatActivity() {
         }
 
         val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        handler = Handler(Looper.getMainLooper())
 
 
         val savedTrackName = sharedPreferences.getString("TRACK_NAME", null)
@@ -48,6 +72,7 @@ class MediaActivity : AppCompatActivity() {
         val savedTrackReleaseDate = sharedPreferences.getString("TRACK_RELEASE_DATE", null)
         val savedTrackGenre = sharedPreferences.getString("TRACK_GENRE", null)
         val savedTrackCountry = sharedPreferences.getString("TRACK_COUNTRY", null)
+        val savedTrackPreview = sharedPreferences.getString("TRACK_PREVIEW", null)
 
 
         val buttonBack = findViewById<ImageView>(R.id.btnArrayBackMedia)
@@ -58,13 +83,47 @@ class MediaActivity : AppCompatActivity() {
         val durationSong = findViewById<TextView>(R.id.durationSong)
         val trackName = findViewById<TextView>(R.id.trackName)
         val trackGroup = findViewById<TextView>(R.id.trackGroup)
-        val trackTime = findViewById<TextView>(R.id.trackTime)
+        trackTime = findViewById(R.id.trackTime)
         val trackPicture = findViewById<ImageView>(R.id.trackPicture)
         val mediaLayout = findViewById<ScrollView>(R.id.mediaLayout)
+        buttonPlay = findViewById(R.id.btnPlay)
 
 
-        mediaLayout.visibility = if(savedTrackName == null) View.GONE else View.VISIBLE
+        mediaLayout.visibility = if (savedTrackName == null) View.GONE else View.VISIBLE
 
+        fun preparePlayer() {
+            if (savedTrackPreview.isNullOrEmpty()) {
+                Toast.makeText(this, "Песня отсутствует", Toast.LENGTH_SHORT).show()
+                buttonPlay.isEnabled = false
+                return
+            }
+
+            try {
+                mediaPlayer.setDataSource(savedTrackPreview)
+                mediaPlayer.prepareAsync()
+                mediaPlayer.setOnPreparedListener {
+                    buttonPlay.isEnabled = true
+                    playerState = STATE_PREPARED
+                }
+                mediaPlayer.setOnCompletionListener {
+                    buttonPlay.setImageResource(R.drawable.ic_button_play)
+                    playerState = STATE_PREPARED
+                    trackTime.text = getString(R.string.trackTimer)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, "Не удалось воспроизвести трек", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        preparePlayer()
+
+
+
+
+        buttonPlay.setOnClickListener {
+            playbackControl()
+        }
 
 
 
@@ -89,12 +148,66 @@ class MediaActivity : AppCompatActivity() {
         }
 
 
-
-
     }
 
+    private fun starPlayer() {
+        mediaPlayer.start()
+        buttonPlay.setImageResource(R.drawable.ic_button_stop)
+        playerState = STATE_PLAYING
+        startTimer()
+    }
 
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        buttonPlay.setImageResource(R.drawable.ic_button_play)
+        playerState = STATE_PAUSED
+    }
 
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
 
+            STATE_PREPARED, STATE_PAUSED -> {
+                starPlayer()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+        handler?.removeCallbacksAndMessages(null)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        handler?.removeCallbacksAndMessages(null)
+    }
+
+    private fun updateTimerTask(): Runnable {
+        return object : Runnable {
+            override fun run() {
+                val remainingTime = mediaPlayer.currentPosition
+
+                if (playerState == STATE_PLAYING) {
+                    trackTime.text = SimpleDateFormat(
+                        "mm:ss",
+                        Locale.getDefault()
+                    ).format(mediaPlayer.currentPosition)
+                    handler?.postDelayed(this, DELAY)
+                }
+
+            }
+        }
+    }
+
+    private fun startTimer() {
+        handler?.post(
+            updateTimerTask()
+        )
+    }
 
 }
