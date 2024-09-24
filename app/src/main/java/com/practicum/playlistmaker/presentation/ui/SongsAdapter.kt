@@ -1,17 +1,15 @@
-package com.practicum.playlistmaker.search
+package com.practicum.playlistmaker.presentation.ui
 
-import SearchHistoryManager
+import com.practicum.playlistmaker.data.SearchHistoryManager
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.MediaActivity
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -23,8 +21,8 @@ class SongsAdapter(
 ) : RecyclerView.Adapter<SongsViewHolder>() {
 
 
-    val searchHistoryManager = SearchHistoryManager(context)
-    val displayIntent = Intent(context, MediaActivity::class.java)
+    private val searchHistoryManager = SearchHistoryManager(context)
+    private val displayIntent = Intent(context, MediaActivity::class.java)
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L

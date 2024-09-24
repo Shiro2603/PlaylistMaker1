@@ -1,6 +1,6 @@
-package com.practicum.playlistmaker.search
+package com.practicum.playlistmaker.presentation.ui
 
-import SearchHistoryManager
+import com.practicum.playlistmaker.data.SearchHistoryManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -8,7 +8,6 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -18,38 +17,23 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
+import com.practicum.playlistmaker.domain.api.TracksInteractor
+import com.practicum.playlistmaker.domain.models.Track
 
 class SearchActivity : AppCompatActivity() {
     private var saveSearchText = ""
     private lateinit var inputTextSearch: EditText
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val songsApiService = retrofit.create<SongApi>()
-
-
     private val track = ArrayList<Track>()
 
-    companion object {
-        const val VALUE_KEY = "SearchText"
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
+    private val interactor: TracksInteractor
+        get() = Creator.provideTracksInteractor()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,48 +121,29 @@ class SearchActivity : AppCompatActivity() {
 
 
 
+
+
+
         fun searchRequest() {
-
             notFound.visibility = View.GONE
-
-
-            if(inputTextSearch.text.isNotEmpty()) {
+            if (inputTextSearch.text.isNotEmpty()) {
                 progressBar.visibility = View.VISIBLE
 
-            }
-
-            if(inputTextSearch.text.isNotEmpty()) {
-                songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
-                    override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
-                        if (response.code() == 200) {
+                interactor.searchTrack(inputTextSearch.text.toString(), object : TracksInteractor.TracksConsumer {
+                    override fun consume(foundTracks: List<Track>) {
+                        runOnUiThread {
                             progressBar.visibility = View.GONE
-                            recyclerView.visibility = View.VISIBLE
                             track.clear()
-                            if(response.body()?.results?.isNotEmpty() == true) {
-                                track.addAll(response.body()?.results!!)
-                                songsAdapter.notifyDataSetChanged()
-                            }
-                        }
-
-                        if(track.isEmpty()) {
-                            updateRecyclerView()
+                            track.addAll(foundTracks)
                             songsAdapter.notifyDataSetChanged()
-                            recyclerView.visibility = View.GONE
-                            notFound.visibility = View.VISIBLE
-                        } else {
-                            recyclerView.visibility = View.VISIBLE
-                            notFound.visibility = View.GONE
-                        }
-                    }
 
-                    override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
-                        recyclerView.visibility = View.GONE
-                        notInternet.visibility = View.VISIBLE
+                            recyclerView.visibility = if (foundTracks.isNotEmpty()) View.VISIBLE else View.GONE
+                            notFound.visibility = if (foundTracks.isEmpty()) View.VISIBLE else View.GONE
+                        }
 
                     }
                 })
             }
-
         }
 
 
@@ -187,34 +152,20 @@ class SearchActivity : AppCompatActivity() {
             if(inputTextSearch.text.isNotEmpty()) {
                 progressBar.visibility = View.VISIBLE
 
-                songsApiService.search(inputTextSearch.text.toString()).enqueue(object : Callback<SongsResponse> {
-
-                    override fun onResponse(call: Call<SongsResponse>, response: Response<SongsResponse>) {
-                        if (response.code() == 200) {
+                interactor.searchTrack(inputTextSearch.text.toString(), object : TracksInteractor.TracksConsumer {
+                    override fun consume(foundTracks: List<Track>) {
+                        runOnUiThread {
                             progressBar.visibility = View.GONE
-                            recyclerView.visibility = View.VISIBLE
                             track.clear()
-                            if(response.body()?.results?.isNotEmpty() == true) {
-                                track.addAll(response.body()?.results!!)
-                                songsAdapter.notifyDataSetChanged()
-                            }
-                        }
-                        if(track.isEmpty()) {
-                            updateRecyclerView()
+                            track.addAll(foundTracks)
                             songsAdapter.notifyDataSetChanged()
-                            recyclerView.visibility = View.GONE
-                            notFound.visibility = View.VISIBLE
-                        } else {
-                            recyclerView.visibility = View.VISIBLE
-                            notFound.visibility = View.GONE
-                        }
-                    }
 
-                    override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
-                        recyclerView.visibility = View.GONE
-                        notInternet.visibility = View.VISIBLE
+                            recyclerView.visibility = if (foundTracks.isNotEmpty()) View.VISIBLE else View.GONE
+                            notFound.visibility = if (foundTracks.isEmpty()) View.VISIBLE else View.GONE
+                        }
                     }
                 })
+
             }
 
         }
@@ -291,7 +242,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-
+    companion object {
+        const val VALUE_KEY = "SearchText"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+    }
 
 
 }

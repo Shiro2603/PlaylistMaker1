@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.data
 
 import android.app.Application
 import android.content.Context
@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate
 const val THEME_PREFERENCES = "theme"
 const val THEME_KEY = "theme_key"
 
-class App : Application() {
+class SharedPreferencesTheme : Application() {
 
      var darkTheme = false
 

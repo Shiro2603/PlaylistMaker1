@@ -1,8 +1,10 @@
+package com.practicum.playlistmaker.data
+
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.practicum.playlistmaker.search.Track
+import com.practicum.playlistmaker.domain.models.Track
 
 class SearchHistoryManager(context: Context) {
 
@@ -11,7 +13,7 @@ class SearchHistoryManager(context: Context) {
         private const val KEY_SEARCH_HISTORY = "search_history"
     }
 
-    val maxHistorySize = 10
+    private val maxHistorySize = 10
 
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     private val gson = Gson()
