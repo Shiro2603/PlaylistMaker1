@@ -11,9 +11,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.SharedPreferencesTheme
+import com.practicum.playlistmaker.util.Creator
+import com.practicum.playlistmaker.domain.api.ThemeInteractor
 
 class SettingActivity : AppCompatActivity() {
+
+    private val themeInteractor : ThemeInteractor
+        get() = Creator.provideThemeInteractor(applicationContext)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -60,12 +66,12 @@ class SettingActivity : AppCompatActivity() {
             startActivity(userAgreement)
         }
 
-        val sharedPreferencesTheme = applicationContext as SharedPreferencesTheme
-        themeSwitcher.isChecked = sharedPreferencesTheme.darkTheme
+
+        themeSwitcher.isChecked = themeInteractor.isDarkThemeEnabled()
 
 
         themeSwitcher.setOnCheckedChangeListener{ switcher, checked ->
-            (applicationContext as SharedPreferencesTheme).switchTheme(checked)
+            themeInteractor.setDarkTheme(checked)
         }
 
 

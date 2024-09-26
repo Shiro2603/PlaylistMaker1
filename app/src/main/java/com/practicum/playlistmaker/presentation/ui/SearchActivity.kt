@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.presentation.ui
 
-import com.practicum.playlistmaker.data.SearchHistoryManager
+import com.practicum.playlistmaker.data.SearchHistoryRepositoryImpl
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -21,8 +21,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.api.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.models.Track
 
@@ -32,8 +33,11 @@ class SearchActivity : AppCompatActivity() {
 
     private val track = ArrayList<Track>()
 
-    private val interactor: TracksInteractor
-        get() = Creator.provideTracksInteractor()
+    private val trackInteractor: TracksInteractor
+        get() = Creator.provideTracksInteractor(this)
+
+    private lateinit var searchHistoryInteractor: SearchHistoryInteractor
+    private lateinit var historyAdapter: SongsAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +49,8 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        searchHistoryInteractor = Creator.provideSearchHistoryInteractor(this)
 
         val buttonArrowBack = findViewById<ImageView>(R.id.search_button_arrow_back)
         val recyclerView = findViewById<RecyclerView>(R.id.recycleView)
@@ -62,36 +68,33 @@ class SearchActivity : AppCompatActivity() {
 
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        val songsAdapter = SongsAdapter( track, this)
+        val songsAdapter = SongsAdapter(track, this)
         recyclerView.adapter = songsAdapter
 
 
-        val searchHistoryManager = SearchHistoryManager(this)
-        val historyList  = searchHistoryManager.getSearchHistory().toMutableList()
+        val historyList = searchHistoryInteractor.getSearchHistory().toMutableList()
+        historyAdapter = SongsAdapter(historyList, this)
         recyclerViewForHistory.layoutManager = LinearLayoutManager(this)
-        val historyAdapter = SongsAdapter(historyList,this)
         recyclerViewForHistory.adapter = historyAdapter
 
 
 
-        searchHistoryLayout.visibility = if(historyList.isEmpty()) View.GONE else View.VISIBLE
+        searchHistoryLayout.visibility = if (historyList.isEmpty()) View.GONE else View.VISIBLE
 
-         fun updateRecyclerView() {
-            val searchHistoryManagerUpdate = SearchHistoryManager(this)
-            val searchHistory = searchHistoryManagerUpdate.getSearchHistory().toMutableList()
-             historyAdapter.updateData(searchHistory)
+        fun updateRecyclerView() {
+            val searchHistoryRepositoryImplUpdate = SearchHistoryRepositoryImpl(this)
+            val searchHistory = searchHistoryRepositoryImplUpdate.getSearchHistory().toMutableList()
+            historyAdapter.updateData(searchHistory)
         }
 
 
 
-
-
-        buttonArrowBack.setOnClickListener{
+        buttonArrowBack.setOnClickListener {
             finish()
         }
 
         buttonSearchHistory.setOnClickListener {
-            searchHistoryManager.clearHistory()
+            searchHistoryInteractor.clearSearchHistory()
             historyList.clear()
             historyAdapter.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.GONE
@@ -101,13 +104,14 @@ class SearchActivity : AppCompatActivity() {
 
         inputTextSearch.setSelectAllOnFocus(true)
         inputTextSearch.setOnFocusChangeListener { view, hasFocus ->
-            searchHistoryLayout.visibility = if(hasFocus && inputTextSearch.text.isEmpty() && historyList.isNotEmpty()) View.VISIBLE else View.GONE
+            searchHistoryLayout.visibility =
+                if (hasFocus && inputTextSearch.text.isEmpty() && historyList.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
 
 
 
-        clearButton.setOnClickListener{
+        clearButton.setOnClickListener {
             inputTextSearch.setText("")
             hideKeyboard(this, inputTextSearch)
             track.clear()
@@ -128,43 +132,69 @@ class SearchActivity : AppCompatActivity() {
             notFound.visibility = View.GONE
             if (inputTextSearch.text.isNotEmpty()) {
                 progressBar.visibility = View.VISIBLE
+                trackInteractor.searchTrack(
+                    inputTextSearch.text.toString(),
+                    object : TracksInteractor.TracksConsumer {
+                        override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
+                            runOnUiThread {
+                                progressBar.visibility = View.GONE
+                                if (foundTracks != null) {
+                                    track.clear()
+                                    track.addAll(foundTracks)
+                                    songsAdapter.notifyDataSetChanged()
+                                    recyclerView.visibility = View.VISIBLE
+                                }
+                                if (errorMessage != null) {
+                                    notInternet.visibility = View.VISIBLE
+                                } else if (track.isEmpty()) {
+                                    recyclerView.visibility = View.GONE
+                                    searchHistoryLayout.visibility = View.GONE
+                                    notFound.visibility = View.VISIBLE
+                                }
 
-                interactor.searchTrack(inputTextSearch.text.toString(), object : TracksInteractor.TracksConsumer {
-                    override fun consume(foundTracks: List<Track>) {
-                        runOnUiThread {
-                            progressBar.visibility = View.GONE
-                            track.clear()
-                            track.addAll(foundTracks)
-                            songsAdapter.notifyDataSetChanged()
+                            }
 
-                            recyclerView.visibility = if (foundTracks.isNotEmpty()) View.VISIBLE else View.GONE
-                            notFound.visibility = if (foundTracks.isEmpty()) View.VISIBLE else View.GONE
                         }
+                    })
 
-                    }
-                })
+            }
+            if (inputTextSearch.text.isEmpty()) {
+                updateRecyclerView()
+                searchHistoryLayout.visibility = View.VISIBLE
             }
         }
 
 
 
+
         updateButton.setOnClickListener {
-            if(inputTextSearch.text.isNotEmpty()) {
+            if (inputTextSearch.text.isNotEmpty()) {
                 progressBar.visibility = View.VISIBLE
 
-                interactor.searchTrack(inputTextSearch.text.toString(), object : TracksInteractor.TracksConsumer {
-                    override fun consume(foundTracks: List<Track>) {
-                        runOnUiThread {
-                            progressBar.visibility = View.GONE
-                            track.clear()
-                            track.addAll(foundTracks)
-                            songsAdapter.notifyDataSetChanged()
+                trackInteractor.searchTrack(
+                    inputTextSearch.text.toString(),
+                    object : TracksInteractor.TracksConsumer {
+                        override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
+                            runOnUiThread {
+                                progressBar.visibility = View.GONE
+                                if (foundTracks != null) {
+                                    track.clear()
+                                    track.addAll(foundTracks)
+                                    songsAdapter.notifyDataSetChanged()
+                                    recyclerView.visibility = View.VISIBLE
+                                }
+                                if (errorMessage != null) {
+                                    notInternet.visibility = View.VISIBLE
+                                } else if (foundTracks != null) {
+                                    if (foundTracks.isEmpty()) {
+                                        notFound.visibility = View.VISIBLE
+                                    }
+                                }
 
-                            recyclerView.visibility = if (foundTracks.isNotEmpty()) View.VISIBLE else View.GONE
-                            notFound.visibility = if (foundTracks.isEmpty()) View.VISIBLE else View.GONE
+                            }
                         }
-                    }
-                })
+                    })
+
 
             }
 
@@ -179,7 +209,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -188,11 +217,13 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 saveSearchText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
-                searchHistoryLayout.visibility = if(inputTextSearch.hasFocus() && s?.isEmpty() == true && historyList.isNotEmpty()) View.VISIBLE else View.GONE
+                searchHistoryLayout.visibility =
+                    if (inputTextSearch.hasFocus() && s?.isEmpty() == true && historyList.isNotEmpty()) View.VISIBLE else View.GONE
                 searchDebounce()
                 if (s.isNullOrEmpty()) {
                     updateRecyclerView()
                 }
+                updateRecyclerView()
 
             }
 
@@ -200,8 +231,9 @@ class SearchActivity : AppCompatActivity() {
                 if (s.isNullOrEmpty()) {
                     notFound.visibility = View.GONE
                     recyclerView.visibility = View.GONE
+                    searchHistoryLayout.visibility =
+                        if (historyList.isNotEmpty()) View.VISIBLE else View.GONE
                     updateRecyclerView()
-                    searchHistoryLayout.visibility = if (historyList.isNotEmpty()) View.VISIBLE else View.GONE
                 }
             }
 
@@ -209,12 +241,19 @@ class SearchActivity : AppCompatActivity() {
 
         inputTextSearch.addTextChangedListener(textWatcher)
 
+
+
+    }
+
+    fun updateHistoryAdapter() {
+        val updatedHistory = searchHistoryInteractor.getSearchHistory().toMutableList()
+        historyAdapter.updateData(updatedHistory)
+        historyAdapter.notifyDataSetChanged()
     }
 
 
 
-
-   override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(VALUE_KEY, saveSearchText)
     }
@@ -233,7 +272,7 @@ class SearchActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun clearButtonVisibility(s: CharSequence?):Int {
+    private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
         } else {

@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.presentation.ui
 
-import com.practicum.playlistmaker.data.SearchHistoryManager
+import com.practicum.playlistmaker.data.SearchHistoryRepositoryImpl
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
@@ -21,7 +21,7 @@ class SongsAdapter(
 ) : RecyclerView.Adapter<SongsViewHolder>() {
 
 
-    private val searchHistoryManager = SearchHistoryManager(context)
+    private val searchHistoryRepositoryImpl = SearchHistoryRepositoryImpl(context)
     private val displayIntent = Intent(context, MediaActivity::class.java)
 
     companion object {
@@ -54,12 +54,13 @@ class SongsAdapter(
         val track = songs[position]
         holder.itemView.setOnClickListener {
             if(clickDebounce()) {
-                searchHistoryManager.addTrackToHistory(track)
+                searchHistoryRepositoryImpl.addTrackToHistory(track)
+                (context as SearchActivity).updateHistoryAdapter()
                 val sharedPreferences = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
                 editor.putString("TRACK_NAME", track.trackName)
                 editor.putString("ARTIST_NAME", track.artistName)
-                editor.putString("TRACK_TIME", SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(track.trackTime)))
+                editor.putString("TRACK_TIME", SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(track.trackTimeMillis)))
                 editor.putString("TRACK_PICTURE", track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
                 editor.putString("TRACK_COLLECTION", track.collectionName)
                 editor.putString("TRACK_RELEASE_DATE", SimpleDateFormat("yyyy", Locale.getDefault()).format(
@@ -73,7 +74,7 @@ class SongsAdapter(
 
                 displayIntent.putExtra("TRACK_NAME", track.trackName)
                 displayIntent.putExtra("ARTIST_NAME", track.artistName)
-                displayIntent.putExtra("TRACK_TIME", SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(track.trackTime)))
+                displayIntent.putExtra("TRACK_TIME", SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(track.trackTimeMillis)))
                 displayIntent.putExtra("TRACK_PICTURE", track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
                 displayIntent.putExtra("TRACK_COLLECTION", track.collectionName)
                 displayIntent.putExtra("TRACK_RELEASE_DATE", SimpleDateFormat("yyyy", Locale.getDefault()).format(
@@ -107,7 +108,10 @@ class SongsAdapter(
     fun updateData(newSongs: List<Track>) {
          songs = newSongs
         notifyDataSetChanged()
+
     }
+
+
 
 
 }
