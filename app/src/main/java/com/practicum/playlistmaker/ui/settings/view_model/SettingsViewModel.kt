@@ -1,16 +1,10 @@
 package com.practicum.playlistmaker.ui.settings.view_model
 
 import android.app.Activity
-import android.app.Application
-import android.content.Intent
-import android.net.Uri
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.settings.ThemeInteractor
 import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 

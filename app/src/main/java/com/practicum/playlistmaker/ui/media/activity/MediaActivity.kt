@@ -14,11 +14,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMediaBinding
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
+import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel
+import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel.Companion.getViewModelFactory
+import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.util.Until.dpToPx
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -29,20 +34,13 @@ import java.util.Locale
 
 class MediaActivity : AppCompatActivity() {
 
-    private var mediaPlayer = MediaPlayer()
-
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val DELAY = 1000L
-    }
 
     private lateinit var binding : ActivityMediaBinding
-
-    private var playerState = STATE_DEFAULT
     private var handler: Handler? = null
+    private val mediaPlayer : MediaPlayerInteractor
+        get() = Creator.provideMediaPlayerInteractor()
+
+    private lateinit var viewModel : MediaViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +53,8 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        viewModel = ViewModelProvider(this, getViewModelFactory(mediaPlayer))[MediaViewModel::class.java]
 
         val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
         handler = Handler(Looper.getMainLooper())
@@ -72,42 +72,10 @@ class MediaActivity : AppCompatActivity() {
 
 
 
+        binding.mediaLayout.visibility = if (savedTrackName == null) View.GONE else View.VISIBLE
 
-
-            binding.mediaLayout.visibility = if (savedTrackName == null) View.GONE else View.VISIBLE
-
-        fun preparePlayer() {
-            if (savedTrackPreview.isNullOrEmpty()) {
-                Toast.makeText(this, "Песня отсутствует", Toast.LENGTH_SHORT).show()
-                binding.btnPlay.isEnabled = false
-                return
-            }
-
-            try {
-                mediaPlayer.setDataSource(savedTrackPreview)
-                mediaPlayer.prepareAsync()
-                mediaPlayer.setOnPreparedListener {
-                    binding.btnPlay.isEnabled = true
-                    playerState = STATE_PREPARED
-                }
-                mediaPlayer.setOnCompletionListener {
-                    binding.btnPlay.setImageResource(R.drawable.ic_button_play)
-                    playerState = STATE_PREPARED
-                    binding.trackTime.text = getString(R.string.trackTimer)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                Toast.makeText(this, "Не удалось воспроизвести трек", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        preparePlayer()
-
-
-
-
-        binding.btnPlay.setOnClickListener {
-            playbackControl()
+        binding.btnArrayBackMedia.setOnClickListener {
+            finish()
         }
 
 
@@ -127,72 +95,32 @@ class MediaActivity : AppCompatActivity() {
         binding.countrySong.text = savedTrackCountry
 
 
-
-        binding.btnArrayBackMedia.setOnClickListener {
-            finish()
+        savedTrackPreview?.let {
+            viewModel.preparePlayer(it)
         }
 
-
-    }
-
-    private fun starPlayer() {
-        mediaPlayer.start()
-        binding.btnPlay.setImageResource(R.drawable.ic_button_stop)
-        playerState = STATE_PLAYING
-        startTimer()
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        binding.btnPlay.setImageResource(R.drawable.ic_button_play)
-        playerState = STATE_PAUSED
-    }
-
-    private fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            STATE_PREPARED, STATE_PAUSED -> {
-                starPlayer()
-            }
+        viewModel.playerState.observe(this) { state ->
+            updatePlayPauseButton(state == MediaViewModel.STATE_PLAYING)
         }
-    }
 
-    override fun onPause() {
-        super.onPause()
-        pausePlayer()
-        handler?.removeCallbacksAndMessages(null)
-    }
+        binding.btnPlay.setOnClickListener {
+            viewModel.playbackControl()
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mediaPlayer.release()
-        handler?.removeCallbacksAndMessages(null)
-    }
-
-    private fun updateTimerTask(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                val remainingTime = mediaPlayer.currentPosition
-
-                if (playerState == STATE_PLAYING) {
-                    binding.trackTime.text = SimpleDateFormat(
-                        "mm:ss",
-                        Locale.getDefault()
-                    ).format(mediaPlayer.currentPosition)
-                    handler?.postDelayed(this, DELAY)
-                }
-
-            }
         }
+
     }
 
-    private fun startTimer() {
-        handler?.post(
-            updateTimerTask()
-        )
+    private fun updatePlayPauseButton(isPlaying: Boolean) {
+        if (isPlaying) {
+            binding.btnPlay.setImageResource(R.drawable.ic_button_stop)
+        } else {
+            binding.btnPlay.setImageResource(R.drawable.ic_button_play)
+        }
+
     }
+
+
+
+
 
 }

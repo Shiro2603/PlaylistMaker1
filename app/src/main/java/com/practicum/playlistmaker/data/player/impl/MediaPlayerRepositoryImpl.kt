@@ -3,20 +3,22 @@ package com.practicum.playlistmaker.data.player.impl
 
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
-import com.practicum.playlistmaker.ui.media.activity.MediaActivity
-import com.practicum.playlistmaker.ui.media.activity.MediaActivity.Companion
+import com.practicum.playlistmaker.domain.player.PlayerStateCallback
+import java.io.IOException
 
-class MediaPlayerRepositoryImpl(private val mediaPlayer : MediaPlayer) : MediaPlayerRepository  {
+class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
 
     private var playerState = STATE_DEFAULT
+    private var mediaPlayer = MediaPlayer()
+    private var playerStateCallback: PlayerStateCallback? = null
+
+    fun setPlayerStateCallback(callback: PlayerStateCallback) {
+        playerStateCallback = callback
+    }
 
 
-    override fun preparePlayer(trackPreview: String?,
-                               onPrepared: () -> Unit,
-                               onError: () -> Unit,
-                               onComplete: () -> Unit) {
+    override fun preparePlayer(trackPreview: String?) {
         if (trackPreview.isNullOrEmpty()) {
-            onError()
             return
         }
 
@@ -25,43 +27,49 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer : MediaPlayer) : MediaPl
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
                 playerState = STATE_PREPARED
-                onPrepared()
+                playerStateCallback?.onPlayerStateChanged(playerState)
+
             }
             mediaPlayer.setOnCompletionListener {
                 playerState = STATE_PREPARED
-                onComplete()
+                playerStateCallback?.onPlayerStateChanged(playerState)
+
             }
         } catch (e: IOException) {
-            onError()
+            e.printStackTrace()
         }
-    }
     }
 
     override fun starPlayer() {
-        TODO("Not yet implemented")
+        if (playerState == STATE_PREPARED || playerState == STATE_PAUSED) {
+            mediaPlayer.start()
+            playerState = STATE_PLAYING
+            playerStateCallback?.onPlayerStateChanged(playerState)
+        }
     }
 
     override fun pausePlayer() {
-        TODO("Not yet implemented")
+        if (playerState == STATE_PLAYING) {
+            mediaPlayer.pause()
+            playerState = STATE_PAUSED
+            playerStateCallback?.onPlayerStateChanged(playerState)
+        }
     }
 
-    override fun playbackControl() {
-        TODO("Not yet implemented")
+    override fun getCurrentPosition() {
+        mediaPlayer.currentPosition
     }
 
-    override fun updateTimerTask() {
-        TODO("Not yet implemented")
-    }
-
-    override fun startTimer() {
-        TODO("Not yet implemented")
-    }
 
     companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        private const val DELAY = 1000L
+
     }
-}
+
+    }
+
+
+

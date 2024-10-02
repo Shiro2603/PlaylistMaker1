@@ -9,28 +9,25 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.ScrollView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.search.TracksInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.SongsAdapter
 
 class SearchActivity : AppCompatActivity() {
+
+    private lateinit var binding : ActivitySearchBinding
+
     private var saveSearchText = ""
-    private lateinit var inputTextSearch: EditText
+
 
     private val track = ArrayList<Track>()
 
@@ -44,7 +41,8 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_search)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -53,34 +51,23 @@ class SearchActivity : AppCompatActivity() {
 
         searchHistoryInteractor = Creator.provideSearchHistoryInteractor(this)
 
-        val buttonArrowBack = findViewById<ImageView>(R.id.search_button_arrow_back)
-        val recyclerView = findViewById<RecyclerView>(R.id.recycleView)
-        val notInternet = findViewById<LinearLayout>(R.id.errors)
-        val updateButton = findViewById<Button>(R.id.search_update_btt)
-        val notFound = findViewById<LinearLayout>(R.id.search_not_found)
-        val clearButton = findViewById<ImageView>(R.id.search_close_button)
-        val recyclerViewForHistory = findViewById<RecyclerView>(R.id.rv_search_history)
-        val inputTextSearch = findViewById<EditText>(R.id.search_edit_text)
-        val buttonSearchHistory = findViewById<Button>(R.id.bt_search_clear)
-        val searchHistoryLayout = findViewById<ScrollView>(R.id.search_history)
-        val progressBar = findViewById<ProgressBar>(R.id.pb_search_history)
 
         val handler = Handler(Looper.getMainLooper())
 
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recycleView.layoutManager = LinearLayoutManager(this)
         val songsAdapter = SongsAdapter(track, this)
-        recyclerView.adapter = songsAdapter
+        binding.recycleView.adapter = songsAdapter
 
 
         val historyList = searchHistoryInteractor.getSearchHistory().toMutableList()
         historyAdapter = SongsAdapter(historyList, this)
-        recyclerViewForHistory.layoutManager = LinearLayoutManager(this)
-        recyclerViewForHistory.adapter = historyAdapter
+        binding.rvSearchHistory.layoutManager = LinearLayoutManager(this)
+        binding.rvSearchHistory.adapter = historyAdapter
 
 
 
-        searchHistoryLayout.visibility = if (historyList.isEmpty()) View.GONE else View.VISIBLE
+        binding.rvSearchHistory.visibility = if (historyList.isEmpty()) View.GONE else View.VISIBLE
 
         fun updateRecyclerView() {
             val searchHistoryRepositoryImplUpdate = SearchHistoryRepositoryImpl(this)
@@ -90,67 +77,65 @@ class SearchActivity : AppCompatActivity() {
 
 
 
-        buttonArrowBack.setOnClickListener {
+        binding.searchButtonArrowBack.setOnClickListener {
             finish()
         }
 
-        buttonSearchHistory.setOnClickListener {
+        binding.btSearchClear.setOnClickListener {
             searchHistoryInteractor.clearSearchHistory()
             historyList.clear()
             historyAdapter.notifyDataSetChanged()
-            searchHistoryLayout.visibility = View.GONE
-            notInternet.visibility = View.GONE
+            binding.rvSearchHistory.visibility = View.GONE
+            binding.errors.visibility = View.GONE
         }
 
 
-        inputTextSearch.setSelectAllOnFocus(true)
-        inputTextSearch.setOnFocusChangeListener { view, hasFocus ->
-            searchHistoryLayout.visibility =
-                if (hasFocus && inputTextSearch.text.isEmpty() && historyList.isNotEmpty()) View.VISIBLE else View.GONE
+        binding.searchEditText.setSelectAllOnFocus(true)
+        binding.searchEditText.setOnFocusChangeListener { view, hasFocus ->
+            binding.rvSearchHistory.visibility =
+                if (hasFocus && binding.searchEditText.text.isEmpty() && historyList.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
 
 
 
-        clearButton.setOnClickListener {
-            inputTextSearch.setText("")
-            hideKeyboard(this, inputTextSearch)
+        binding.searchCloseButton.setOnClickListener {
+            binding.searchEditText.setText("")
+            hideKeyboard(this, binding.searchEditText)
             track.clear()
             updateRecyclerView()
             songsAdapter.notifyDataSetChanged()
-            recyclerView.visibility = View.GONE
-            notFound.visibility = View.GONE
-            searchHistoryLayout.visibility = View.VISIBLE
+            binding.recycleView.visibility = View.GONE
+            binding.searchNotFound.visibility = View.GONE
+            binding.rvSearchHistory.visibility = View.VISIBLE
 
         }
-
-
 
 
 
 
         fun searchRequest() {
-            notFound.visibility = View.GONE
-            if (inputTextSearch.text.isNotEmpty()) {
-                progressBar.visibility = View.VISIBLE
+            binding.searchNotFound.visibility = View.GONE
+            if (binding.searchEditText.text.isNotEmpty()) {
+                binding.pbSearchHistory.visibility = View.VISIBLE
                 trackInteractor.searchTrack(
-                    inputTextSearch.text.toString(),
+                    binding.searchEditText.text.toString(),
                     object : TracksInteractor.TracksConsumer {
                         override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                             runOnUiThread {
-                                progressBar.visibility = View.GONE
+                                binding.pbSearchHistory.visibility = View.GONE
                                 if (foundTracks != null) {
                                     track.clear()
                                     track.addAll(foundTracks)
                                     songsAdapter.notifyDataSetChanged()
-                                    recyclerView.visibility = View.VISIBLE
+                                    binding.recycleView.visibility = View.VISIBLE
                                 }
                                 if (errorMessage != null) {
-                                    notInternet.visibility = View.VISIBLE
+                                    binding.errors.visibility = View.VISIBLE
                                 } else if (track.isEmpty()) {
-                                    recyclerView.visibility = View.GONE
-                                    searchHistoryLayout.visibility = View.GONE
-                                    notFound.visibility = View.VISIBLE
+                                    binding.recycleView.visibility = View.GONE
+                                    binding.rvSearchHistory.visibility = View.GONE
+                                    binding.searchNotFound.visibility = View.VISIBLE
                                 }
 
                             }
@@ -159,36 +144,36 @@ class SearchActivity : AppCompatActivity() {
                     })
 
             }
-            if (inputTextSearch.text.isEmpty()) {
+            if (binding.searchEditText.text.isEmpty()) {
                 updateRecyclerView()
-                searchHistoryLayout.visibility = View.VISIBLE
+                binding.rvSearchHistory.visibility = View.VISIBLE
             }
         }
 
 
 
 
-        updateButton.setOnClickListener {
-            if (inputTextSearch.text.isNotEmpty()) {
-                progressBar.visibility = View.VISIBLE
+        binding.searchUpdateBtt.setOnClickListener {
+            if (binding.searchEditText.text.isNotEmpty()) {
+                binding.pbSearchHistory.visibility = View.VISIBLE
 
                 trackInteractor.searchTrack(
-                    inputTextSearch.text.toString(),
+                    binding.searchEditText.text.toString(),
                     object : TracksInteractor.TracksConsumer {
                         override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                             runOnUiThread {
-                                progressBar.visibility = View.GONE
+                                binding.pbSearchHistory.visibility = View.GONE
                                 if (foundTracks != null) {
                                     track.clear()
                                     track.addAll(foundTracks)
                                     songsAdapter.notifyDataSetChanged()
-                                    recyclerView.visibility = View.VISIBLE
+                                    binding.recycleView.visibility = View.VISIBLE
                                 }
                                 if (errorMessage != null) {
-                                    notInternet.visibility = View.VISIBLE
+                                    binding.errors.visibility = View.VISIBLE
                                 } else if (foundTracks != null) {
                                     if (foundTracks.isEmpty()) {
-                                        notFound.visibility = View.VISIBLE
+                                        binding.searchNotFound.visibility = View.VISIBLE
                                     }
                                 }
 
@@ -217,9 +202,9 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 saveSearchText = s.toString()
-                clearButton.visibility = clearButtonVisibility(s)
-                searchHistoryLayout.visibility =
-                    if (inputTextSearch.hasFocus() && s?.isEmpty() == true && historyList.isNotEmpty()) View.VISIBLE else View.GONE
+                binding.searchCloseButton.visibility = clearButtonVisibility(s)
+                binding.searchHistory.visibility =
+                    if (binding.searchEditText.hasFocus() && s?.isEmpty() == true && historyList.isNotEmpty()) View.VISIBLE else View.GONE
                 searchDebounce()
                 if (s.isNullOrEmpty()) {
                     updateRecyclerView()
@@ -230,9 +215,9 @@ class SearchActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
-                    notFound.visibility = View.GONE
-                    recyclerView.visibility = View.GONE
-                    searchHistoryLayout.visibility =
+                    binding.searchNotFound.visibility = View.GONE
+                    binding.recycleView.visibility = View.GONE
+                    binding.searchHistory.visibility =
                         if (historyList.isNotEmpty()) View.VISIBLE else View.GONE
                     updateRecyclerView()
                 }
@@ -240,7 +225,7 @@ class SearchActivity : AppCompatActivity() {
 
         }
 
-        inputTextSearch.addTextChangedListener(textWatcher)
+        binding.searchEditText.addTextChangedListener(textWatcher)
 
 
 
@@ -262,7 +247,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         saveSearchText = savedInstanceState.getString(VALUE_KEY, "")
-        inputTextSearch.setText(saveSearchText)
+        binding.searchEditText.setText(saveSearchText)
 
 
     }
