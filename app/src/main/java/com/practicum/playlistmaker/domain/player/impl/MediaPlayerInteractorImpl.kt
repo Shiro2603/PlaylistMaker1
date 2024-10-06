@@ -2,11 +2,9 @@ package com.practicum.playlistmaker.domain.player.impl
 
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
-import com.practicum.playlistmaker.domain.player.PlayerStateCallback
 
 class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) : MediaPlayerInteractor {
 
-    private var playerStateCallback: PlayerStateCallback? = null
 
     override fun preparePlayer(trackPreview: String?) {
         repository.preparePlayer(trackPreview)
@@ -20,8 +18,16 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) :
         repository.pausePlayer()
     }
 
-    override fun getCurrentPosition() {
-        repository.getCurrentPosition()
+   override fun release () {
+       repository.release()
+   }
+
+    override fun setOnCompletionListener(onCompletion: () -> Unit) {
+        repository.setOnCompletionListener(onCompletion)
+    }
+
+    override fun getCurrentPosition() : Int {
+       return repository.getCurrentPosition()
     }
 
 

@@ -18,4 +18,10 @@ class SearchHistoryInteractorImpl(private val repository : SearchHistoryReposito
     override fun clearSearchHistory() {
         repository.clearHistory()
     }
+
+    override fun addTrackToHistory(track: Track) {
+        repository.addTrackToHistory(track)
+    }
+
+
 }

@@ -4,5 +4,8 @@ interface MediaPlayerInteractor {
     fun preparePlayer(trackPreview: String?)
     fun starPlayer()
     fun pausePlayer()
-    fun getCurrentPosition()
+    fun release()
+    fun setOnCompletionListener (onCompletion: () -> Unit)
+    fun getCurrentPosition() : Int
+
 }

@@ -3,19 +3,14 @@ package com.practicum.playlistmaker.data.player.impl
 
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
-import com.practicum.playlistmaker.domain.player.PlayerStateCallback
 import java.io.IOException
+import android.os.Handler
+
 
 class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
-    private var playerStateCallback: PlayerStateCallback? = null
-
-    fun setPlayerStateCallback(callback: PlayerStateCallback) {
-        playerStateCallback = callback
-    }
-
 
     override fun preparePlayer(trackPreview: String?) {
         if (trackPreview.isNullOrEmpty()) {
@@ -27,13 +22,9 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
                 playerState = STATE_PREPARED
-                playerStateCallback?.onPlayerStateChanged(playerState)
-
             }
             mediaPlayer.setOnCompletionListener {
                 playerState = STATE_PREPARED
-                playerStateCallback?.onPlayerStateChanged(playerState)
-
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -44,7 +35,7 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
         if (playerState == STATE_PREPARED || playerState == STATE_PAUSED) {
             mediaPlayer.start()
             playerState = STATE_PLAYING
-            playerStateCallback?.onPlayerStateChanged(playerState)
+
         }
     }
 
@@ -52,12 +43,24 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
         if (playerState == STATE_PLAYING) {
             mediaPlayer.pause()
             playerState = STATE_PAUSED
-            playerStateCallback?.onPlayerStateChanged(playerState)
+
         }
     }
 
-    override fun getCurrentPosition() {
-        mediaPlayer.currentPosition
+    override fun release() {
+        mediaPlayer.release()
+    }
+
+
+
+    override fun setOnCompletionListener(onCompletion: () -> Unit) {
+        mediaPlayer.setOnCompletionListener {
+            onCompletion()
+        }
+    }
+
+    override fun getCurrentPosition() : Int {
+       return mediaPlayer.currentPosition
     }
 
 
@@ -66,6 +69,7 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
+
 
     }
 

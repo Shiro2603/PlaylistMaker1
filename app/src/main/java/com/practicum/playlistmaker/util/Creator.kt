@@ -3,22 +3,27 @@ package com.practicum.playlistmaker.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import com.practicum.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.settings.impl.ThemeRepositoryImpl
 import com.practicum.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.practicum.playlistmaker.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
 import com.practicum.playlistmaker.data.player.impl.MediaPlayerRepositoryImpl
+import com.practicum.playlistmaker.data.search.SaveTrackRepository
 import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
 import com.practicum.playlistmaker.data.search.SearchHistoryRepository
 import com.practicum.playlistmaker.domain.settings.ThemeInteractor
 import com.practicum.playlistmaker.data.settings.ThemeRepository
 import com.practicum.playlistmaker.data.search.TrackRepository
+import com.practicum.playlistmaker.data.search.impl.SaveTrackRepositoryImpl
 import com.practicum.playlistmaker.data.sharing.ExternalNavigatorRepository
 import com.practicum.playlistmaker.data.sharing.impl.ExternalNavigatorRepositoryImpl
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.player.impl.MediaPlayerInteractorImpl
+import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.TracksInteractor
+import com.practicum.playlistmaker.domain.search.impl.SaveTrackInteractorImpl
 import com.practicum.playlistmaker.domain.search.impl.SearchHistoryInteractorImpl
 import com.practicum.playlistmaker.domain.settings.impl.ThemeInteractorImpl
 import com.practicum.playlistmaker.domain.search.impl.TracksInteractorImpl
@@ -66,6 +71,14 @@ object Creator {
 
     fun provideMediaPlayerInteractor() : MediaPlayerInteractor {
         return MediaPlayerInteractorImpl(getMediaPlayerRepository())
+    }
+
+    private fun getSaveTrackRepository(sharedPreferences: SharedPreferences) : SaveTrackRepository {
+        return SaveTrackRepositoryImpl(sharedPreferences)
+    }
+
+    fun provideSaveTrackInteractor(sharedPreferences: SharedPreferences) : SaveTrackInteractor {
+        return SaveTrackInteractorImpl(getSaveTrackRepository(sharedPreferences))
     }
 
 
