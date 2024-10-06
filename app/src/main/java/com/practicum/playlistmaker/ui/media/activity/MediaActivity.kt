@@ -107,7 +107,7 @@ class MediaActivity : AppCompatActivity() {
         viewModel.playerState.observe(this) { state ->
             updatePlayPauseButton(state == MediaViewModel.STATE_PLAYING)
             if(state == MediaViewModel.STATE_PREPARED) {
-                binding.trackTime.text = "00:00"
+                binding.trackTime.text = getString(R.string.trackTimer)
                 binding.btnPlay.setImageResource(R.drawable.ic_button_play)
 
             }
