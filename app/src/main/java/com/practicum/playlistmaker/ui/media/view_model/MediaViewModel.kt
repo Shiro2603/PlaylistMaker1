@@ -7,15 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
-import com.practicum.playlistmaker.domain.search.model.Track
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 
 class MediaViewModel(
-    private val mediaPlayerInteractor: MediaPlayerInteractor,
-    val track: Track
+    private val mediaPlayerInteractor: MediaPlayerInteractor
 ) : ViewModel() {
 
 
@@ -85,13 +83,12 @@ class MediaViewModel(
         const val STATE_PAUSED = 3
 
         fun getViewModelFactory(
-            mediaPlayerInteractor: MediaPlayerInteractor,
-            track: Track
+            mediaPlayerInteractor: MediaPlayerInteractor
         ) : ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return MediaViewModel(mediaPlayerInteractor, track) as T
+                    return MediaViewModel(mediaPlayerInteractor) as T
                 }
             }
     }

@@ -45,7 +45,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyAdapter: SongsAdapter
     private lateinit var trackAdapter: SongsAdapter
     private lateinit var searchViewModel: SearchViewModel
-    private lateinit var mediaActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var saveTrack: SaveTrackInteractor
 
@@ -61,7 +60,7 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("SAVE_TRACK", Context.MODE_PRIVATE)
         saveTrack = Creator.provideSaveTrackInteractor(sharedPreferences)
 
 

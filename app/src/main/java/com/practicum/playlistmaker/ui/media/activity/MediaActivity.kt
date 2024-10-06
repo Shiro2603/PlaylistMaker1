@@ -59,66 +59,48 @@ class MediaActivity : AppCompatActivity() {
             insets
         }
 
-        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("SAVE_TRACK", Context.MODE_PRIVATE)
         saveTrack = Creator.provideSaveTrackInteractor(sharedPreferences)
 
         handler = Handler(Looper.getMainLooper())
 
 
-        val track = intent.getSerializableExtra(SAVE_TRACK) as? Track
-            ?: return
-
-        val savedTrack = saveTrack.getTrack()
+        val track = intent.getSerializableExtra(SAVE_TRACK) as? Track ?: saveTrack.getTrack()
 
 
 
-        viewModel = ViewModelProvider(this, getViewModelFactory(mediaPlayer, track))[MediaViewModel::class.java]
+
+
+        viewModel = ViewModelProvider(this, getViewModelFactory(mediaPlayer))[MediaViewModel::class.java]
 
 
         binding.btnArrayBackMedia.setOnClickListener {
             finish()
         }
 
+        binding.mediaLayout.visibility = if (track?.trackName == null) View.GONE else View.VISIBLE
 
-        binding.mediaLayout.visibility = if (track.trackName == null) View.GONE else View.VISIBLE
-
-        binding.btnArrayBackMedia.setOnClickListener { finish() }
-
-        binding.trackName.text = track.trackName
-        binding.trackGroup.text = track.artistName
-        binding.durationSong.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(track.trackTimeMillis))
-        val artworkUrl512 = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
-        Glide.with(binding.trackPicture)
-            .load(artworkUrl512)
-            .placeholder(R.drawable.ic_placeholder_media)
-            .transform(RoundedCorners(dpToPx(8f, this)))
-            .into(binding.trackPicture)
-        binding.albumSong.text = track.collectionName
-        binding.yearSong.text = SimpleDateFormat("yyyy", Locale.getDefault()).format(
-            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(track.releaseDate)!!)
-        binding.genreSong.text = track.primaryGenreName
-        binding.countrySong.text = track.country
-
-
-
-        viewModel.preparePlayer(track.previewUrl)
-
-        savedTrack?.let {
-            binding.trackName.text = it.trackName
-            binding.trackGroup.text = it.artistName
-            binding.durationSong.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(it.trackTimeMillis))
-            val artworkUrl512 = it.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
+        if(track != null) {
+            binding.trackName.text = track.trackName
+            binding.trackGroup.text = track.artistName
+            binding.durationSong.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(track.trackTimeMillis))
+            val artworkUrl512 = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
             Glide.with(binding.trackPicture)
                 .load(artworkUrl512)
                 .placeholder(R.drawable.ic_placeholder_media)
                 .transform(RoundedCorners(dpToPx(8f, this)))
                 .into(binding.trackPicture)
-            binding.albumSong.text = it.collectionName
-            binding.yearSong.text = it.releaseDate
-            binding.genreSong.text = it.primaryGenreName
-            binding.countrySong.text = it.country
-
+            binding.albumSong.text = track.collectionName
+            binding.yearSong.text = SimpleDateFormat("yyyy", Locale.getDefault()).format(
+                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(track.releaseDate)!!)
+            binding.genreSong.text = track.primaryGenreName
+            binding.countrySong.text = track.country
         }
+
+        binding.btnArrayBackMedia.setOnClickListener { finish() }
+
+
+        viewModel.preparePlayer(track?.previewUrl)
 
 
 
