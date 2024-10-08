@@ -5,7 +5,7 @@ import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 
 class SaveTrackInteractorImpl(private val repository : SaveTrackRepository) : SaveTrackInteractor {
-    override fun saveTrack(track : Track) {
+    override fun saveTrack(track: Track) {
         repository.saveTrack(track)
     }
 

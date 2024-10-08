@@ -38,6 +38,7 @@ class SongsAdapter(
         holder.itemView.setOnClickListener {
             if (clickDebounce()) {
                 onClickedTrack?.invoke(tracks[position])
+                updateData(tracks)
             }
         }
     }

@@ -18,7 +18,9 @@ import com.practicum.playlistmaker.data.settings.ThemeRepository
 import com.practicum.playlistmaker.data.search.TrackRepository
 import com.practicum.playlistmaker.data.search.impl.SaveTrackRepositoryImpl
 import com.practicum.playlistmaker.data.sharing.ExternalNavigatorRepository
+import com.practicum.playlistmaker.data.sharing.ResourceProvider
 import com.practicum.playlistmaker.data.sharing.impl.ExternalNavigatorRepositoryImpl
+import com.practicum.playlistmaker.data.sharing.impl.ResourceProviderImpl
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.player.impl.MediaPlayerInteractorImpl
 import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
@@ -27,7 +29,9 @@ import com.practicum.playlistmaker.domain.search.impl.SaveTrackInteractorImpl
 import com.practicum.playlistmaker.domain.search.impl.SearchHistoryInteractorImpl
 import com.practicum.playlistmaker.domain.settings.impl.ThemeInteractorImpl
 import com.practicum.playlistmaker.domain.search.impl.TracksInteractorImpl
+import com.practicum.playlistmaker.domain.sharing.ResourceProviderInteractor
 import com.practicum.playlistmaker.domain.sharing.SharingInteractor
+import com.practicum.playlistmaker.domain.sharing.impl.ResourceProviderInteractorImpl
 import com.practicum.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 
 
@@ -61,8 +65,8 @@ object Creator {
         return ExternalNavigatorRepositoryImpl(activity)
     }
 
-    fun provideSharingInteractor(activity: Activity) : SharingInteractor {
-        return SharingInteractorImpl(getSharingRepository(activity), activity)
+    fun provideSharingInteractor(activity: Activity, context: Context) : SharingInteractor {
+        return SharingInteractorImpl(getSharingRepository(activity), getResourceProviderRepository(context))
     }
 
     private fun getMediaPlayerRepository() : MediaPlayerRepository {
@@ -73,16 +77,21 @@ object Creator {
         return MediaPlayerInteractorImpl(getMediaPlayerRepository())
     }
 
-    private fun getSaveTrackRepository(sharedPreferences: SharedPreferences) : SaveTrackRepository {
-        return SaveTrackRepositoryImpl(sharedPreferences)
+    private fun getSaveTrackRepository(context: Context) : SaveTrackRepository {
+        return SaveTrackRepositoryImpl(context)
     }
 
-    fun provideSaveTrackInteractor(sharedPreferences: SharedPreferences) : SaveTrackInteractor {
-        return SaveTrackInteractorImpl(getSaveTrackRepository(sharedPreferences))
+    fun provideSaveTrackInteractor(context: Context) : SaveTrackInteractor {
+        return SaveTrackInteractorImpl(getSaveTrackRepository(context))
     }
 
+    private fun getResourceProviderRepository(context: Context) : ResourceProvider {
+        return ResourceProviderImpl(context)
+    }
 
-
+    fun provideResourceProviderInteractor(context: Context) : ResourceProviderInteractor {
+        return ResourceProviderInteractorImpl(ResourceProviderImpl(context))
+    }
 
 }
 

@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.ui.settings.view_model
 
-import android.app.Activity
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +12,6 @@ import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 class SettingsViewModel(
     private val themeInteractor: ThemeInteractor,
     private val sharingInteractor: SharingInteractor,
-    activity: Activity
 ) : ViewModel() {
 
     private val _isDarkThemeEnabled = MutableLiveData<Boolean>()
@@ -47,7 +46,7 @@ class SettingsViewModel(
             sharingInteractor: SharingInteractor) : ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SettingsViewModel(themeInteractor, sharingInteractor, Activity() ) as T
+                    return SettingsViewModel(themeInteractor, sharingInteractor) as T
                 }
             }
     }

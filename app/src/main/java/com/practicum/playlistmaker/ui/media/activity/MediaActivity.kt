@@ -24,6 +24,7 @@ import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
+import com.practicum.playlistmaker.ui.MediaPlayerState
 import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel
 import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel.Companion.getViewModelFactory
 import com.practicum.playlistmaker.util.Creator
@@ -38,14 +39,13 @@ import java.util.Locale
 
 class MediaActivity : AppCompatActivity() {
 
-
     private lateinit var binding : ActivityMediaBinding
     private var handler: Handler? = null
     private val mediaPlayer : MediaPlayerInteractor
         get() = Creator.provideMediaPlayerInteractor()
+    private val saveTrack: SaveTrackInteractor
+        get() = Creator.provideSaveTrackInteractor(this)
     private lateinit var viewModel : MediaViewModel
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var saveTrack: SaveTrackInteractor
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,9 +58,6 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        sharedPreferences = getSharedPreferences("SAVE_TRACK", Context.MODE_PRIVATE)
-        saveTrack = Creator.provideSaveTrackInteractor(sharedPreferences)
 
         handler = Handler(Looper.getMainLooper())
 
@@ -80,19 +77,26 @@ class MediaActivity : AppCompatActivity() {
 
         binding.mediaLayout.visibility = if (track?.trackName == null) View.GONE else View.VISIBLE
 
-        if(track != null) {
+        if (track != null) {
             binding.trackName.text = track.trackName
             binding.trackGroup.text = track.artistName
             binding.durationSong.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(track.trackTimeMillis))
-            val artworkUrl512 = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
+
+            val artworkUrl512 = track.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg") ?: "" // Проверка на null
             Glide.with(binding.trackPicture)
                 .load(artworkUrl512)
                 .placeholder(R.drawable.ic_placeholder_media)
                 .transform(RoundedCorners(dpToPx(8f, this)))
                 .into(binding.trackPicture)
+
             binding.albumSong.text = track.collectionName
-            binding.yearSong.text = SimpleDateFormat("yyyy", Locale.getDefault()).format(
-                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(track.releaseDate)!!)
+            if (!track.releaseDate.isNullOrEmpty()) {
+                binding.yearSong.text = SimpleDateFormat("yyyy", Locale.getDefault()).format(
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(track.releaseDate)!!)
+            } else {
+                binding.yearSong.text = "Unknown"
+            }
+
             binding.genreSong.text = track.primaryGenreName
             binding.countrySong.text = track.country
         }
@@ -104,17 +108,23 @@ class MediaActivity : AppCompatActivity() {
 
 
 
-        viewModel.playerState.observe(this) { state ->
-            updatePlayPauseButton(state == MediaViewModel.STATE_PLAYING)
-            if(state == MediaViewModel.STATE_PREPARED) {
-                binding.trackTime.text = getString(R.string.trackTimer)
-                binding.btnPlay.setImageResource(R.drawable.ic_button_play)
+        viewModel.mediaPlayerState.observe(this) { state ->
+            when (state) {
+                is MediaPlayerState.Prepared -> {
+                    binding.trackTime.text = state.trackTime
+                    updatePlayPauseButton(isPlaying = false)
+                }
+                is MediaPlayerState.Playing -> {
+                    binding.trackTime.text = state.trackTime
+                    updatePlayPauseButton(isPlaying = true)
+                }
+                is MediaPlayerState.Paused -> {
+                    binding.trackTime.text = state.trackTime
+                    updatePlayPauseButton(isPlaying = false)
+                }
 
+                else -> {}
             }
-        }
-
-        viewModel.trackTime.observe(this) { formattedTime ->
-            binding.trackTime.text = formattedTime
         }
 
 
@@ -151,8 +161,6 @@ class MediaActivity : AppCompatActivity() {
 
     companion object {
         const val SAVE_TRACK = "track"
-        const val SAVE_TRACK_TIME = "track_time"
-        const val SAVE_IS_PLAYING = "is_playing"
     }
 
 }

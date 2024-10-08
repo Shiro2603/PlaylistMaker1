@@ -20,7 +20,7 @@ class SettingActivity : AppCompatActivity() {
         get() = Creator.provideThemeInteractor(applicationContext)
 
     private val sharingInteractor : SharingInteractor
-        get() = Creator.provideSharingInteractor(this)
+        get() = Creator.provideSharingInteractor(this, this)
 
     private lateinit var viewModel : SettingsViewModel
     private lateinit var binding : ActivitySettingsBinding
