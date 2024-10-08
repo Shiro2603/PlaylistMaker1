@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.SearchActivity"
+    tools:context=".ui.search.activity.SearchActivity"
     android:orientation="vertical">
 
     <LinearLayout
@@ -161,7 +161,7 @@
         android:id="@+id/search_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -194,7 +194,7 @@
 
             <Button
                 style="@style/ButtonStyleForSearch"
-                android:id="@+id/bt_search_clear"
+                android:id="@+id/bt_historyList_clear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/clearButton"
