@@ -1,8 +1,8 @@
 package com.practicum.playlistmaker.ui.search.view_model
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.search.TracksInteractor
@@ -62,22 +62,6 @@ class SearchViewModel(
         searchHistoryInteractor.addTrackToHistory(track)
         loadSearchHistory()
     }
-
-
-    companion object {
-        fun getViewModelFactoryForSearch(
-            trackInteractor: TracksInteractor,
-            searchHistoryInteractor: SearchHistoryInteractor,
-            saveTrackInteractor: SaveTrackInteractor
-        ): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(trackInteractor, searchHistoryInteractor, saveTrackInteractor) as T
-                }
-            }
-    }
-
 }
 
 

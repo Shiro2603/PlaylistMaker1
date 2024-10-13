@@ -71,17 +71,6 @@ class MediaViewModel(
 
     companion object{
         const val DELAY = 1000L
-
-
-        fun getViewModelFactory(
-            mediaPlayerInteractor: MediaPlayerInteractor
-        ) : ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return MediaViewModel(mediaPlayerInteractor) as T
-                }
-            }
     }
 
 

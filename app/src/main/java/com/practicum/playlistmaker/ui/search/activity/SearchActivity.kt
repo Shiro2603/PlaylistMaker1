@@ -13,35 +13,27 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
-import com.practicum.playlistmaker.domain.search.TracksInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.SearchScreenState
 import com.practicum.playlistmaker.ui.SongsAdapter
 import com.practicum.playlistmaker.ui.media.activity.MediaActivity
 import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
-import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel.Companion.getViewModelFactoryForSearch
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivitySearchBinding
     private var saveSearchText = ""
     private val track = ArrayList<Track>()
-    private val trackInteractor: TracksInteractor
-        get() = Creator.provideTracksInteractor(this)
-    private val searchHistoryInteractor: SearchHistoryInteractor
-        get() = Creator.provideSearchHistoryInteractor(this)
-    private val saveTrackInteractor : SaveTrackInteractor
-        get() = Creator.provideSaveTrackInteractor(this)
+    private val searchHistoryInteractor: SearchHistoryInteractor by inject()
+    private val searchViewModel by viewModel<SearchViewModel>()
     private lateinit var historyAdapter: SongsAdapter
     private lateinit var trackAdapter: SongsAdapter
-    private lateinit var searchViewModel: SearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +45,6 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        searchViewModel = ViewModelProvider(
-            this,
-            getViewModelFactoryForSearch(trackInteractor, searchHistoryInteractor, saveTrackInteractor))[SearchViewModel::class.java]
 
         val handler = Handler(Looper.getMainLooper())
 
@@ -180,8 +168,6 @@ class SearchActivity : AppCompatActivity() {
         }
         binding.searchEditText.addTextChangedListener(textWatcher)
     }
-
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

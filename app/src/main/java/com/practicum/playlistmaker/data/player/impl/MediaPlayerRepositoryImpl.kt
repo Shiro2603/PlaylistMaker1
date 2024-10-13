@@ -1,16 +1,13 @@
 package com.practicum.playlistmaker.data.player.impl
 
-
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
 import java.io.IOException
-import android.os.Handler
 
+class MediaPlayerRepositoryImpl(private var mediaPlayer : MediaPlayer) : MediaPlayerRepository  {
 
-class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
 
     private var playerState = STATE_DEFAULT
-    private var mediaPlayer = MediaPlayer()
 
     override fun preparePlayer(trackPreview: String?) {
         if (trackPreview.isNullOrEmpty()) {
@@ -18,6 +15,9 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
         }
 
         try {
+            if (playerState != STATE_DEFAULT) {
+                mediaPlayer.reset()
+            }
             mediaPlayer.setDataSource(trackPreview)
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
@@ -27,6 +27,8 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
                 playerState = STATE_PREPARED
             }
         } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
     }
@@ -51,8 +53,6 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
         mediaPlayer.release()
     }
 
-
-
     override fun setOnCompletionListener(onCompletion: () -> Unit) {
         mediaPlayer.setOnCompletionListener {
             onCompletion()
@@ -63,14 +63,11 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository  {
        return mediaPlayer.currentPosition
     }
 
-
     companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-
-
     }
 
     }
