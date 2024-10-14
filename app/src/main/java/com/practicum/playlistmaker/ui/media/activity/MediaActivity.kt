@@ -12,13 +12,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMediaBinding
-import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
-import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.MediaPlayerState
 import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel
 import com.practicum.playlistmaker.util.Until.dpToPx
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -26,17 +23,15 @@ import java.util.Locale
 
 class MediaActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMediaBinding
+    private var _binding: ActivityMediaBinding? = null
+    private val binding: ActivityMediaBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
     private var handler: Handler? = null
-    private val mediaPlayer : MediaPlayerInteractor by inject()
-    private val saveTrack: SaveTrackInteractor by inject()
     private val viewModel by viewModel<MediaViewModel>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMediaBinding.inflate(layoutInflater)
+        _binding = ActivityMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -46,7 +41,7 @@ class MediaActivity : AppCompatActivity() {
 
         handler = Handler(Looper.getMainLooper())
 
-        val track = intent.getSerializableExtra(SAVE_TRACK) as? Track ?: saveTrack.getTrack()
+        val track = intent.getSerializableExtra(SAVE_TRACK) as? Track ?: viewModel.getTrack()
 
         binding.btnArrayBackMedia.setOnClickListener {
             finish()
@@ -115,7 +110,6 @@ class MediaActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
         handler?.removeCallbacksAndMessages(null)
     }
 

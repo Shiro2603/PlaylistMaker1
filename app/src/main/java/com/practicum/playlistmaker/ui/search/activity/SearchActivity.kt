@@ -16,29 +16,28 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.SearchScreenState
 import com.practicum.playlistmaker.ui.SongsAdapter
 import com.practicum.playlistmaker.ui.media.activity.MediaActivity
 import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivitySearchBinding
+    private var _binding : ActivitySearchBinding? = null
+    private val binding : ActivitySearchBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
     private var saveSearchText = ""
     private val track = ArrayList<Track>()
-    private val searchHistoryInteractor: SearchHistoryInteractor by inject()
     private val searchViewModel by viewModel<SearchViewModel>()
     private lateinit var historyAdapter: SongsAdapter
     private lateinit var trackAdapter: SongsAdapter
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySearchBinding.inflate(layoutInflater)
+        _binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -52,7 +51,7 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter = SongsAdapter(track)
         binding.recycleView.adapter = trackAdapter
 
-        val historyList = searchHistoryInteractor.getSearchHistory().toMutableList()
+        val historyList = searchViewModel.getSearchHistory().toMutableList()
         historyAdapter = SongsAdapter(historyList)
         binding.rvSearchHistory.layoutManager = LinearLayoutManager(this)
         binding.rvSearchHistory.adapter = historyAdapter

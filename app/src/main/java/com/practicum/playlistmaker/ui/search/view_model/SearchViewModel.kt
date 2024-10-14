@@ -58,6 +58,10 @@ class SearchViewModel(
         saveTrackInteractor.saveTrack(tracks)
     }
 
+    fun getSearchHistory() : List<Track> {
+        return searchHistoryInteractor.getSearchHistory()
+    }
+
     fun addTrackToHistory(track: Track) {
         searchHistoryInteractor.addTrackToHistory(track)
         loadSearchHistory()

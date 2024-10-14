@@ -14,39 +14,38 @@ import com.practicum.playlistmaker.domain.sharing.ResourceProviderInteractor
 import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 import com.practicum.playlistmaker.domain.sharing.impl.ResourceProviderInteractorImpl
 import com.practicum.playlistmaker.domain.sharing.impl.SharingInteractorImpl
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val interactorModule = module {
 
-    factory<MediaPlayerInteractor> {
-        MediaPlayerInteractorImpl(repository = get())
+    factoryOf(::MediaPlayerInteractorImpl) {
+        bind<MediaPlayerInteractor>()
     }
 
-    factory<SaveTrackInteractor> {
-        SaveTrackInteractorImpl(repository = get())
+    factoryOf(::SaveTrackInteractorImpl) {
+        bind<SaveTrackInteractor>()
     }
 
-    factory<SearchHistoryInteractor> {
-        SearchHistoryInteractorImpl(repository = get())
+    factoryOf(::SearchHistoryInteractorImpl) {
+        bind<SearchHistoryInteractor>()
     }
 
-    factory<TracksInteractor> {
-        TracksInteractorImpl(repository = get())
+    factoryOf(::TracksInteractorImpl) {
+        bind<TracksInteractor>()
     }
 
-    factory<ThemeInteractor> {
-        ThemeInteractorImpl(repository = get())
+    factoryOf(::ThemeInteractorImpl) {
+        bind<ThemeInteractor>()
     }
 
-    factory<ResourceProviderInteractor> {
-        ResourceProviderInteractorImpl(repository = get())
+    factoryOf(::ResourceProviderInteractorImpl) {
+        bind<ResourceProviderInteractor>()
     }
 
-    factory<SharingInteractor> {
-        SharingInteractorImpl(
-            externalNavigator = get(),
-            resourceProvider = get()
-        )
+    factoryOf(::SharingInteractorImpl) {
+        bind<SharingInteractor>()
     }
 
 

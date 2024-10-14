@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
+import com.google.gson.Gson
 import com.practicum.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.settings.impl.ThemeRepositoryImpl
 import com.practicum.playlistmaker.data.search.impl.TrackRepositoryImpl
@@ -38,65 +39,69 @@ import com.practicum.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 
 
 object Creator {
-//    private fun getTracksRepository(context: Context, songApi : SongApi): TrackRepository {
-//        return TrackRepositoryImpl(RetrofitNetworkClient(
-//            context,
-//            songApi
-//        ))
-//    }
-//
-//    fun provideTracksInteractor(context: Context, songApi : SongApi): TracksInteractor {
-//        return TracksInteractorImpl(getTracksRepository(context, songApi))
-//    }
-//
-//    private fun getSearchHistoryRepository(context: Context) : SearchHistoryRepository {
-//        return SearchHistoryRepositoryImpl(context)
-//    }
-//
-//    fun provideSearchHistoryInteractor(context: Context): SearchHistoryInteractor {
-//        return SearchHistoryInteractorImpl(getSearchHistoryRepository(context))
-//
-//    }
-//
-//    private fun getThemeRepository(context: Context): ThemeRepository {
-//        return ThemeRepositoryImpl(context)
-//    }
-//
-//    fun provideThemeInteractor(context: Context): ThemeInteractor {
-//        return ThemeInteractorImpl(getThemeRepository(context))
-//    }
-//
-//    private fun getSharingRepository(activity: Activity) : ExternalNavigatorRepository {
-//        return ExternalNavigatorRepositoryImpl(activity)
-//    }
-//
-//    fun provideSharingInteractor(activity: Activity, context: Context) : SharingInteractor {
-//        return SharingInteractorImpl(getSharingRepository(activity), getResourceProviderRepository(context))
-//    }
-//
-//    private fun getMediaPlayerRepository(mediaPlayer: MediaPlayer) : MediaPlayerRepository {
-//        return MediaPlayerRepositoryImpl(mediaPlayer)
-//    }
-//
-//    fun provideMediaPlayerInteractor(mediaPlayer: MediaPlayer) : MediaPlayerInteractor {
-//        return MediaPlayerInteractorImpl(getMediaPlayerRepository(mediaPlayer))
-//    }
-//
-//    private fun getSaveTrackRepository(context: Context) : SaveTrackRepository {
-//        return SaveTrackRepositoryImpl(context)
-//    }
-//
-//    fun provideSaveTrackInteractor(context: Context) : SaveTrackInteractor {
-//        return SaveTrackInteractorImpl(getSaveTrackRepository(context))
-//    }
-//
-//    private fun getResourceProviderRepository(context: Context) : ResourceProvider {
-//        return ResourceProviderImpl(context)
-//    }
-//
-//    fun provideResourceProviderInteractor(context: Context) : ResourceProviderInteractor {
-//        return ResourceProviderInteractorImpl(ResourceProviderImpl(context))
-//    }
+    private fun getTracksRepository(context: Context, songApi : SongApi): TrackRepository {
+        return TrackRepositoryImpl(RetrofitNetworkClient(
+            context,
+            songApi
+        ))
+    }
+
+    fun provideTracksInteractor(context: Context, songApi : SongApi): TracksInteractor {
+        return TracksInteractorImpl(getTracksRepository(context, songApi))
+    }
+
+    private fun getSearchHistoryRepository(sharedPreferences: SharedPreferences, gson: Gson) : SearchHistoryRepository {
+        return SearchHistoryRepositoryImpl(
+            sharedPreferences,
+            gson = gson
+        )
+    }
+
+    fun provideSearchHistoryInteractor(sharedPreferences: SharedPreferences, gson: Gson): SearchHistoryInteractor {
+        return SearchHistoryInteractorImpl(getSearchHistoryRepository(sharedPreferences,
+            gson ))
+
+    }
+
+    private fun getThemeRepository(context: Context): ThemeRepository {
+        return ThemeRepositoryImpl(context)
+    }
+
+    fun provideThemeInteractor(context: Context): ThemeInteractor {
+        return ThemeInteractorImpl(getThemeRepository(context))
+    }
+
+    private fun getSharingRepository(activity: Activity) : ExternalNavigatorRepository {
+        return ExternalNavigatorRepositoryImpl(activity)
+    }
+
+    fun provideSharingInteractor(activity: Activity, context: Context) : SharingInteractor {
+        return SharingInteractorImpl(getSharingRepository(activity), getResourceProviderRepository(context))
+    }
+
+    private fun getMediaPlayerRepository(mediaPlayer: MediaPlayer) : MediaPlayerRepository {
+        return MediaPlayerRepositoryImpl(mediaPlayer)
+    }
+
+    fun provideMediaPlayerInteractor(mediaPlayer: MediaPlayer) : MediaPlayerInteractor {
+        return MediaPlayerInteractorImpl(getMediaPlayerRepository(mediaPlayer))
+    }
+
+    private fun getSaveTrackRepository(context: Context) : SaveTrackRepository {
+        return SaveTrackRepositoryImpl(context)
+    }
+
+    fun provideSaveTrackInteractor(context: Context) : SaveTrackInteractor {
+        return SaveTrackInteractorImpl(getSaveTrackRepository(context))
+    }
+
+    private fun getResourceProviderRepository(context: Context) : ResourceProvider {
+        return ResourceProviderImpl(context)
+    }
+
+    fun provideResourceProviderInteractor(context: Context) : ResourceProviderInteractor {
+        return ResourceProviderInteractorImpl(ResourceProviderImpl(context))
+    }
 
 }
 

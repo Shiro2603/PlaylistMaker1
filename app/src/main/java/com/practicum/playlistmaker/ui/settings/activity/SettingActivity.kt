@@ -13,12 +13,13 @@ import org.koin.core.parameter.parametersOf
 
 class SettingActivity : AppCompatActivity() {
     private val viewModel by viewModel<SettingsViewModel>() { parametersOf(this) }
-    private lateinit var binding : ActivitySettingsBinding
+    private var _binding : ActivitySettingsBinding? = null
+    private val binding : ActivitySettingsBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        _binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

@@ -14,12 +14,14 @@ import com.practicum.playlistmaker.ui.settings.activity.SettingActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
+    private var _binding : ActivityMainBinding? = null
+    private val binding : ActivityMainBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

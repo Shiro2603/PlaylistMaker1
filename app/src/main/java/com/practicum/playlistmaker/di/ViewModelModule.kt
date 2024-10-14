@@ -9,7 +9,9 @@ import org.koin.dsl.module
 val viewModelModule = module {
 
     viewModel {
-        MediaViewModel(mediaPlayerInteractor = get())
+        MediaViewModel(
+            mediaPlayerInteractor = get(),
+            saveTrackInteractor = get())
     }
 
     viewModel {

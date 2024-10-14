@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.di
 
-import android.app.Activity
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
 import com.practicum.playlistmaker.data.player.impl.MediaPlayerRepositoryImpl
 import com.practicum.playlistmaker.data.search.SaveTrackRepository
@@ -15,41 +14,38 @@ import com.practicum.playlistmaker.data.sharing.ExternalNavigatorRepository
 import com.practicum.playlistmaker.data.sharing.ResourceProvider
 import com.practicum.playlistmaker.data.sharing.impl.ExternalNavigatorRepositoryImpl
 import com.practicum.playlistmaker.data.sharing.impl.ResourceProviderImpl
-import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val repositoryModule = module {
 
-    factory<SaveTrackRepository> {
-        SaveTrackRepositoryImpl( context = androidContext())
+    factoryOf(::SaveTrackRepositoryImpl) {
+        bind<SaveTrackRepository>()
     }
 
-    factory<MediaPlayerRepository> {
-        MediaPlayerRepositoryImpl(mediaPlayer = get())
+    factoryOf(::MediaPlayerRepositoryImpl) {
+        bind<MediaPlayerRepository>()
     }
 
-    factory<ThemeRepository> {
-        ThemeRepositoryImpl(context = androidContext())
+    factoryOf(::ThemeRepositoryImpl) {
+        bind<ThemeRepository>()
     }
 
-    factory<ExternalNavigatorRepository> {
-        ExternalNavigatorRepositoryImpl(activity = get())
+    factoryOf(::ExternalNavigatorRepositoryImpl) {
+        bind<ExternalNavigatorRepository>()
     }
 
-    factory { (activity: Activity) -> ExternalNavigatorRepositoryImpl(activity) }
-
-    factory<SearchHistoryRepository> {
-        SearchHistoryRepositoryImpl(
-            sharedPreferences = get(),
-            gson = get())
+    factoryOf(::SearchHistoryRepositoryImpl) {
+        bind<SearchHistoryRepository>()
     }
 
-    factory<ResourceProvider> {
-        ResourceProviderImpl(context = androidContext())
+    factoryOf(::ResourceProviderImpl) {
+        bind<ResourceProvider>()
     }
 
-    factory<TrackRepository> {
-        TrackRepositoryImpl(networkClient = get())
+    factoryOf(::TrackRepositoryImpl) {
+        bind<TrackRepository>()
     }
 
 }
