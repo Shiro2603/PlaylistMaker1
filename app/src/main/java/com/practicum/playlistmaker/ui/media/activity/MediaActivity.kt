@@ -1,57 +1,37 @@
 package com.practicum.playlistmaker.ui.media.activity
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.ImageView
-import android.widget.ScrollView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMediaBinding
-import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
-import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.MediaPlayerState
 import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel
-import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel.Companion.getViewModelFactory
-import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.util.Until.dpToPx
-import java.io.IOException
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
-
-
 class MediaActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMediaBinding
+    private var _binding: ActivityMediaBinding? = null
+    private val binding: ActivityMediaBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
     private var handler: Handler? = null
-    private val mediaPlayer : MediaPlayerInteractor
-        get() = Creator.provideMediaPlayerInteractor()
-    private val saveTrack: SaveTrackInteractor
-        get() = Creator.provideSaveTrackInteractor(this)
-    private lateinit var viewModel : MediaViewModel
-
+    private val viewModel by viewModel<MediaViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMediaBinding.inflate(layoutInflater)
+        _binding = ActivityMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -61,15 +41,7 @@ class MediaActivity : AppCompatActivity() {
 
         handler = Handler(Looper.getMainLooper())
 
-
-        val track = intent.getSerializableExtra(SAVE_TRACK) as? Track ?: saveTrack.getTrack()
-
-
-
-
-
-        viewModel = ViewModelProvider(this, getViewModelFactory(mediaPlayer))[MediaViewModel::class.java]
-
+        val track = intent.getSerializableExtra(SAVE_TRACK) as? Track ?: viewModel.getTrack()
 
         binding.btnArrayBackMedia.setOnClickListener {
             finish()
@@ -103,10 +75,7 @@ class MediaActivity : AppCompatActivity() {
 
         binding.btnArrayBackMedia.setOnClickListener { finish() }
 
-
         viewModel.preparePlayer(track?.previewUrl)
-
-
 
         viewModel.mediaPlayerState.observe(this) { state ->
             when (state) {
@@ -127,16 +96,11 @@ class MediaActivity : AppCompatActivity() {
             }
         }
 
-
         binding.btnPlay.setOnClickListener {
             viewModel.playbackControl()
 
         }
-
-
-
     }
-
 
     override fun onPause() {
         super.onPause()
@@ -146,7 +110,6 @@ class MediaActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
         handler?.removeCallbacksAndMessages(null)
     }
 

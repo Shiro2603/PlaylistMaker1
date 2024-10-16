@@ -5,8 +5,9 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
+import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
+import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.MediaPlayerState
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -14,15 +15,14 @@ import java.util.Locale
 
 
 class MediaViewModel(
-    private val mediaPlayerInteractor: MediaPlayerInteractor
+    private val mediaPlayerInteractor: MediaPlayerInteractor,
+    private val saveTrackInteractor: SaveTrackInteractor
 ) : ViewModel() {
 
     private val _mediaPlayerState = MutableLiveData<MediaPlayerState>()
     val mediaPlayerState: LiveData<MediaPlayerState> = _mediaPlayerState
 
     private var handler: Handler? = Handler(Looper.getMainLooper())
-
-
 
     fun preparePlayer(trackPreview: String?) {
         mediaPlayerInteractor.preparePlayer(trackPreview)
@@ -68,20 +68,12 @@ class MediaViewModel(
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(mediaPlayerInteractor.getCurrentPosition().toLong()))
     }
 
+    fun getTrack() : Track? {
+        return saveTrackInteractor.getTrack()
+    }
 
     companion object{
         const val DELAY = 1000L
-
-
-        fun getViewModelFactory(
-            mediaPlayerInteractor: MediaPlayerInteractor
-        ) : ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return MediaViewModel(mediaPlayerInteractor) as T
-                }
-            }
     }
 
 

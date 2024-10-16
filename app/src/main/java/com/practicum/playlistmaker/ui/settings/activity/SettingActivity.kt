@@ -5,31 +5,21 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.util.Creator
-import com.practicum.playlistmaker.domain.settings.ThemeInteractor
-import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 import com.practicum.playlistmaker.ui.settings.view_model.SettingsViewModel
-import com.practicum.playlistmaker.ui.settings.view_model.SettingsViewModel.Companion.getViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class SettingActivity : AppCompatActivity() {
-
-    private val themeInteractor : ThemeInteractor
-        get() = Creator.provideThemeInteractor(applicationContext)
-
-    private val sharingInteractor : SharingInteractor
-        get() = Creator.provideSharingInteractor(this, this)
-
-    private lateinit var viewModel : SettingsViewModel
-    private lateinit var binding : ActivitySettingsBinding
-
+    private val viewModel by viewModel<SettingsViewModel>() { parametersOf(this) }
+    private var _binding : ActivitySettingsBinding? = null
+    private val binding : ActivitySettingsBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        _binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -37,13 +27,9 @@ class SettingActivity : AppCompatActivity() {
             insets
         }
 
-        viewModel = ViewModelProvider(this, getViewModelFactory(themeInteractor, sharingInteractor))[SettingsViewModel::class.java]
-
-
         binding.buttonArrowBack.setOnClickListener{
             finish()
         }
-
 
         binding.buttonShare.setOnClickListener{
             viewModel.shareApp()
@@ -65,9 +51,5 @@ class SettingActivity : AppCompatActivity() {
         binding.switchTheme.setOnCheckedChangeListener { _, isChecked ->
             viewModel.toggleTheme(isChecked)
         }
-
-
-
-
     }
 }

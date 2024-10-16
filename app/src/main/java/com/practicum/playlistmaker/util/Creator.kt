@@ -4,10 +4,13 @@ package com.practicum.playlistmaker.util
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
+import com.google.gson.Gson
 import com.practicum.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.settings.impl.ThemeRepositoryImpl
 import com.practicum.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.practicum.playlistmaker.data.network.RetrofitNetworkClient
+import com.practicum.playlistmaker.data.network.SongApi
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
 import com.practicum.playlistmaker.data.player.impl.MediaPlayerRepositoryImpl
 import com.practicum.playlistmaker.data.search.SaveTrackRepository
@@ -36,20 +39,27 @@ import com.practicum.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 
 
 object Creator {
-    private fun getTracksRepository(context: Context): TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient(context))
+    private fun getTracksRepository(context: Context, songApi : SongApi): TrackRepository {
+        return TrackRepositoryImpl(RetrofitNetworkClient(
+            context,
+            songApi
+        ))
     }
 
-    fun provideTracksInteractor(context: Context): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository(context))
+    fun provideTracksInteractor(context: Context, songApi : SongApi): TracksInteractor {
+        return TracksInteractorImpl(getTracksRepository(context, songApi))
     }
 
-    private fun getSearchHistoryRepository(context: Context) : SearchHistoryRepository {
-        return SearchHistoryRepositoryImpl(context)
+    private fun getSearchHistoryRepository(sharedPreferences: SharedPreferences, gson: Gson) : SearchHistoryRepository {
+        return SearchHistoryRepositoryImpl(
+            sharedPreferences,
+            gson = gson
+        )
     }
 
-    fun provideSearchHistoryInteractor(context: Context): SearchHistoryInteractor {
-        return SearchHistoryInteractorImpl(getSearchHistoryRepository(context))
+    fun provideSearchHistoryInteractor(sharedPreferences: SharedPreferences, gson: Gson): SearchHistoryInteractor {
+        return SearchHistoryInteractorImpl(getSearchHistoryRepository(sharedPreferences,
+            gson ))
 
     }
 
@@ -69,12 +79,12 @@ object Creator {
         return SharingInteractorImpl(getSharingRepository(activity), getResourceProviderRepository(context))
     }
 
-    private fun getMediaPlayerRepository() : MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl()
+    private fun getMediaPlayerRepository(mediaPlayer: MediaPlayer) : MediaPlayerRepository {
+        return MediaPlayerRepositoryImpl(mediaPlayer)
     }
 
-    fun provideMediaPlayerInteractor() : MediaPlayerInteractor {
-        return MediaPlayerInteractorImpl(getMediaPlayerRepository())
+    fun provideMediaPlayerInteractor(mediaPlayer: MediaPlayer) : MediaPlayerInteractor {
+        return MediaPlayerInteractorImpl(getMediaPlayerRepository(mediaPlayer))
     }
 
     private fun getSaveTrackRepository(context: Context) : SaveTrackRepository {

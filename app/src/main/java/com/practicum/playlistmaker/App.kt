@@ -3,6 +3,12 @@ package com.practicum.playlistmaker
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
+import com.practicum.playlistmaker.di.dataModule
+import com.practicum.playlistmaker.di.interactorModule
+import com.practicum.playlistmaker.di.repositoryModule
+import com.practicum.playlistmaker.di.viewModelModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 const val THEME_PREFERENCES = "theme"
 const val THEME_KEY = "theme_key"
@@ -13,6 +19,10 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        startKoin{
+            androidContext(this@App)
+            modules(dataModule, interactorModule, repositoryModule, viewModelModule)
+        }
 
         val sharedPrefs = getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE)
         darkTheme = sharedPrefs.getBoolean(THEME_KEY, false)

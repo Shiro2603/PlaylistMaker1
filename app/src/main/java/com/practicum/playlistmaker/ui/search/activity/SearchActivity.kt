@@ -13,40 +13,31 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
-import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
-import com.practicum.playlistmaker.domain.search.TracksInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.SearchScreenState
 import com.practicum.playlistmaker.ui.SongsAdapter
 import com.practicum.playlistmaker.ui.media.activity.MediaActivity
 import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
-import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel.Companion.getViewModelFactoryForSearch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivitySearchBinding
+    private var _binding : ActivitySearchBinding? = null
+    private val binding : ActivitySearchBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
     private var saveSearchText = ""
     private val track = ArrayList<Track>()
-    private val trackInteractor: TracksInteractor
-        get() = Creator.provideTracksInteractor(this)
-    private val searchHistoryInteractor: SearchHistoryInteractor
-        get() = Creator.provideSearchHistoryInteractor(this)
-    private val saveTrackInteractor : SaveTrackInteractor
-        get() = Creator.provideSaveTrackInteractor(this)
+    private val searchViewModel by viewModel<SearchViewModel>()
     private lateinit var historyAdapter: SongsAdapter
     private lateinit var trackAdapter: SongsAdapter
-    private lateinit var searchViewModel: SearchViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySearchBinding.inflate(layoutInflater)
+        _binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -54,17 +45,13 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        searchViewModel = ViewModelProvider(
-            this,
-            getViewModelFactoryForSearch(trackInteractor, searchHistoryInteractor, saveTrackInteractor))[SearchViewModel::class.java]
-
         val handler = Handler(Looper.getMainLooper())
 
         binding.recycleView.layoutManager = LinearLayoutManager(this)
         trackAdapter = SongsAdapter(track)
         binding.recycleView.adapter = trackAdapter
 
-        val historyList = searchHistoryInteractor.getSearchHistory().toMutableList()
+        val historyList = searchViewModel.getSearchHistory().toMutableList()
         historyAdapter = SongsAdapter(historyList)
         binding.rvSearchHistory.layoutManager = LinearLayoutManager(this)
         binding.rvSearchHistory.adapter = historyAdapter
@@ -180,8 +167,6 @@ class SearchActivity : AppCompatActivity() {
         }
         binding.searchEditText.addTextChangedListener(textWatcher)
     }
-
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

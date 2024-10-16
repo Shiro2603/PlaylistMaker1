@@ -7,7 +7,10 @@ import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.data.search.SearchHistoryRepository
 import com.practicum.playlistmaker.domain.search.model.Track
 
-class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
+class SearchHistoryRepositoryImpl(
+    private val sharedPreferences: SharedPreferences,
+    private val gson : Gson
+) : SearchHistoryRepository {
 
     companion object {
         private const val PREFS_NAME = "search_history_prefs"
@@ -16,8 +19,6 @@ class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
 
     private val maxHistorySize = 10
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    private val gson = Gson()
 
 
     override fun addTrackToHistory(track: Track) {
