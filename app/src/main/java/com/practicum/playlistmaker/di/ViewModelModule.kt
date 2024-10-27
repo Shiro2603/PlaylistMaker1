@@ -1,6 +1,8 @@
 package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel
+import com.practicum.playlistmaker.ui.mediateka.view_model.FavoriteTracksViewModel
+import com.practicum.playlistmaker.ui.mediateka.view_model.PlayListViewModel
 import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
 import com.practicum.playlistmaker.ui.settings.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -25,6 +27,14 @@ val viewModelModule = module {
         SettingsViewModel(
             themeInteractor = get(),
             sharingInteractor = get())
+    }
+
+    viewModel {
+        FavoriteTracksViewModel()
+    }
+
+    viewModel {
+        PlayListViewModel()
     }
 
 }

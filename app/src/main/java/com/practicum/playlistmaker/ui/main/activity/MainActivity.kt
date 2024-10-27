@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMainBinding
 import com.practicum.playlistmaker.ui.media.activity.MediaActivity
+import com.practicum.playlistmaker.ui.mediateka.activity.MediatekaActivity
 import com.practicum.playlistmaker.ui.search.activity.SearchActivity
 import com.practicum.playlistmaker.ui.settings.activity.SettingActivity
 
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
        }
 
         binding.buttonMedia.setOnClickListener{
-            val displayIntent = Intent(this, MediaActivity::class.java)
+            val displayIntent = Intent(this, MediatekaActivity::class.java)
             startActivity(displayIntent)
         }
 
