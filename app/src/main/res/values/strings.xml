@@ -31,4 +31,6 @@
     <string name="emptyFavoriteTracks">Ваша медиатека пуста</string>
     <string name="newPlayList">Новый плейлист</string>
     <string name="emptyPlayList">Вы не создали\nни одного плейлиста</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

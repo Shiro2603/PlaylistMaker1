@@ -6,22 +6,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.mediateka.activity.MediatekaActivity"
+    tools:context=".ui.mediateka.fragment.MediatekaFragment"
     android:orientation="vertical"
     android:background="?attr/background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/btn_arrow_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
-            android:src="@drawable/ic_arrow_back"
-            app:tint="?attr/colorOnPrimary"/>
 
         <TextView
             android:id="@+id/mediateka"
@@ -31,7 +22,7 @@
             android:text="@string/mediateka"
             android:gravity="center"
             android:layout_marginTop="@dimen/margin_14dp"
-            android:layout_marginStart="@dimen/margin_12dp"/>
+            android:layout_marginStart="@dimen/margin_16dp"/>
 
     </LinearLayout>
 

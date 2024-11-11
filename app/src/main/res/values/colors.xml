@@ -8,4 +8,5 @@
     <color name="light_grey">#AEAFB4</color>
     <color name="icon_color">@color/light_grey</color>
     <color name="icon_color_secondary">@color/light_grey</color>
+    <color name="unselected_icon_color">#FF000000</color>
 </resources>
