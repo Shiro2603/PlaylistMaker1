@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.ui
+package com.practicum.playlistmaker.ui.media
 
 sealed class MediaPlayerState {
     data class Prepared(val trackTime: String = "00:00") : MediaPlayerState()

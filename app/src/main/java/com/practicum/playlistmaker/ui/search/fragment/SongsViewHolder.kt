@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.ui
+package com.practicum.playlistmaker.ui.search.fragment
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide

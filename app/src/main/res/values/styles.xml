@@ -78,11 +78,12 @@
         <item name="tabIndicatorFullWidth">true</item>
         <item name="android:background">@color/white</item>
     </style>
-    <style name="BottomNavigatorStyle" parent="Widget.Material3.BottomNavigationView" >
+    <style name="BottomNavigatorStyle" parent="Widget.MaterialComponents.BottomNavigationView.Colored" >
         <item name="itemIconTint">@color/selector</item>
         <item name="itemTextColor">@color/selector</item>
         <item name="backgroundTint">@color/white</item>
         <item name="android:textSize">12sp</item>
+        <item name="itemIconSize">24dp</item>
         <item name="fontFamily">@font/ys_display_regular</item>
     </style>
 </resources>

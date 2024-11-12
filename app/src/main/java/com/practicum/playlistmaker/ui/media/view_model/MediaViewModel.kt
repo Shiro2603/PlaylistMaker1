@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
-import com.practicum.playlistmaker.ui.MediaPlayerState
+import com.practicum.playlistmaker.ui.media.MediaPlayerState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

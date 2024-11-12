@@ -15,8 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.domain.search.model.Track
-import com.practicum.playlistmaker.ui.SearchScreenState
-import com.practicum.playlistmaker.ui.SongsAdapter
+import com.practicum.playlistmaker.ui.search.SearchScreenState
 import com.practicum.playlistmaker.ui.media.activity.MediaActivity
 import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

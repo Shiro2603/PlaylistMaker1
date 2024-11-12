@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediatekaBinding
-import com.practicum.playlistmaker.ui.PagerAdapter
+import com.practicum.playlistmaker.ui.mediateka.PagerAdapter
 
 
 class MediatekaFragment : Fragment() {

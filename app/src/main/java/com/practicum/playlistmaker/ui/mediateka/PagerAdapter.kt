@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.ui
+package com.practicum.playlistmaker.ui.mediateka
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
