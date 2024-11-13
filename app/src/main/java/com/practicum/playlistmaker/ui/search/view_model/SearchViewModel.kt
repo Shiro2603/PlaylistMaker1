@@ -7,7 +7,7 @@ import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.search.TracksInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
-import com.practicum.playlistmaker.ui.SearchScreenState
+import com.practicum.playlistmaker.ui.search.SearchScreenState
 
 class SearchViewModel(
     private val trackInteractor: TracksInteractor,
