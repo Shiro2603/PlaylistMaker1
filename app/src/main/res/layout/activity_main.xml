@@ -10,8 +10,8 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,23 +26,16 @@
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="6dp"
         android:background="@color/grey"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         style="@style/BottomNavigatorStyle"
-        app:itemActiveIndicatorStyle="@style/BottomNavigatorStyle"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:itemTextAppearanceActive="@style/BottomNavigatorStyle"
-        app:itemTextAppearanceInactive="@style/BottomNavigatorStyle"
-        app:menu="@menu/bottom_navigation_menu"
-        app:itemPaddingBottom="0dp"
-        app:itemPaddingTop="0dp"
-        android:paddingBottom="0dp"/>
+        app:menu="@menu/bottom_navigation_menu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
