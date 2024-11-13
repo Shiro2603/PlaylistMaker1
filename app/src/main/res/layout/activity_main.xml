@@ -31,11 +31,16 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         style="@style/BottomNavigatorStyle"
+        app:itemActiveIndicatorStyle="@style/BottomNavigatorStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation_menu"/>
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemTextAppearanceActive="@style/BottomNavigatorStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavigatorStyle"
+        app:itemPaddingTop="15dp"
+        app:itemPaddingBottom="25dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

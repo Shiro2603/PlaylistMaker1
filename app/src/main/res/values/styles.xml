@@ -82,7 +82,9 @@
         <item name="itemIconTint">@color/selector</item>
         <item name="itemTextColor">@color/selector</item>
         <item name="backgroundTint">@color/white</item>
-        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+
+
     </style>
 
 </resources>
