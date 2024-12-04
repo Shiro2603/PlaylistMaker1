@@ -74,24 +74,15 @@ class MediaActivity : AppCompatActivity() {
 
         viewModel.preparePlayer(track?.previewUrl)
 
-        viewModel.mediaPlayerState.observe(this) { state ->
-            when (state) {
-                is MediaPlayerState.Prepared -> {
-                    binding.trackTime.text = state.progress
-                    updatePlayPauseButton(isPlaying = false)
-                }
-                is MediaPlayerState.Playing -> {
-                    binding.trackTime.text = state.progress
-                    updatePlayPauseButton(isPlaying = true)
-                }
-                is MediaPlayerState.Paused -> {
-                    binding.trackTime.text = state.progress
-                    updatePlayPauseButton(isPlaying = false)
-                }
-
-                else -> {}
+        viewModel.mediaPlayerState.observe(this) {
+            binding.trackTime.text = it.progress
+            if(it.isPlaying) {
+                binding.buttonPlay.setImageResource(R.drawable.ic_button_stop)
+            } else {
+                binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
             }
         }
+
 
         binding.buttonPlay.setOnClickListener {
             viewModel.playbackControl()
@@ -106,14 +97,6 @@ class MediaActivity : AppCompatActivity() {
         viewModel.pausePlayer()
     }
 
-    private fun updatePlayPauseButton(isPlaying: Boolean) {
-        if (isPlaying) {
-            binding.buttonPlay.setImageResource(R.drawable.ic_button_stop)
-        } else {
-            binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
-        }
-
-    }
 
     companion object {
         const val SAVE_TRACK = "track"

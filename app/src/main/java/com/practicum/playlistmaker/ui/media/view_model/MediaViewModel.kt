@@ -23,7 +23,7 @@ class MediaViewModel(
 
     private var timeJob: Job? = null
 
-    private val _mediaPlayerState = MutableLiveData<MediaPlayerState>(MediaPlayerState.Default())
+    private val _mediaPlayerState = MutableLiveData<MediaPlayerState>()
     val mediaPlayerState: LiveData<MediaPlayerState> = _mediaPlayerState
 
     fun preparePlayer(trackPreview: String?) {
@@ -64,7 +64,6 @@ class MediaViewModel(
             }
         }
     }
-
 
     private fun getFormattedTrackTime(): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(mediaPlayerInteractor.getCurrentPosition().toLong()))
