@@ -12,12 +12,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.search.SearchScreenState
 import com.practicum.playlistmaker.ui.media.activity.MediaActivity
 import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
+import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -29,6 +31,7 @@ class SearchFragment : Fragment() {
     private val searchViewModel by viewModel<SearchViewModel>()
     private lateinit var historyAdapter: SongsAdapter
     private lateinit var trackAdapter: SongsAdapter
+    private var isClickAllowed = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,8 +43,6 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val handler = Handler(Looper.getMainLooper())
 
         binding.recycleView.layoutManager = LinearLayoutManager(requireContext())
         trackAdapter = SongsAdapter(track)
@@ -125,12 +126,8 @@ class SearchFragment : Fragment() {
             }
         }
 
-        val searchRunnable = Runnable { searchViewModel.search(saveSearchText) }
-
-        fun searchDebounce() {
-            handler.removeCallbacks(searchRunnable)
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-
+        val trackSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, true) { _ ->
+            searchViewModel.search(saveSearchText)
         }
 
         val textWatcher = object : TextWatcher {
@@ -140,7 +137,7 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 saveSearchText = s.toString()
-                searchDebounce()
+                trackSearchDebounce(saveSearchText)
                 historyAdapter.notifyDataSetChanged()
                 searchViewModel.loadSearchHistory()
                 if (s?.isEmpty() == true) {
@@ -159,8 +156,19 @@ class SearchFragment : Fragment() {
 
         }
         binding.searchEditText.addTextChangedListener(textWatcher)
+        clickDebounce()
 
+    }
 
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            debounce<Boolean>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
+                isClickAllowed = true
+            }
+        }
+        return current
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -168,12 +176,10 @@ class SearchFragment : Fragment() {
         outState.putString(VALUE_KEY, saveSearchText)
     }
 
-
     private fun hideKeyboard(context: Context, view: View) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
-
 
     private fun handlerTrackClick (track: Track) {
         searchViewModel.addTrackToHistory(track)
@@ -193,5 +199,6 @@ class SearchFragment : Fragment() {
         const val SAVE_TRACK = "track"
         const val VALUE_KEY = "SearchText"
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }

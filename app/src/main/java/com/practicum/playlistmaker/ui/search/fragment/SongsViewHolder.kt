@@ -13,7 +13,6 @@ import java.util.Locale
 
 class SongsViewHolder(private val binding: SongsViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
-
     fun bind(song: Track) {
         Glide.with(itemView.context)
             .load(song.artworkUrl100)

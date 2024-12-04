@@ -3,11 +3,13 @@ package com.practicum.playlistmaker.ui.search.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.search.TracksInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.search.SearchScreenState
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val trackInteractor: TracksInteractor,
@@ -24,24 +26,40 @@ class SearchViewModel(
 
     fun search(query: String) {
         if (query.isNotEmpty()) {
-            _screenStateLiveData.value = SearchScreenState.Loading
 
-            trackInteractor.searchTrack(query, object : TracksInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    _screenStateLiveData.postValue(SearchScreenState.Loading)
+            _screenStateLiveData.postValue(SearchScreenState.Loading)
 
-                    if (errorMessage != null) {
-                        _screenStateLiveData.postValue(SearchScreenState.Error(errorMessage))
-                    } else if (foundTracks != null) {
-                        if (foundTracks.isEmpty()) {
-                            _screenStateLiveData.postValue(SearchScreenState.NotFound)
-                        } else {
-                            _screenStateLiveData.postValue(SearchScreenState.Content(foundTracks))
-                        }
+            viewModelScope.launch {
+                trackInteractor
+                    .searchTrack(query)
+                    .collect{ pair ->
+                        processResult(pair.first, pair.second)
                     }
-                }
-            })
+            }
+
         }
+    }
+
+    private fun processResult(track: List<Track>?, errorMessage: String?) {
+        val tracks = mutableListOf<Track>()
+        if (track != null) {
+            tracks.addAll(track)
+        }
+
+        when{
+            errorMessage != null -> {
+                _screenStateLiveData.postValue(SearchScreenState.Error(errorMessage))
+            }
+
+            tracks.isEmpty() -> {
+                _screenStateLiveData.postValue(SearchScreenState.NotFound)
+            }
+
+            else -> {
+                _screenStateLiveData.postValue(SearchScreenState.Content(tracks))
+            }
+        }
+
     }
 
     fun loadSearchHistory() {
