@@ -74,6 +74,10 @@ class MediaActivity : AppCompatActivity() {
 
         viewModel.preparePlayer(track?.previewUrl)
 
+        binding.buttonPlay.setOnClickListener {
+            viewModel.playbackControl()
+        }
+
         viewModel.mediaPlayerState.observe(this) {
             binding.trackTime.text = it.progress
             if(it.isPlaying) {
@@ -83,20 +87,12 @@ class MediaActivity : AppCompatActivity() {
             }
         }
 
-
-        binding.buttonPlay.setOnClickListener {
-            viewModel.playbackControl()
-
-        }
-
-
     }
 
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
     }
-
 
     companion object {
         const val SAVE_TRACK = "track"

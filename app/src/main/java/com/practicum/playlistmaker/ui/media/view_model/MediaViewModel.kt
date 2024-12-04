@@ -26,11 +26,14 @@ class MediaViewModel(
     private val _mediaPlayerState = MutableLiveData<MediaPlayerState>()
     val mediaPlayerState: LiveData<MediaPlayerState> = _mediaPlayerState
 
+    override fun onCleared() {
+        super.onCleared()
+        mediaPlayerInteractor.release()
+        _mediaPlayerState.value = MediaPlayerState.Default()
+    }
+
     fun preparePlayer(trackPreview: String?) {
         mediaPlayerInteractor.preparePlayer(trackPreview)
-        mediaPlayerInteractor.setOnCompletionListener {
-            _mediaPlayerState.value = MediaPlayerState.Prepared()
-        }
         _mediaPlayerState.value = MediaPlayerState.Prepared()
     }
 
