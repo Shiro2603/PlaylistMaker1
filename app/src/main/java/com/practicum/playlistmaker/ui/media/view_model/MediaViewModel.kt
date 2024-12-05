@@ -23,7 +23,7 @@ class MediaViewModel(
 
     private var timeJob: Job? = null
 
-    private val _mediaPlayerState = MutableLiveData<MediaPlayerState>()
+    private val _mediaPlayerState = MutableLiveData<MediaPlayerState>(MediaPlayerState.Default())
     val mediaPlayerState: LiveData<MediaPlayerState> = _mediaPlayerState
 
     override fun onCleared() {
@@ -35,6 +35,10 @@ class MediaViewModel(
     fun preparePlayer(trackPreview: String?) {
         mediaPlayerInteractor.preparePlayer(trackPreview)
         _mediaPlayerState.value = MediaPlayerState.Prepared()
+        mediaPlayerInteractor.setOnCompletionListener{
+            _mediaPlayerState.value = MediaPlayerState.Prepared()
+            timeJob?.cancel()
+        }
     }
 
     private fun startPlayer() {
