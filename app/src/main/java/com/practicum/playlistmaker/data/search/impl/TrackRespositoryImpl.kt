@@ -1,40 +1,46 @@
 package com.practicum.playlistmaker.data.search.impl
 
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.data.network.NetworkClient
 import com.practicum.playlistmaker.data.search.TrackRepository
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
 
-    override fun searchTrack(expression: String): Resource<List<Track>> {
+    override fun searchTrack(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
 
-        return when (response.resultCode) {
+         when (response.resultCode) {
             -1 -> {
-                Resource.Error("Проверьте подключение к интернету")
+                emit(Resource.Error(R.string.checkingTheConnection.toString()))
             }
             200 -> {
-                Resource.Success((response as TrackSearchResponse).results.map {
-                    Track(
-                        it.trackId ?: 0,
-                        it.trackName ?: "Unknown Track",
-                        it.artistName ?: "Unknown Artist",
-                        it.trackTime ?: 1000000L,
-                        it.artworkUrl100 ?: "",
-                        it.collectionName ?: "",
-                        it.releaseDate,
-                        it.primaryGenreName ?: "Unknown Genre",
-                        it.country ?: "Unknown Country",
-                        it.previewUrl ?: ""
-                    )
-                })
+                with(response as TrackSearchResponse) {
+                    val data = results.mapNotNull {
+                        Track(
+                            it.trackId ,
+                            it.trackName ,
+                            it.artistName ,
+                            it.trackTime ?: 0L ,
+                            it.artworkUrl100 ,
+                            it.collectionName ,
+                            it.releaseDate ,
+                            it.primaryGenreName ,
+                            it.country ,
+                            it.previewUrl
+                        )
+                    }
+                    emit(Resource.Success(data))
+                }
             }
 
             else -> {
-                Resource.Error("Ошибка сервера")
+                emit(Resource.Error(R.string.serverError.toString()))
             }
         }
 

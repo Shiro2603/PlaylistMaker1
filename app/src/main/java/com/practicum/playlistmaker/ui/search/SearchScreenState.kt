@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.ui.search
 import com.practicum.playlistmaker.domain.search.model.Track
 
 sealed class SearchScreenState {
+
     object Loading : SearchScreenState()
 
     data class Content(

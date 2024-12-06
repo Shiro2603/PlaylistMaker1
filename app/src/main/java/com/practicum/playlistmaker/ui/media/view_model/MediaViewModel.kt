@@ -1,14 +1,16 @@
 package com.practicum.playlistmaker.ui.media.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.media.MediaPlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -19,28 +21,37 @@ class MediaViewModel(
     private val saveTrackInteractor: SaveTrackInteractor
 ) : ViewModel() {
 
-    private val _mediaPlayerState = MutableLiveData<MediaPlayerState>()
+    private var timeJob: Job? = null
+
+    private val _mediaPlayerState = MutableLiveData<MediaPlayerState>(MediaPlayerState.Default())
     val mediaPlayerState: LiveData<MediaPlayerState> = _mediaPlayerState
 
-    private var handler: Handler? = Handler(Looper.getMainLooper())
+    override fun onCleared() {
+        super.onCleared()
+        mediaPlayerInteractor.release()
+        _mediaPlayerState.value = MediaPlayerState.Default()
+    }
 
     fun preparePlayer(trackPreview: String?) {
         mediaPlayerInteractor.preparePlayer(trackPreview)
-        mediaPlayerInteractor.setOnCompletionListener {
-            _mediaPlayerState.value = MediaPlayerState.Prepared()
-        }
         _mediaPlayerState.value = MediaPlayerState.Prepared()
+        mediaPlayerInteractor.setOnCompletionListener{
+            _mediaPlayerState.value = MediaPlayerState.Prepared()
+            timeJob?.cancel()
+        }
     }
 
     private fun startPlayer() {
         mediaPlayerInteractor.starPlayer()
         _mediaPlayerState.value = MediaPlayerState.Playing(getFormattedTrackTime())
-        updateTimerTask()
+        startTimer()
+
     }
 
     fun pausePlayer() {
         mediaPlayerInteractor.pausePlayer()
         _mediaPlayerState.value = MediaPlayerState.Paused(getFormattedTrackTime())
+        timeJob?.cancel()
     }
 
     fun playbackControl() {
@@ -52,16 +63,14 @@ class MediaViewModel(
         }
     }
 
-    private fun updateTimerTask() {
-        val runnable = object : Runnable {
-            override fun run() {
-                if (_mediaPlayerState.value is MediaPlayerState.Playing) {
-                    _mediaPlayerState.value = MediaPlayerState.Playing(getFormattedTrackTime())
-                    handler?.postDelayed(this, DELAY)
-                }
+    private fun startTimer() {
+        timeJob?.cancel()
+        timeJob = viewModelScope.launch {
+            while (_mediaPlayerState.value is MediaPlayerState.Playing) {
+                delay(DELAY)
+                _mediaPlayerState.postValue(MediaPlayerState.Playing(getFormattedTrackTime()))
             }
         }
-        handler?.post(runnable)
     }
 
     private fun getFormattedTrackTime(): String {
@@ -73,9 +82,8 @@ class MediaViewModel(
     }
 
     companion object{
-        const val DELAY = 1000L
+        const val DELAY = 300L
     }
-
 
 }
 

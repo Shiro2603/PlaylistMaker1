@@ -25,7 +25,6 @@ class MediaActivity : AppCompatActivity() {
 
     private var _binding: ActivityMediaBinding? = null
     private val binding: ActivityMediaBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
-    private var handler: Handler? = null
     private val viewModel by viewModel<MediaViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +37,6 @@ class MediaActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        handler = Handler(Looper.getMainLooper())
 
         val track = intent.getSerializableExtra(SAVE_TRACK) as? Track ?: viewModel.getTrack()
 
@@ -77,49 +74,24 @@ class MediaActivity : AppCompatActivity() {
 
         viewModel.preparePlayer(track?.previewUrl)
 
-        viewModel.mediaPlayerState.observe(this) { state ->
-            when (state) {
-                is MediaPlayerState.Prepared -> {
-                    binding.trackTime.text = state.trackTime
-                    updatePlayPauseButton(isPlaying = false)
-                }
-                is MediaPlayerState.Playing -> {
-                    binding.trackTime.text = state.trackTime
-                    updatePlayPauseButton(isPlaying = true)
-                }
-                is MediaPlayerState.Paused -> {
-                    binding.trackTime.text = state.trackTime
-                    updatePlayPauseButton(isPlaying = false)
-                }
+        binding.buttonPlay.setOnClickListener {
+            viewModel.playbackControl()
+        }
 
-                else -> {}
+        viewModel.mediaPlayerState.observe(this) {
+            binding.trackTime.text = it.progress
+            if(it.isPlaying) {
+                binding.buttonPlay.setImageResource(R.drawable.ic_button_stop)
+            } else {
+                binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
             }
         }
 
-        binding.btnPlay.setOnClickListener {
-            viewModel.playbackControl()
-
-        }
     }
 
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
-        handler?.removeCallbacksAndMessages(null)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        handler?.removeCallbacksAndMessages(null)
-    }
-
-    private fun updatePlayPauseButton(isPlaying: Boolean) {
-        if (isPlaying) {
-            binding.btnPlay.setImageResource(R.drawable.ic_button_stop)
-        } else {
-            binding.btnPlay.setImageResource(R.drawable.ic_button_play)
-        }
-
     }
 
     companion object {
