@@ -149,13 +149,8 @@
 
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/search_history"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
-
         <LinearLayout
+            android:id="@+id/search_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -200,7 +195,6 @@
                 android:layout_gravity="center" />
 
         </LinearLayout>
-    </ScrollView>
 
     <ProgressBar
         android:id="@+id/pb_search_history"

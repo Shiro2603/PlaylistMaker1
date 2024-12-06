@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.data.search.impl
 
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.data.network.NetworkClient
@@ -16,22 +17,22 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
 
          when (response.resultCode) {
             -1 -> {
-                emit(Resource.Error("Проверьте подключение к интернету"))
+                emit(Resource.Error(R.string.checkingTheConnection.toString()))
             }
             200 -> {
                 with(response as TrackSearchResponse) {
-                    val data = results.map {
+                    val data = results.mapNotNull {
                         Track(
-                            it.trackId ?: 0,
-                            it.trackName ?: "Unknown Track",
-                            it.artistName ?: "Unknown Artist",
-                            it.trackTime ?: 1000000L,
-                            it.artworkUrl100 ?: "",
-                            it.collectionName ?: "",
-                            it.releaseDate,
-                            it.primaryGenreName ?: "Unknown Genre",
-                            it.country ?: "Unknown Country",
-                            it.previewUrl ?: ""
+                            it.trackId ,
+                            it.trackName ,
+                            it.artistName ,
+                            it.trackTime ?: 0L ,
+                            it.artworkUrl100 ,
+                            it.collectionName ,
+                            it.releaseDate ,
+                            it.primaryGenreName ,
+                            it.country ,
+                            it.previewUrl
                         )
                     }
                     emit(Resource.Success(data))
@@ -39,7 +40,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
             }
 
             else -> {
-                emit(Resource.Error("Ошибка сервера"))
+                emit(Resource.Error(R.string.serverError.toString()))
             }
         }
 

@@ -126,7 +126,7 @@ class SearchFragment : Fragment() {
             }
         }
 
-        val trackSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, true) { _ ->
+        val trackSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, true) {
             searchViewModel.search(saveSearchText)
         }
 

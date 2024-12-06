@@ -64,6 +64,7 @@ class MediaViewModel(
     }
 
     private fun startTimer() {
+        timeJob?.cancel()
         timeJob = viewModelScope.launch {
             while (_mediaPlayerState.value is MediaPlayerState.Playing) {
                 delay(DELAY)
