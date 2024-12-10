@@ -6,16 +6,21 @@
 Технологии и инструменты
 
 Асинхронность: Coroutines
+
 UI: XML
+
 Сетевые запросы: Retrofit
+
 Сериализация: Gson
+
 DI: Koin
+
 Архитектура: MVVM
 
 Так же использовалась : SingleActivity(+Fragments), ViewPager2, Jetpack Navigation Component, Room
 
-![image](https://github.com/user-attachments/assets/34093572-6626-4929-b851-7246fb576c73)
-![image](https://github.com/user-attachments/assets/25b166a6-aeb1-4d18-952d-1f87f0aacb5a)
+![image](https://github.com/user-attachments/assets/5b2e417b-49f2-4cba-bf01-f7d0f46a51f9)
 
 
+					
 
