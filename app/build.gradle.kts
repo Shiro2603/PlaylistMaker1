@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("kotlin-kapt")
 }
 
 android {
@@ -33,6 +34,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        
     }
 
 }
@@ -61,4 +63,8 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.5.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
+    val room_version = "2.5.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 }
