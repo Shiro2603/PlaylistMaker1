@@ -5,20 +5,37 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="106dp"
-        android:src="@drawable/ic_not_found" />
+    <LinearLayout
+        android:id="@+id/place_holder_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <TextView
-        style="@style/TextStyleForSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/emptyFavoriteTracks"
-        android:layout_marginTop="@dimen/margin_16dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="106dp"
+            android:src="@drawable/ic_not_found" />
+
+        <TextView
+            style="@style/TextStyleForSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/emptyFavoriteTracks"
+            android:layout_marginTop="@dimen/margin_16dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_favorite_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:layout_marginStart="@dimen/margin_13dp"
+        android:layout_marginEnd="@dimen/margin_12dp"
+        android:visibility="gone"/>
 
 
 </LinearLayout>
