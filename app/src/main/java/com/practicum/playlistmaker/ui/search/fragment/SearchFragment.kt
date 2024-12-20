@@ -90,6 +90,7 @@ class SearchFragment : Fragment() {
                     binding.recycleView.visibility = View.GONE
                     binding.searchNotFound.visibility = View.GONE
                     binding.errors.visibility = View.GONE
+                    binding.searchHistory.visibility = View.GONE
                 }
                 is SearchScreenState.Content -> {
                     binding.pbSearchHistory.visibility = View.GONE

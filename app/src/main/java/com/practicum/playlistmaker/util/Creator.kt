@@ -39,16 +39,16 @@ import com.practicum.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 
 
 object Creator {
-    private fun getTracksRepository(context: Context, songApi : SongApi): TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient(
-            context,
-            songApi
-        ))
-    }
+//    private fun getTracksRepository(context: Context, songApi : SongApi): TrackRepository {
+//        return TrackRepositoryImpl(RetrofitNetworkClient(
+//            context,
+//            songApi
+//        ))
+//    }
 
-    fun provideTracksInteractor(context: Context, songApi : SongApi): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository(context, songApi))
-    }
+//    fun provideTracksInteractor(context: Context, songApi : SongApi): TracksInteractor {
+//        return TracksInteractorImpl(getTracksRepository(context, songApi))
+//    }
 
     private fun getSearchHistoryRepository(sharedPreferences: SharedPreferences, gson: Gson) : SearchHistoryRepository {
         return SearchHistoryRepositoryImpl(

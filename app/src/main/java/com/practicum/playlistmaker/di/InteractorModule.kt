@@ -1,6 +1,9 @@
 package com.practicum.playlistmaker.di
 
+import android.system.Os.bind
+import com.practicum.playlistmaker.domain.player.FavoriteTrackInteractor
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
+import com.practicum.playlistmaker.domain.player.impl.FavoriteTrackInteractorImpl
 import com.practicum.playlistmaker.domain.player.impl.MediaPlayerInteractorImpl
 import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.SearchHistoryInteractor
@@ -47,6 +50,10 @@ val interactorModule = module {
     factoryOf(::SharingInteractorImpl) {
         bind<SharingInteractor>()
     }
+
+   factory<FavoriteTrackInteractor> {
+       FavoriteTrackInteractorImpl(get())
+   }
 
 
 }
