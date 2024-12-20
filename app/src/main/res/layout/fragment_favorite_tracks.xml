@@ -32,7 +32,7 @@
         android:id="@+id/rv_favorite_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/margin_8dp"
+        android:layout_marginTop="28dp"
         android:layout_marginStart="@dimen/margin_13dp"
         android:layout_marginEnd="@dimen/margin_12dp"
         android:visibility="gone"/>
