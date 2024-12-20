@@ -91,15 +91,13 @@ class MediaViewModel(
      fun onFavoriteClicked(track: Track) {
          viewModelScope.launch {
              Log.d("MediaViewModel", "Favorite clicked for track: ${track.trackName}, isFavorite: ${track.isFavorite} and ${_isFavorite.value}")
-             if(track.isFavorite) {
+             if(_isFavorite.value == true) {
                  Log.d("MediaViewModel", "Deleting track from favorites")
                 favoriteTrackInteractor.deleteTrack(track)
-                 track.isFavorite = false
                  _isFavorite.postValue(false)
              } else {
                  Log.d("MediaViewModel", "Adding track to favorites")
                  favoriteTrackInteractor.addTrack(track)
-                 track.isFavorite = true
                  _isFavorite.postValue(true)
              }
          }

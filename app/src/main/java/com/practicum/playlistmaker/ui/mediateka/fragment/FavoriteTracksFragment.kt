@@ -39,13 +39,11 @@ class FavoriteTracksFragment : Fragment() {
         binding.rvFavoriteList.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL, false)
         binding.rvFavoriteList.adapter = favoriteAdapter
 
-        favoriteAdapter!!.onClickedTrack = {track ->
+        favoriteAdapter?.onClickedTrack = {track ->
             val intent = Intent(requireContext(), MediaActivity::class.java)
             intent.putExtra(SAVE_TRACK, track)
             requireActivity().startActivity(intent)
         }
-
-        viewModel.getFavoriteTrack()
 
         viewModel.stateLiveDate.observe(viewLifecycleOwner) {
             when(it) {
@@ -55,6 +53,7 @@ class FavoriteTracksFragment : Fragment() {
                     track.clear()
                     track.addAll(it.track)
                     favoriteAdapter?.notifyDataSetChanged()
+                    favoriteAdapter?.updateData(it.track)
                 }
                 FavoriteState.Empty -> {
                     binding.placeHolderFavorite.visibility = View.VISIBLE
@@ -62,6 +61,13 @@ class FavoriteTracksFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.getFavoriteTrack()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getFavoriteTrack()
     }
 
     override fun onDestroyView() {
