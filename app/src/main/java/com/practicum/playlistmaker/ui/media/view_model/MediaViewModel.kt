@@ -1,9 +1,11 @@
 package com.practicum.playlistmaker.ui.media.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.domain.player.FavoriteTrackInteractor
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
@@ -18,13 +20,18 @@ import java.util.Locale
 
 class MediaViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
-    private val saveTrackInteractor: SaveTrackInteractor
+    private val saveTrackInteractor: SaveTrackInteractor,
+    private val favoriteTrackInteractor: FavoriteTrackInteractor,
 ) : ViewModel() {
 
     private var timeJob: Job? = null
 
     private val _mediaPlayerState = MutableLiveData<MediaPlayerState>(MediaPlayerState.Default())
     val mediaPlayerState: LiveData<MediaPlayerState> = _mediaPlayerState
+
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean> = _isFavorite
+
 
     override fun onCleared() {
         super.onCleared()
@@ -79,6 +86,28 @@ class MediaViewModel(
 
     fun getTrack() : Track? {
         return saveTrackInteractor.getTrack()
+    }
+
+     fun onFavoriteClicked(track: Track) {
+         viewModelScope.launch {
+             Log.d("MediaViewModel", "Favorite clicked for track: ${track.trackName}, isFavorite: ${track.isFavorite} and ${_isFavorite.value}")
+             if(_isFavorite.value == true) {
+                 Log.d("MediaViewModel", "Deleting track from favorites")
+                favoriteTrackInteractor.deleteTrack(track)
+                 _isFavorite.postValue(false)
+             } else {
+                 Log.d("MediaViewModel", "Adding track to favorites")
+                 favoriteTrackInteractor.addTrack(track)
+                 _isFavorite.postValue(true)
+             }
+         }
+     }
+
+    fun checkFavorite(trackId: Int) {
+        viewModelScope.launch {
+            val favorite = favoriteTrackInteractor.isTrackFavorite(trackId)
+            _isFavorite.postValue(favorite)
+        }
     }
 
     companion object{

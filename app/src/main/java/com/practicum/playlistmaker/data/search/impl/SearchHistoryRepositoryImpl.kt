@@ -19,8 +19,6 @@ class SearchHistoryRepositoryImpl(
 
     private val maxHistorySize = 10
 
-
-
     override fun addTrackToHistory(track: Track) {
         val history = getSearchHistory().toMutableList()
         history.removeAll { it.trackId == track.trackId }

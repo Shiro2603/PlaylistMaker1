@@ -13,7 +13,8 @@ val viewModelModule = module {
     viewModel {
         MediaViewModel(
             mediaPlayerInteractor = get(),
-            saveTrackInteractor = get())
+            saveTrackInteractor = get(),
+            favoriteTrackInteractor = get())
     }
 
     viewModel {
@@ -30,7 +31,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavoriteTracksViewModel()
+        FavoriteTracksViewModel(get())
     }
 
     viewModel {

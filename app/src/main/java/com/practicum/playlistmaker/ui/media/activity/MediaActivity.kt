@@ -40,6 +40,10 @@ class MediaActivity : AppCompatActivity() {
 
         val track = intent.getSerializableExtra(SAVE_TRACK) as? Track ?: viewModel.getTrack()
 
+        if (track != null) {
+            track.trackId?.let { viewModel.checkFavorite(it) }
+        }
+
         binding.btnArrayBackMedia.setOnClickListener {
             finish()
         }
@@ -85,6 +89,20 @@ class MediaActivity : AppCompatActivity() {
             } else {
                 binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
             }
+        }
+
+        binding.btnLikeSong.setOnClickListener {
+            viewModel.onFavoriteClicked(track!!)
+        }
+
+        viewModel.isFavorite.observe(this) {
+
+            if(it == true) {
+                binding.btnLikeSong.setImageResource(R.drawable.ic_button_liked)
+            } else {
+                binding.btnLikeSong.setImageResource(R.drawable.ic_button_not_like)
+            }
+
         }
 
     }

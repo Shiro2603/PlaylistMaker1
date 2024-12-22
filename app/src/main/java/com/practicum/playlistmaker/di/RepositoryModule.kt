@@ -1,6 +1,9 @@
 package com.practicum.playlistmaker.di
 
+import com.practicum.playlistmaker.data.converters.TrackDbConvertor
+import com.practicum.playlistmaker.data.player.FavoriteTracksRepository
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
+import com.practicum.playlistmaker.data.player.impl.FavoriteTracksRepositoryImpl
 import com.practicum.playlistmaker.data.player.impl.MediaPlayerRepositoryImpl
 import com.practicum.playlistmaker.data.search.SaveTrackRepository
 import com.practicum.playlistmaker.data.search.SearchHistoryRepository
@@ -46,6 +49,12 @@ val repositoryModule = module {
 
     factoryOf(::TrackRepositoryImpl) {
         bind<TrackRepository>()
+    }
+
+    factory { TrackDbConvertor() }
+
+    single<FavoriteTracksRepository> {
+        FavoriteTracksRepositoryImpl(get(), get())
     }
 
 }
