@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="mediateka">Медиатека</string>
+    <string name="NewPlayList">Новый плейлист</string>
+    <string name="NewPlayListName">Название*</string>
+    <string name="NewPlayListDescription">Описание</string>
+    <string name="CreateNewPlayList">Создать</string>
 </resources>
