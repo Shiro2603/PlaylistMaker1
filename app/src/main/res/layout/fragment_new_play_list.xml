@@ -32,48 +32,65 @@
 
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/playListPicture"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="32dp"
+        android:layout_marginTop="26dp"
         android:background="@drawable/rounded_rectangle"
-        android:padding="106dp"
         android:src="@drawable/add_photo"
-        app:layout_constraintBottom_toTopOf="@+id/playListName"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintBottom_toTopOf="@+id/tlPlayListName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
-    <EditText
-        android:id="@+id/playListName"
-        style="@style/EditTextStyle"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tlPlayListName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_rectangle"
-        android:layout_marginTop="32dp"
         android:hint="@string/NewPlayListName"
-        android:paddingHorizontal="@dimen/margin_16dp"
-        android:paddingBottom="@dimen/margin_19dp"
-        android:paddingTop="@dimen/margin_18dp"
+        style="@style/EditTextStyle"
+        android:layout_marginTop="32dp"
         android:layout_marginHorizontal="@dimen/margin_16dp"
         android:layout_marginBottom="@dimen/margin_16dp"
-        app:layout_constraintBottom_toTopOf="@+id/playListDescription"/>
+        app:layout_constraintBottom_toTopOf="@+id/tlPlayListDescription">
 
-    <EditText
-        android:id="@+id/playListDescription"
-        style="@style/EditTextStyle"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/playListName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:paddingHorizontal="@dimen/margin_16dp"
+            android:paddingBottom="@dimen/margin_19dp"
+            android:paddingTop="@dimen/margin_18dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tlPlayListDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_selector"
-        android:layout_marginTop="@dimen/margin_16dp"
         android:hint="@string/NewPlayListDescription"
-        android:paddingHorizontal="@dimen/margin_16dp"
-        android:paddingBottom="@dimen/margin_19dp"
-        android:paddingTop="@dimen/margin_18dp"
+        style="@style/EditTextStyle"
+        android:layout_marginTop="@dimen/margin_16dp"
         android:layout_marginHorizontal="@dimen/margin_16dp"
         android:layout_marginBottom="170dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCreatePlayList"/>
+        app:layout_constraintBottom_toTopOf="@+id/btnCreatePlayList">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/playListDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:paddingHorizontal="@dimen/margin_16dp"
+            android:paddingBottom="@dimen/margin_19dp"
+            android:paddingTop="@dimen/margin_18dp"
+            android:textColor="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCreatePlayList"

@@ -1,6 +1,8 @@
 package com.practicum.playlistmaker.di
 
 import android.system.Os.bind
+import com.practicum.playlistmaker.domain.mediateka.PlayListInteractor
+import com.practicum.playlistmaker.domain.mediateka.impl.PlayListInteractorImpl
 import com.practicum.playlistmaker.domain.player.FavoriteTrackInteractor
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.player.impl.FavoriteTrackInteractorImpl
@@ -54,6 +56,10 @@ val interactorModule = module {
    factory<FavoriteTrackInteractor> {
        FavoriteTrackInteractorImpl(get())
    }
+
+    factory<PlayListInteractor> {
+        PlayListInteractorImpl(get())
+    }
 
 
 }

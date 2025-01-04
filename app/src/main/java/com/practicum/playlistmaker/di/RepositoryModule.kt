@@ -1,6 +1,10 @@
 package com.practicum.playlistmaker.di
 
+import android.system.Os.bind
+import com.practicum.playlistmaker.data.converters.PlayListConvertor
 import com.practicum.playlistmaker.data.converters.TrackDbConvertor
+import com.practicum.playlistmaker.data.mediateka.PlayListRepository
+import com.practicum.playlistmaker.data.mediateka.impl.PlayListRepositoryImpl
 import com.practicum.playlistmaker.data.player.FavoriteTracksRepository
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
 import com.practicum.playlistmaker.data.player.impl.FavoriteTracksRepositoryImpl
@@ -53,8 +57,14 @@ val repositoryModule = module {
 
     factory { TrackDbConvertor() }
 
+    factory { PlayListConvertor() }
+
     single<FavoriteTracksRepository> {
         FavoriteTracksRepositoryImpl(get(), get())
     }
+
+   factory<PlayListRepository> {
+       PlayListRepositoryImpl(get(), get())
+   }
 
 }
