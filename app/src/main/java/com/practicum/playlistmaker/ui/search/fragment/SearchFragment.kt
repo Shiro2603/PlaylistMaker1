@@ -184,7 +184,6 @@ class SearchFragment : Fragment() {
 
     private fun handlerTrackClick (track: Track) {
         searchViewModel.addTrackToHistory(track)
-        searchViewModel.saveTrack(track)
         val action = SearchFragmentDirections.actionSearchFragmentToMediaFragment(track)
         findNavController().navigate(action)
     }

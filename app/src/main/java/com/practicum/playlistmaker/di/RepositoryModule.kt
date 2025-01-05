@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.di
 
-import android.system.Os.bind
 import com.practicum.playlistmaker.data.converters.PlayListConvertor
 import com.practicum.playlistmaker.data.converters.TrackDbConvertor
 import com.practicum.playlistmaker.data.mediateka.PlayListRepository
@@ -9,10 +8,8 @@ import com.practicum.playlistmaker.data.player.FavoriteTracksRepository
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
 import com.practicum.playlistmaker.data.player.impl.FavoriteTracksRepositoryImpl
 import com.practicum.playlistmaker.data.player.impl.MediaPlayerRepositoryImpl
-import com.practicum.playlistmaker.data.search.SaveTrackRepository
 import com.practicum.playlistmaker.data.search.SearchHistoryRepository
 import com.practicum.playlistmaker.data.search.TrackRepository
-import com.practicum.playlistmaker.data.search.impl.SaveTrackRepositoryImpl
 import com.practicum.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.search.impl.TrackRepositoryImpl
 import com.practicum.playlistmaker.data.settings.ThemeRepository
@@ -26,10 +23,6 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val repositoryModule = module {
-
-    factoryOf(::SaveTrackRepositoryImpl) {
-        bind<SaveTrackRepository>()
-    }
 
     factoryOf(::MediaPlayerRepositoryImpl) {
         bind<MediaPlayerRepository>()

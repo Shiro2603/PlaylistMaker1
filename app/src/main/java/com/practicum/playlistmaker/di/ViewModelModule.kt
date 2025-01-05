@@ -20,8 +20,7 @@ val viewModelModule = module {
     viewModel {
         SearchViewModel(
             trackInteractor = get(),
-            searchHistoryInteractor = get(),
-            saveTrackInteractor = get())
+            searchHistoryInteractor = get())
     }
 
     viewModel {

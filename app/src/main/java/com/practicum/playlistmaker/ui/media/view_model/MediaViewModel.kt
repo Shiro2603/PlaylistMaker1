@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.mediateka.PlayListInteractor
 import com.practicum.playlistmaker.domain.player.FavoriteTrackInteractor
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
-import com.practicum.playlistmaker.domain.search.SaveTrackInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.media.MediaPlayerState
 import com.practicum.playlistmaker.ui.mediateka.PlayListState
