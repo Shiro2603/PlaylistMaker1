@@ -14,10 +14,9 @@ val viewModelModule = module {
     viewModel {
         MediaViewModel(
             mediaPlayerInteractor = get(),
-            saveTrackInteractor = get(),
+            playListInteractor = get(),
             favoriteTrackInteractor = get())
     }
-
     viewModel {
         SearchViewModel(
             trackInteractor = get(),

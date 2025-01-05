@@ -75,13 +75,13 @@ class NewPlayListFragment : Fragment() {
                 playListDescription,
                 selectedImageUri,
                 tracksIds = null,
-                tracksCount = null,
+                tracksCount = 20,
             )
 
 
             viewModel.createPlayList(playList)
             requireActivity().supportFragmentManager.popBackStack()
-            Toast.makeText(requireContext(),"Плейлист ${playListName} успешно создан", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),"Плейлист ${playListName} создан", Toast.LENGTH_SHORT).show()
         }
 
 

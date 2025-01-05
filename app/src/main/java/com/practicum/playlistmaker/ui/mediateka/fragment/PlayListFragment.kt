@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistBinding
 import com.practicum.playlistmaker.domain.mediateka.model.PlayList
-import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.mediateka.PlayListState
 import com.practicum.playlistmaker.ui.mediateka.view_model.PlayListViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -40,7 +39,7 @@ class PlayListFragment : Fragment() {
         }
 
         playListAdapter = PlayListAdapter(playList)
-        binding.rvPlayList.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rvPlayList.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         binding.rvPlayList.adapter = playListAdapter
 
 

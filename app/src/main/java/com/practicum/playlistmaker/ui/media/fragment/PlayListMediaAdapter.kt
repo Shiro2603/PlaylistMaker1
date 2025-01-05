@@ -1,22 +1,22 @@
-package com.practicum.playlistmaker.ui.mediateka.fragment
+package com.practicum.playlistmaker.ui.media.fragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.databinding.PlayListViewInMediatekaBinding
+import com.practicum.playlistmaker.databinding.PlayListViewInMediaBinding
 import com.practicum.playlistmaker.domain.mediateka.model.PlayList
 
-class PlayListAdapter(
+class PlayListMediaAdapter(
     private var playList: List<PlayList>,
     var onClickedTrack : ((PlayList) -> Unit)? = null,
-) : RecyclerView.Adapter<PlayListViewHolder>() {
+) : RecyclerView.Adapter<PlayListMediaViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListViewHolder {
-        val binding = PlayListViewInMediatekaBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PlayListViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListMediaViewHolder {
+        val binding = PlayListViewInMediaBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PlayListMediaViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PlayListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PlayListMediaViewHolder, position: Int) {
         holder.bind(playList[position])
         holder.itemView.setOnClickListener {
             onClickedTrack?.invoke(playList[position])

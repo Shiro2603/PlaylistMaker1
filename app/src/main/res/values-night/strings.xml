@@ -5,4 +5,5 @@
     <string name="NewPlayListName">Название*</string>
     <string name="NewPlayListDescription">Описание</string>
     <string name="CreateNewPlayList">Создать</string>
+    <string name="addToPlayList">Добавить в плейлист</string>
 </resources>

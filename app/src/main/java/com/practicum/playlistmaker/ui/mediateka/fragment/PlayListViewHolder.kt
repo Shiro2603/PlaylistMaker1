@@ -4,15 +4,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.PlayListViewBinding
+import com.practicum.playlistmaker.databinding.PlayListViewInMediatekaBinding
 import com.practicum.playlistmaker.domain.mediateka.model.PlayList
 import com.practicum.playlistmaker.util.Until.dpToPx
 
-class PlayListViewHolder(
-    private val binding: PlayListViewBinding) : RecyclerView.ViewHolder(binding.root) {
+class PlayListViewHolder(private val binding: PlayListViewInMediatekaBinding) : RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind( playList : PlayList) {
+        fun bind(playList : PlayList) {
             Glide.with(binding.playListPicture.context)
                 .load(playList.urlImager)
                 .placeholder(R.drawable.pc_placeholder)
