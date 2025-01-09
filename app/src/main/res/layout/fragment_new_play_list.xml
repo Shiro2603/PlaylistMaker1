@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.mediateka.fragment.NewPlayListFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
 
     <ImageView
@@ -30,38 +31,36 @@
         app:layout_constraintStart_toEndOf="@+id/btnArrayBack"
         app:layout_constraintTop_toTopOf="@+id/btnArrayBack" />
 
-
     <ImageView
         android:id="@+id/playListPicture"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_gravity="center"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="32dp"
         android:layout_marginTop="26dp"
         android:background="@drawable/rounded_rectangle"
         android:src="@drawable/add_photo"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="1:1"
+        android:clipToOutline="true"
         app:layout_constraintBottom_toTopOf="@+id/tlPlayListName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tlPlayListName"
+        style="@style/EditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/NewPlayListName"
-        style="@style/EditTextStyle"
-        android:layout_marginTop="32dp"
         android:layout_marginHorizontal="@dimen/margin_16dp"
         android:layout_marginBottom="@dimen/margin_16dp"
-        app:layout_constraintBottom_toTopOf="@+id/tlPlayListDescription">
+        app:layout_constraintBottom_toTopOf="@+id/tlPlayListDescription"
+        app:cursorColor="@color/blue">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/playListName"
+            style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -79,28 +78,32 @@
         android:layout_marginTop="@dimen/margin_16dp"
         android:layout_marginHorizontal="@dimen/margin_16dp"
         android:layout_marginBottom="170dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCreatePlayList">
+        app:layout_constraintBottom_toTopOf="@+id/btnCreatePlayList"
+        app:cursorColor="@color/blue">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/playListDescription"
+            style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:paddingHorizontal="@dimen/margin_16dp"
             android:paddingBottom="@dimen/margin_19dp"
-            android:paddingTop="@dimen/margin_18dp"
-            android:textColor="@color/white" />
+            android:paddingTop="@dimen/margin_18dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCreatePlayList"
         style="@style/ButtonStyleForNewPlayList"
-        android:background="@drawable/play_list_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/CreateNewPlayList"
         android:layout_marginHorizontal="17dp"
         android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:background="@drawable/play_list_selector"
+        android:enabled="false"
+        android:text="@string/CreateNewPlayList"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

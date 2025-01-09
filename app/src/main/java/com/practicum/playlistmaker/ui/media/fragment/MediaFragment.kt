@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -99,6 +101,25 @@ class MediaFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                when(newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                    }
+                    else -> binding.overlay.isVisible = true
+                }
+
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+
+        })
+
         playListAdapter = PlayListMediaAdapter(playList)
         binding.rvPlayListInMedia.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPlayListInMedia.adapter = playListAdapter
@@ -119,6 +140,25 @@ class MediaFragment : Fragment() {
 
         binding.btnCreatePlayList.setOnClickListener {
             findNavController().navigate(R.id.newPlayListFragment)
+        }
+
+        playListAdapter?.onClickedTrack = {
+            viewModel.addTrackToPlaylist(track, it)
+        }
+
+        viewModel.stateAddTrack.observe(viewLifecycleOwner) {
+            when(it) {
+                true -> {
+                    Toast.makeText(requireContext(),"Добавлено в плейлист", Toast.LENGTH_SHORT).show()
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    playListAdapter?.notifyDataSetChanged()
+                }
+                false -> {
+                    Toast.makeText(requireContext(),"Трек уже добавлен в плейлист", Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {}
+            }
         }
 
     }

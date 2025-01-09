@@ -245,6 +245,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
+
+    <View android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
@@ -253,13 +260,20 @@
         app:behavior_hideable="true"
         android:background="@drawable/rectangle_media"
         android:gravity="center"
+        app:behavior_peekHeight="505dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:background="@drawable/rectangle"
+            android:layout_marginTop="8dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextStyleForSearch"
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="30dp"
             android:text="@string/addToPlayList" />
 
         <Button

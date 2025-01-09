@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.mediateka.PlayListInteractor
+import com.practicum.playlistmaker.domain.mediateka.model.PlayList
 import com.practicum.playlistmaker.domain.player.FavoriteTrackInteractor
 import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
@@ -36,6 +37,8 @@ class MediaViewModel(
     private val _stateLiveData = MutableLiveData<PlayListState>()
     val stateLiveData : LiveData<PlayListState> = _stateLiveData
 
+    private val _stateAddTrack = MutableLiveData<Boolean?>(null)
+    val stateAddTrack: LiveData<Boolean?> = _stateAddTrack
 
     override fun onCleared() {
         super.onCleared()
@@ -124,6 +127,18 @@ class MediaViewModel(
                 }
         }
     }
+
+    fun addTrackToPlaylist(track: Track, playlist: PlayList) {
+        if(!playlist.tracksIds.contains(track.trackId)) {
+            viewModelScope.launch {
+                playListInteractor.addTrackToPlayList(track, playlist)
+                _stateAddTrack.postValue(true)
+            }
+        } else {
+            _stateAddTrack.postValue(false)
+        }
+    }
+
 
     companion object{
         const val DELAY = 300L

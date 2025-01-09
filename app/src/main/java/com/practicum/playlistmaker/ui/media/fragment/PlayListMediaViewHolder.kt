@@ -17,7 +17,6 @@ class PlayListMediaViewHolder(private val binding: PlayListViewInMediaBinding) :
             .load(playList.urlImager)
             .placeholder(R.drawable.pc_placeholder)
             .centerCrop()
-            .transform(RoundedCorners(dpToPx(2f, itemView.context)))
             .into(binding.playListPicture)
         binding.playListName.text = playList.playListName
         binding.playListCount.text = playList.tracksCount.toString()
