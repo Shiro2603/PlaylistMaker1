@@ -52,8 +52,8 @@ class NewPlayListFragment : Fragment() {
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             if(it != null) {
-                val saveTrack = viewModel.saveToStorage(it)
-                selectedImageUri = viewModel.getTrackToStorage(saveTrack).toString()
+                viewModel.saveToStorage(it)
+                selectedImageUri = it.toString()
                 binding.playListPicture.setImageURI(it)
             }
         }
