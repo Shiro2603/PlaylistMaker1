@@ -9,7 +9,6 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true">
 
-
     <ImageView
         android:id="@+id/btnArrayBack"
         android:layout_width="wrap_content"
@@ -62,11 +61,7 @@
             android:id="@+id/playListName"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:paddingHorizontal="@dimen/margin_16dp"
-            android:paddingBottom="@dimen/margin_19dp"
-            android:paddingTop="@dimen/margin_18dp" />
+            android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -85,11 +80,7 @@
             android:id="@+id/playListDescription"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:paddingHorizontal="@dimen/margin_16dp"
-            android:paddingBottom="@dimen/margin_19dp"
-            android:paddingTop="@dimen/margin_18dp" />
+            android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton

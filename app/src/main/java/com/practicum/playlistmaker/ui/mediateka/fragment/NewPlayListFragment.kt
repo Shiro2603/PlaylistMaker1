@@ -1,14 +1,8 @@
 package com.practicum.playlistmaker.ui.mediateka.fragment
 
-import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,11 +10,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.PermissionRequest
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -30,8 +22,7 @@ import com.practicum.playlistmaker.databinding.FragmentNewPlayListBinding
 import com.practicum.playlistmaker.ui.mediateka.view_model.NewPlayListViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
+
 
 
 class NewPlayListFragment : Fragment() {
@@ -61,8 +52,8 @@ class NewPlayListFragment : Fragment() {
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             if(it != null) {
-                selectedImageUri = it.toString()
-                saveToStorage(it)
+                val saveTrack = viewModel.saveToStorage(it)
+                selectedImageUri = viewModel.getTrackToStorage(saveTrack).toString()
                 binding.playListPicture.setImageURI(it)
             }
         }
@@ -115,15 +106,11 @@ class NewPlayListFragment : Fragment() {
         }
 
         binding.playListName.addTextChangedListener(object : TextWatcher {
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
                 binding.btnCreatePlayList.isEnabled = !s.isNullOrBlank()
-
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
 
@@ -139,25 +126,6 @@ class NewPlayListFragment : Fragment() {
             Toast.makeText(requireContext(),"Плейлист ${playListName} создан", Toast.LENGTH_SHORT).show()
         }
 
-    }
-
-    private fun saveToStorage(uri: Uri) {
-
-        val filePath = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
-
-        if(!filePath.exists()) {
-            filePath.mkdirs()
-        }
-
-        val file = File(filePath, "first_cover.jpg")
-
-        val inputStream = requireContext().contentResolver.openInputStream(uri)
-
-        val outputStream = FileOutputStream(file)
-
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
     }
 
 }

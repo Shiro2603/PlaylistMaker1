@@ -13,7 +13,7 @@ class PlayListConvertor {
 
     fun map(playList: PlayList) : PlayListEntity {
         return PlayListEntity(
-            id = null,
+            playList.id,
             playList.playListName,
             playList.playListDescription,
             playList.urlImager,
@@ -24,7 +24,7 @@ class PlayListConvertor {
 
     fun map(playList: PlayListEntity) : PlayList {
         return PlayList(
-            id = null,
+            playList.id,
             playList.playListName,
             playList.playListDescription,
             playList.urlImager,

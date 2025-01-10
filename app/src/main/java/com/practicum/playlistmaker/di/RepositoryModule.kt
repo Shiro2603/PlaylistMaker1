@@ -18,6 +18,8 @@ import com.practicum.playlistmaker.data.sharing.ExternalNavigatorRepository
 import com.practicum.playlistmaker.data.sharing.ResourceProvider
 import com.practicum.playlistmaker.data.sharing.impl.ExternalNavigatorRepositoryImpl
 import com.practicum.playlistmaker.data.sharing.impl.ResourceProviderImpl
+import com.practicum.playlistmaker.data.storage.StorageRepository
+import com.practicum.playlistmaker.data.storage.impl.StorageRepositoryImpl
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -59,5 +61,9 @@ val repositoryModule = module {
    factory<PlayListRepository> {
        PlayListRepositoryImpl(get(), get())
    }
+
+    factory<StorageRepository> {
+        StorageRepositoryImpl(get())
+    }
 
 }

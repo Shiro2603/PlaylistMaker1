@@ -30,19 +30,13 @@ class PlayListRepositoryImpl(
 
     override suspend fun addToPlayList(track: Track, playList: PlayList) {
 
-
-
-        Log.d("Debug", "Before: ${playList.tracksIds}")
-        track.trackId.let { playList.tracksIds.add(it) }
-        Log.d("Debug", "After: ${playList.tracksIds}")
-
-        Log.d("Debug", "Before: ${playList.tracksCount}")
-        playList.tracksCount = playList.tracksCount?.plus(1)
-        Log.d("Debug", "After: ${playList.tracksCount}")
-
-
-        appDatabase.playListDao().updatePlaylist(playListConvertor.map(playList))
-
+        val tracksIds = playList.tracksIds.plus(track.trackId)
+        val newPlayList = playList.copy(
+            tracksIds = tracksIds.toMutableList(),
+            tracksCount = playList.tracksCount?.inc()
+        )
+        appDatabase.playListDao().updatePlaylist(playListConvertor.map(newPlayList))
+        appDatabase.playListTrackDao().insertTrack(playListConvertor.map(track))
     }
 
 }

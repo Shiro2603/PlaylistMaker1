@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.ui.mediateka.view_model
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.mediateka.PlayListInteractor
@@ -31,6 +32,14 @@ class NewPlayListViewModel(private val playListInteractor: PlayListInteractor) :
 
         createPlayList(playList)
 
+    }
+
+    fun saveToStorage(uri: Uri) : String {
+        return playListInteractor.saveToStorage(uri)
+    }
+
+    fun getTrackToStorage(image: String) : Uri {
+        return playListInteractor.getImageToStorage(image)
     }
 
 }

@@ -11,6 +11,7 @@ class PlayListMediaAdapter(
     var onClickedTrack : ((PlayList) -> Unit)? = null,
 ) : RecyclerView.Adapter<PlayListMediaViewHolder>() {
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListMediaViewHolder {
         val binding = PlayListViewInMediaBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PlayListMediaViewHolder(binding)

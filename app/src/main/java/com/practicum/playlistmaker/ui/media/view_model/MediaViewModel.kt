@@ -139,7 +139,6 @@ class MediaViewModel(
         }
     }
 
-
     companion object{
         const val DELAY = 300L
     }

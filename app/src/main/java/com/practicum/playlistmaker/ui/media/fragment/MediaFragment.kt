@@ -149,12 +149,18 @@ class MediaFragment : Fragment() {
         viewModel.stateAddTrack.observe(viewLifecycleOwner) {
             when(it) {
                 true -> {
-                    Toast.makeText(requireContext(),"Добавлено в плейлист", Toast.LENGTH_SHORT).show()
+                    val playListName = playList.find { playlist -> playlist.tracksIds.contains(track?.trackId) }?.playListName
+                    playListName?.let {
+                        Toast.makeText(requireContext(), "Добавлено в плейлист $it", Toast.LENGTH_SHORT).show()
+                    }
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                     playListAdapter?.notifyDataSetChanged()
                 }
                 false -> {
-                    Toast.makeText(requireContext(),"Трек уже добавлен в плейлист", Toast.LENGTH_SHORT).show()
+                    val playListName = playList.find { playlist -> playlist.tracksIds.contains(track?.trackId) }?.playListName
+                    playListName?.let {
+                        Toast.makeText(requireContext(), "Трек уже добавлен в плейлист $it", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 else -> {}
