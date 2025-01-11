@@ -39,4 +39,10 @@
     <string name="NewPlayListDescription">Описание</string>
     <string name="CreateNewPlayList">Создать</string>
     <string name="addToPlayList">Добавить в плейлист</string>
+    <string name="addTrackToPlayList">Добавлено в плейлист %1$s</string>
+    <string name="trackAlreadyAdd">Трек уже добавлен в плейлист %1$s</string>
+    <string name="finishCreatingPlaylist">Завершить создание плейлиста?</string>
+    <string name="unsavedLost">Все несохраненные данные будут потеряны</string>
+    <string name="cancel">Отмена</string>
+    <string name="complete">Завершить</string>
 </resources>

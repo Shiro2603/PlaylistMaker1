@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.markodevcic.peko.PermissionRequester
 import com.markodevcic.peko.PermissionResult
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentNewPlayListBinding
 import com.practicum.playlistmaker.ui.mediateka.view_model.NewPlayListViewModel
 import kotlinx.coroutines.launch
@@ -52,9 +54,10 @@ class NewPlayListFragment : Fragment() {
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             if(it != null) {
-                viewModel.saveToStorage(it)
-                selectedImageUri = it.toString()
-                binding.playListPicture.setImageURI(it)
+                val imageName = viewModel.saveToStorage(it)
+                val savedUri = viewModel.getTrackToStorage(imageName)
+                binding.playListPicture.setImageURI(savedUri)
+                selectedImageUri = savedUri.toString()
             }
         }
 
@@ -84,25 +87,19 @@ class NewPlayListFragment : Fragment() {
         }
 
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNeutralButton("Отмена") {dialog, which -> }
-                .setNegativeButton("Завершить"){dialog, which ->
+            .setTitle(R.string.finishCreatingPlaylist)
+            .setMessage(R.string.unsavedLost)
+            .setNeutralButton(R.string.cancel) {dialog, which -> }
+                .setNegativeButton(R.string.complete){dialog, which ->
                     findNavController().navigateUp()
             }
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            handleBackNavigation()
+        }
 
         binding.btnArrayBack.setOnClickListener {
-            binding.btnArrayBack.setOnClickListener {
-                if (binding.playListName.text!!.isNotBlank() ||
-                    binding.playListDescription.text!!.isNotBlank() ||
-                    selectedImageUri != null) {
-
-                    confirmDialog.show()
-                } else {
-
-                    findNavController().navigateUp()
-                }
-            }
+            handleBackNavigation()
         }
 
         binding.playListName.addTextChangedListener(object : TextWatcher {
@@ -126,6 +123,16 @@ class NewPlayListFragment : Fragment() {
             Toast.makeText(requireContext(),"Плейлист ${playListName} создан", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    private fun handleBackNavigation() {
+        if (binding.playListName.text!!.isNotBlank() ||
+            binding.playListDescription.text!!.isNotBlank() ||
+            selectedImageUri != null) {
+            confirmDialog.show()
+        } else {
+            findNavController().navigateUp()
+        }
     }
 
 }

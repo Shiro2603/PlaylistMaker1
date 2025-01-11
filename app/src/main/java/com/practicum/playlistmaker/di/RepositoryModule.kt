@@ -52,7 +52,7 @@ val repositoryModule = module {
 
     factory { TrackDbConvertor() }
 
-    factory { PlayListConvertor() }
+    factory { PlayListConvertor(get()) }
 
     single<FavoriteTracksRepository> {
         FavoriteTracksRepositoryImpl(get(), get())

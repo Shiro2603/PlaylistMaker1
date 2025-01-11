@@ -151,7 +151,9 @@ class MediaFragment : Fragment() {
                 true -> {
                     val playListName = playList.find { playlist -> playlist.tracksIds.contains(track?.trackId) }?.playListName
                     playListName?.let {
-                        Toast.makeText(requireContext(), "Добавлено в плейлист $it", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.addTrackToPlayList, it),
+                            Toast.LENGTH_SHORT).show()
                     }
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                     playListAdapter?.notifyDataSetChanged()
@@ -159,7 +161,9 @@ class MediaFragment : Fragment() {
                 false -> {
                     val playListName = playList.find { playlist -> playlist.tracksIds.contains(track?.trackId) }?.playListName
                     playListName?.let {
-                        Toast.makeText(requireContext(), "Трек уже добавлен в плейлист $it", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext()
+                            , getString(R.string.trackAlreadyAdd, it),
+                            Toast.LENGTH_SHORT).show()
                     }
                 }
 
