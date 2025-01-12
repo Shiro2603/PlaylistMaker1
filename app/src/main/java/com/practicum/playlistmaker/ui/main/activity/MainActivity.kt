@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.ui.main.activity
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat

@@ -47,6 +47,7 @@ class MediaViewModel(
     }
 
     fun preparePlayer(trackPreview: String?) {
+        Log.d("MediaViewModel", "Preparing player with trackPreview: $trackPreview")
         mediaPlayerInteractor.preparePlayer(trackPreview)
         _mediaPlayerState.value = MediaPlayerState.Prepared()
         mediaPlayerInteractor.setOnCompletionListener{

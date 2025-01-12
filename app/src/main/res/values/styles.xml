@@ -110,5 +110,10 @@
         <item name="fontFamily">@font/ys_display_regular</item>
         <item name="android:textColor">@color/light_black</item>
     </style>
+    <style name="alertTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:textColor">@color/black</item>
+        <item name="background">@color/light_grey</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
 
 </resources>

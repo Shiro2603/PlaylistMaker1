@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.ui.mediateka.fragment
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
@@ -86,15 +88,19 @@ class NewPlayListFragment : Fragment() {
 
         }
 
-        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+        confirmDialog = MaterialAlertDialogBuilder(requireContext(), R.style.alertTheme)
             .setTitle(R.string.finishCreatingPlaylist)
             .setMessage(R.string.unsavedLost)
-            .setNeutralButton(R.string.cancel) {dialog, which -> }
-                .setNegativeButton(R.string.complete){dialog, which ->
-                    findNavController().navigateUp()
+            .setNeutralButton(R.string.cancel) {dialog, which ->
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.complete){dialog, which ->
+                findNavController().navigateUp()
             }
 
-        requireActivity().onBackPressedDispatcher.addCallback {
+
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             handleBackNavigation()
         }
 
