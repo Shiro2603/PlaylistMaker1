@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.data.player.impl
 
 import android.media.MediaPlayer
+import android.util.Log
 import com.practicum.playlistmaker.data.player.MediaPlayerRepository
 
 class MediaPlayerRepositoryImpl(private var mediaPlayer : MediaPlayer) : MediaPlayerRepository  {
@@ -8,16 +9,29 @@ class MediaPlayerRepositoryImpl(private var mediaPlayer : MediaPlayer) : MediaPl
     private var playerState = STATE_DEFAULT
 
     override fun preparePlayer(trackPreview: String?) {
-        mediaPlayer.setDataSource(trackPreview)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerState = STATE_PREPARED
+
+            if (trackPreview.isNullOrEmpty()) {
+                throw IllegalArgumentException("Track preview URL cannot be null or empty")
+            }
+
+            try {
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(trackPreview)
+                mediaPlayer.prepareAsync()
+                mediaPlayer.setOnPreparedListener {
+                    playerState = STATE_PREPARED
+                    Log.d("MediaPlayerRepository", "Player prepared successfully")
+                }
+                mediaPlayer.setOnCompletionListener {
+                    playerState = STATE_PREPARED
+                    Log.d("MediaPlayerRepository", "Playback completed")
+                }
+            } catch (e: Exception) {
+                Log.e("MediaPlayerRepository", "Error preparing player: ${e.message}", e)
+            }
         }
 
-    }
+
 
     override fun starPlayer() {
         mediaPlayer.start()
@@ -30,7 +44,7 @@ class MediaPlayerRepositoryImpl(private var mediaPlayer : MediaPlayer) : MediaPl
     }
 
     override fun release() {
-        mediaPlayer.stop()
+        mediaPlayer.reset()
         mediaPlayer.release()
         playerState = STATE_DEFAULT
     }

@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.practicum.playlistmaker.domain.search.model.Track
-import com.practicum.playlistmaker.ui.media.activity.MediaActivity
 import com.practicum.playlistmaker.ui.mediateka.FavoriteState
 import com.practicum.playlistmaker.ui.mediateka.view_model.FavoriteTracksViewModel
+import com.practicum.playlistmaker.ui.search.fragment.SearchFragmentDirections
 import com.practicum.playlistmaker.ui.search.fragment.SongsAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -40,9 +41,8 @@ class FavoriteTracksFragment : Fragment() {
         binding.rvFavoriteList.adapter = favoriteAdapter
 
         favoriteAdapter?.onClickedTrack = {track ->
-            val intent = Intent(requireContext(), MediaActivity::class.java)
-            intent.putExtra(SAVE_TRACK, track)
-            requireActivity().startActivity(intent)
+            val action = MediatekaFragmentDirections.actionMediatekaFragmentToMediaFragment(track)
+            findNavController().navigate(action)
         }
 
         viewModel.stateLiveDate.observe(viewLifecycleOwner) {

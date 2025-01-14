@@ -1,8 +1,9 @@
 package com.practicum.playlistmaker.domain.search.model
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-
+@Parcelize
 data class Track(
     val trackId : Int?,
     val trackName: String?,
@@ -15,4 +16,4 @@ data class Track(
     val country : String?,
     val previewUrl : String?,
     var isFavorite: Boolean = false,
-) : Serializable
+) : Parcelable

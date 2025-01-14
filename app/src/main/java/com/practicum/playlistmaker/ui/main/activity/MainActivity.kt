@@ -5,8 +5,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.markodevcic.peko.PermissionRequester
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMainBinding
 
@@ -26,12 +28,29 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        PermissionRequester.initialize(applicationContext)
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
 
-
-
+        navController.addOnDestinationChangedListener{ _, destination, _ ->
+            when(destination.id) {
+                R.id.newPlayListFragment -> hideBottomNavigation()
+                R.id.mediaFragment -> hideBottomNavigation()
+                else -> showBottomNavigation()
+            }
+        }
     }
+    private fun hideBottomNavigation() {
+        binding.bottomNavigationView.isVisible = false
+    }
+
+    private fun showBottomNavigation() {
+        binding.bottomNavigationView.isVisible = true
+    }
+
+
+
 }

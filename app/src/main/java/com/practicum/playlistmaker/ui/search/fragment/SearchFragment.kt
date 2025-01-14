@@ -13,11 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.search.SearchScreenState
-import com.practicum.playlistmaker.ui.media.activity.MediaActivity
 import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -184,11 +184,8 @@ class SearchFragment : Fragment() {
 
     private fun handlerTrackClick (track: Track) {
         searchViewModel.addTrackToHistory(track)
-        searchViewModel.saveTrack(track)
-        val intent = Intent(requireContext(), MediaActivity::class.java).apply {
-            putExtra(SAVE_TRACK, track)
-        }
-        startActivity(intent)
+        val action = SearchFragmentDirections.actionSearchFragmentToMediaFragment(track)
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {
@@ -197,7 +194,6 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        const val SAVE_TRACK = "track"
         const val VALUE_KEY = "SearchText"
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
