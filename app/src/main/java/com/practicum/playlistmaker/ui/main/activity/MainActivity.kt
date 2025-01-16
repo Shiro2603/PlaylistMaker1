@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             when(destination.id) {
                 R.id.newPlayListFragment -> hideBottomNavigation()
                 R.id.mediaFragment -> hideBottomNavigation()
+                R.id.playListInfo -> hideBottomNavigation()
                 else -> showBottomNavigation()
             }
         }

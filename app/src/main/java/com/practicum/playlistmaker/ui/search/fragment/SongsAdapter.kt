@@ -10,6 +10,7 @@ import com.practicum.playlistmaker.domain.search.model.Track
 class SongsAdapter(
     private var tracks : List<Track>,
     var onClickedTrack : ((Track) -> Unit)? = null,
+    var onLongClickedTrack: ((Track) -> Unit)? = null
 ) : RecyclerView.Adapter<SongsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongsViewHolder {
@@ -20,8 +21,13 @@ class SongsAdapter(
     override fun onBindViewHolder(holder: SongsViewHolder, position: Int) {
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
-                onClickedTrack?.invoke(tracks[position])
-                updateData(tracks)
+            onClickedTrack?.invoke(tracks[position])
+            updateData(tracks)
+        }
+        holder.itemView.setOnLongClickListener {
+            onLongClickedTrack?.invoke(tracks[position])
+            updateData(tracks)
+            true
         }
     }
 

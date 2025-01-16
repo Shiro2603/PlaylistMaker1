@@ -12,8 +12,10 @@ interface PlayListTracksDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTrack(track : PlayListTracksEntity)
 
-    @Query("SELECT * FROM playlist_tracks WHERE trackId = :trackId ")
-    suspend fun getTrackById(trackId: Int) : PlayListTracksEntity?
+    @Query("SELECT * FROM playlist_tracks" )
+    suspend fun getTracks(): List<PlayListTracksEntity>
 
+    @Query("DELETE FROM playlist_tracks WHERE trackId = :trackId")
+    suspend fun deleteTrack(trackId: Int)
 
 }

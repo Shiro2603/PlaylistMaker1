@@ -24,6 +24,22 @@ class PlayListInteractorImpl(
         repository.addToPlayList(track, playList)
     }
 
+    override suspend fun getPlayListById(playListId: Int): PlayList {
+        return repository.getPlayListById(playListId)
+    }
+
+    override suspend fun getTrackForPlayList(trackIds: List<Int?>): Flow<List<Track>> {
+        return repository.getTrackForPlayList(trackIds)
+    }
+
+    override suspend fun deletePlayListTrack(trackId: Int, playList: PlayList) {
+        repository.deletePlayListTrack(trackId, playList)
+    }
+
+    override suspend fun deletePlayList(playList: PlayList) {
+        repository.deletePlayList(playList)
+    }
+
     override fun saveToStorage(uri: Uri) : String {
         return imageStorage.saveToStorage(uri)
     }
