@@ -29,16 +29,16 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 
-class NewPlayListFragment : Fragment() {
+open class NewPlayListFragment : Fragment() {
 
     private var _binding : FragmentNewPlayListBinding? = null
     private val binding : FragmentNewPlayListBinding get() = requireNotNull(_binding) {"Binding wasn't initiliazed!" }
-    lateinit var confirmDialog: MaterialAlertDialogBuilder
+    private lateinit var confirmDialog: MaterialAlertDialogBuilder
     private val viewModel by viewModel<NewPlayListViewModel> ()
     private var playListName : String = ""
     private var playListDescription : String = ""
     private var selectedImageUri: String? = null
-    val requester = PermissionRequester.instance()
+    private val requester = PermissionRequester.instance()
 
     override fun onCreateView(
         inflater: LayoutInflater,

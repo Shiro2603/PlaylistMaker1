@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.ui.mediateka.view_model
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,12 +9,14 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.mediateka.PlayListInteractor
 import com.practicum.playlistmaker.domain.mediateka.model.PlayList
 import com.practicum.playlistmaker.domain.search.model.Track
+import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 import com.practicum.playlistmaker.ui.mediateka.PlayListState
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayListViewModel(private val playListInteractor: PlayListInteractor) : ViewModel() {
+class PlayListViewModel(private val playListInteractor: PlayListInteractor,
+                        private val sharingInteractor: SharingInteractor) : ViewModel() {
 
     private val _stateLiveData = MutableLiveData<PlayListState>()
     val stateLiveData : LiveData<PlayListState> = _stateLiveData
@@ -70,5 +73,8 @@ class PlayListViewModel(private val playListInteractor: PlayListInteractor) : Vi
         }
     }
 
+    fun sharingPlayList(context: Context, playList: PlayList, track: List<Track>) {
+        sharingInteractor.sharePlaylist(context, playList, track)
+    }
 
 }

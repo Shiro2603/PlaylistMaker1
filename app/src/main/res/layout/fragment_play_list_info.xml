@@ -19,16 +19,18 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:elevation="2dp"/>
 
         <ImageView
             android:id="@+id/imagePlayList"
-            android:layout_width="match_parent"
-            android:layout_height="360dp"
-            android:src="@drawable/ic_placeholder_media"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            android:src="@drawable/pc_placeholder_playlist" />
 
         <TextView
             android:id="@+id/playListName"
@@ -115,7 +117,8 @@
         android:orientation="vertical"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         android:background="@drawable/rectangle_media"
-        app:behavior_peekHeight="316dp"
+        app:behavior_peekHeight="285dp"
+        android:layout_marginTop="24dp"
         app:behavior_hideable="false">
 
         <View
@@ -132,6 +135,7 @@
             android:layout_height="wrap_content"
             android:text="@string/emptyTracksForPlayList"
             android:layout_gravity="center_horizontal"
+
             android:layout_marginTop="50dp"
             android:visibility="gone"/>
 
@@ -159,8 +163,7 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         android:background="@drawable/rectangle_media"
         app:behavior_peekHeight="416dp"
-        app:behavior_hideable="true"
-        android:visibility="gone">
+        app:behavior_hideable="true">
 
         <View
             android:layout_width="50dp"

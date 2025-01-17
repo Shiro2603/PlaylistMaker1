@@ -9,6 +9,8 @@ import com.practicum.playlistmaker.domain.search.model.Track
 
 class PlayListConvertor(private val gson: Gson) {
 
+    val currentTimeMillis  = System.currentTimeMillis()
+
     fun map(playList: PlayList) : PlayListEntity {
         return PlayListEntity(
             playList.id,
@@ -43,6 +45,7 @@ class PlayListConvertor(private val gson: Gson) {
             primaryGenreName = track.primaryGenreName,
             country = track.country,
             previewUrl = track.previewUrl,
+            orderTime = currentTimeMillis,
         )
     }
 

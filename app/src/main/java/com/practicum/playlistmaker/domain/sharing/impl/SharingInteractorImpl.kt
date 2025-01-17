@@ -1,7 +1,10 @@
 package com.practicum.playlistmaker.domain.sharing.impl
+import android.content.Context
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.sharing.ExternalNavigatorRepository
 import com.practicum.playlistmaker.data.sharing.ResourceProvider
+import com.practicum.playlistmaker.domain.mediateka.model.PlayList
+import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 import com.practicum.playlistmaker.domain.sharing.model.EmailData
 
@@ -23,6 +26,10 @@ class SharingInteractorImpl(
     override fun openSupport() {
         val emailData = getSupportEmailData()
         externalNavigator.openEmail(emailData)
+    }
+
+    override fun sharePlaylist(context: Context, playList: PlayList, trackList: List<Track>) {
+        externalNavigator.sharePlaylist(context, playList, trackList)
     }
 
     private fun getShareAppLink(): String {

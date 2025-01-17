@@ -1,10 +1,12 @@
 package com.practicum.playlistmaker.ui.mediateka.fragment
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -35,6 +37,7 @@ class PlayListInfo : Fragment() {
     private var tracksAdapter: SongsAdapter? = null
     lateinit var confirmDialog1: MaterialAlertDialogBuilder
     lateinit var confirmDialog2: MaterialAlertDialogBuilder
+    private var track = ArrayList<Track>()
 
 
     override fun onCreateView(
@@ -67,25 +70,27 @@ class PlayListInfo : Fragment() {
         }
 
         viewModel.getPlayListById(playList.id!!)
-        viewModel.loadPlayListTrack(playList.tracksIds)
 
 
-        tracksAdapter = SongsAdapter(emptyList())
+        tracksAdapter = SongsAdapter(track)
         binding.rvTrackPlayList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.rvTrackPlayList.adapter = tracksAdapter
 
         viewModel.stateTrackLiveData.observe(viewLifecycleOwner) { tracks ->
+            track.clear()
+            track.addAll(tracks)
             tracksAdapter?.updateData(tracks)
             val totalDuration = viewModel.calculateTotalDuration(tracks)
             binding.playListTotalTime.text = "${totalDuration} минут"
             emptyTrackList(tracks)
         }
 
+        viewModel.loadPlayListTrack(playList.tracksIds)
+
         tracksAdapter?.onClickedTrack = {track ->
             val action = PlayListInfoDirections.actionPlayListInfoToMediaFragment(track)
             findNavController().navigate(action)
         }
-
 
         tracksAdapter?.onLongClickedTrack = {
 
@@ -97,7 +102,7 @@ class PlayListInfo : Fragment() {
                 }
                 .setPositiveButton("Да") {dialog, which ->
                     viewModel.deleteTrack(it.trackId!!, playList)
-
+                    tracksAdapter?.updateData(track)
                 }
 
             confirmDialog1.show()
@@ -126,7 +131,6 @@ class PlayListInfo : Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
             }
-
         })
 
         confirmDialog2 = MaterialAlertDialogBuilder(requireContext(), R.style.alertThemePlayList)
@@ -145,12 +149,30 @@ class PlayListInfo : Fragment() {
             confirmDialog2.show()
         }
 
+        binding.icShare.setOnClickListener {
+            if(track.isEmpty()) {
+                Toast.makeText(requireContext(),"В данном плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_LONG).show()
+            } else {
+                sharePlayList(requireContext(), playList, track)
+            }
+        }
+
+        binding.moreMenuShare.setOnClickListener {
+            if(track.isEmpty()) {
+                Toast.makeText(requireContext(),"В данном плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_LONG).show()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                sharePlayList(requireContext(), playList, track)
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
+
     }
 
     private fun displayPlaylistInfo(playList: PlayList) {
         Glide.with(binding.imagePlayList.context)
             .load(playList.urlImager)
-            .placeholder(R.drawable.pc_placeholder)
+            .placeholder(R.drawable.pc_placeholder_playlist)
             .centerCrop()
             .into(binding.imagePlayList)
         binding.playListName.text = playList.playListName
@@ -186,5 +208,8 @@ class PlayListInfo : Fragment() {
         _binding = null
     }
 
+    private fun sharePlayList(context: Context, playList: PlayList, track: List<Track>) {
+        viewModel.sharingPlayList(context, playList, track)
+    }
 
 }

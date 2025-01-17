@@ -6,7 +6,13 @@ import android.net.Uri
 import androidx.core.content.ContextCompat
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.sharing.ExternalNavigatorRepository
+import com.practicum.playlistmaker.domain.mediateka.model.PlayList
+import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.domain.sharing.model.EmailData
+import com.practicum.playlistmaker.util.getTrackWordForm
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ExternalNavigatorRepositoryImpl(private val context: Context) : ExternalNavigatorRepository {
 
@@ -33,5 +39,29 @@ class ExternalNavigatorRepositoryImpl(private val context: Context) : ExternalNa
         userAgreement.setData(Uri.parse(context.getString(R.string.userAgreement)))
         userAgreement.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         ContextCompat.startActivity(context, userAgreement, null)
+    }
+
+    override fun sharePlaylist(context: Context, playList: PlayList, trackList: List<Track>) {
+
+        val shareMessage = buildString {
+            append("Плейлист: ${playList.playListName}\n")
+            append("Описание:\n")
+            append("\n")
+            append("[${trackList.size}] ${playList.tracksCount?.let { getTrackWordForm(it) }}\n\n")
+            trackList.forEachIndexed { index, track ->
+                append("${index + 1}. ${track.artistName} - ${track.trackName} (${
+                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(
+                        Date(track.trackTimeMillis)
+                    )})\n")
+            }
+        }
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, shareMessage)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+        ContextCompat.startActivity(context, Intent.createChooser(shareIntent, "Поделиться плейлистом"), null)
     }
 }
