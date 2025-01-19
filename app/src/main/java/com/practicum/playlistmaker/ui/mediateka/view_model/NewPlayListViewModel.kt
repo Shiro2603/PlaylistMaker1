@@ -15,7 +15,7 @@ open class NewPlayListViewModel(private val playListInteractor: PlayListInteract
         }
     }
 
-    fun savePlayList(
+    open fun savePlayList(
         name: String,
         description: String,
         imageUri: String?,

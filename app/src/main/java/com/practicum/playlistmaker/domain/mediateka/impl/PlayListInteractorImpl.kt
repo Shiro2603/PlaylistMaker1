@@ -32,7 +32,7 @@ class PlayListInteractorImpl(
         return repository.getTrackForPlayList(trackIds)
     }
 
-    override suspend fun deletePlayListTrack(trackId: Int, playList: PlayList) {
+    override suspend fun deletePlayListTrack(trackId: Int, playList: PlayList, onUpdate: (List<Track>) -> Unit) {
         repository.deletePlayListTrack(trackId, playList)
     }
 

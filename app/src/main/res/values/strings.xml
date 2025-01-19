@@ -45,10 +45,14 @@
     <string name="unsavedLost">Все несохраненные данные будут потеряны</string>
     <string name="cancel">Отмена</string>
     <string name="complete">Завершить</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="moreMenuShare">Поделиться</string>
     <string name="moreMenuEdit">Редактировать информацию</string>
     <string name="moreMenuDeletePlayList">Удалить плейлист</string>
     <string name="emptyTracksForPlayList">В данном плейлисте нету треков</string>
+    <string name="save">Сохранить</string>
+    <string name="deletePlayList">Удалить плейлист</string>
+    <string name="doYouWontDeletePlayList">Вы уверены, что хотите удалить этот плейлист?</string>
+    <string name="delete">Удалить</string>
+    <string name="deleteTrackFromPlayList">Удалить трек</string>
+    <string name="doYouWontDeleteTrack">Вы уверены, что хотите удалить трек из плейлиста?</string>
 </resources>

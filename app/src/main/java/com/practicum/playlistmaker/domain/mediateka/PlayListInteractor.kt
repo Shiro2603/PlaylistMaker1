@@ -12,7 +12,7 @@ interface PlayListInteractor {
     suspend fun addTrackToPlayList(track: Track, playList: PlayList)
     suspend fun getPlayListById(playListId: Int) : PlayList
     suspend fun getTrackForPlayList(trackIds: List<Int?>) : Flow<List<Track>>
-    suspend fun deletePlayListTrack(trackId: Int, playList: PlayList)
+    suspend fun deletePlayListTrack(trackId: Int, playList: PlayList, onUpdate: (List<Track>) -> Unit)
     suspend fun deletePlayList(playList: PlayList)
     fun saveToStorage(uri: Uri) : String
     fun getImageToStorage(image: String) : Uri

@@ -71,14 +71,11 @@ class PlayListInfo : Fragment() {
 
         viewModel.getPlayListById(playList.id!!)
 
-
         tracksAdapter = SongsAdapter(track)
         binding.rvTrackPlayList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.rvTrackPlayList.adapter = tracksAdapter
 
         viewModel.stateTrackLiveData.observe(viewLifecycleOwner) { tracks ->
-            track.clear()
-            track.addAll(tracks)
             tracksAdapter?.updateData(tracks)
             val totalDuration = viewModel.calculateTotalDuration(tracks)
             binding.playListTotalTime.text = "${totalDuration} минут"
@@ -95,14 +92,13 @@ class PlayListInfo : Fragment() {
         tracksAdapter?.onLongClickedTrack = {
 
             confirmDialog1 = MaterialAlertDialogBuilder(requireContext(), R.style.alertThemePlayList)
-                .setTitle("Удалить трек")
-                .setMessage("Вы уверены, что хотите удалить трек из плейлиста?")
-                .setNegativeButton("Нет") {dialog, which ->
+                .setTitle(R.string.deleteTrackFromPlayList)
+                .setMessage(R.string.doYouWontDeleteTrack)
+                .setNegativeButton(R.string.cancel) {dialog, which ->
                     dialog.dismiss()
                 }
-                .setPositiveButton("Да") {dialog, which ->
+                .setPositiveButton(R.string.delete) {dialog, which ->
                     viewModel.deleteTrack(it.trackId!!, playList)
-                    tracksAdapter?.updateData(track)
                 }
 
             confirmDialog1.show()
@@ -134,12 +130,12 @@ class PlayListInfo : Fragment() {
         })
 
         confirmDialog2 = MaterialAlertDialogBuilder(requireContext(), R.style.alertThemePlayList)
-            .setTitle("Удалить плейлист")
-            .setMessage("Хотите удалить плейлист?")
-            .setNegativeButton("Нет") {dialog, which ->
+            .setTitle(R.string.deletePlayList)
+            .setMessage(R.string.doYouWontDeletePlayList)
+            .setNegativeButton(R.string.cancel) {dialog, which ->
                 dialog.dismiss()
             }
-            .setPositiveButton("Да") {dialog, which ->
+            .setPositiveButton(R.string.delete) {dialog, which ->
                 viewModel.deletePlayList(playList)
                 findNavController().navigateUp()
             }
@@ -165,6 +161,11 @@ class PlayListInfo : Fragment() {
                 sharePlayList(requireContext(), playList, track)
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
+        }
+
+        binding.moreMenuEdit.setOnClickListener {
+            val action = PlayListInfoDirections.actionPlayListInfoToEditPlayListFragment(playList)
+            findNavController().navigate(action)
         }
 
     }

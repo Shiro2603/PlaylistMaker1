@@ -48,12 +48,11 @@
         <action
             android:id="@+id/action_playListFragment_to_playListInfo"
             app:destination="@id/playListInfo">
-
             <argument
                 android:name="playListId"
                 app:argType="integer" />
-
         </action>
+
     </fragment>
     <fragment
         android:id="@+id/newPlayListFragment"
@@ -95,6 +94,18 @@
         <action
             android:id="@+id/action_playListInfo_to_mediaFragment"
             app:destination="@id/mediaFragment" />
+        <action
+            android:id="@+id/action_playListInfo_to_editPlayListFragment"
+            app:destination="@id/editPlayListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPlayListFragment"
+        android:name="com.practicum.playlistmaker.ui.mediateka.fragment.EditPlayListFragment"
+        android:label="EditPlayListFragment" >
+
+        <argument
+            android:name="playList"
+            app:argType="com.practicum.playlistmaker.domain.mediateka.model.PlayList" />
 
     </fragment>
 

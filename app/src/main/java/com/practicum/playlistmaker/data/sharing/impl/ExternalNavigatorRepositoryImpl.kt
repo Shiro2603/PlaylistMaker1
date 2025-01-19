@@ -45,7 +45,7 @@ class ExternalNavigatorRepositoryImpl(private val context: Context) : ExternalNa
 
         val shareMessage = buildString {
             append("Плейлист: ${playList.playListName}\n")
-            append("Описание:\n")
+            append("Описание: ${playList.playListDescription}\n")
             append("\n")
             append("[${trackList.size}] ${playList.tracksCount?.let { getTrackWordForm(it) }}\n\n")
             trackList.forEachIndexed { index, track ->
