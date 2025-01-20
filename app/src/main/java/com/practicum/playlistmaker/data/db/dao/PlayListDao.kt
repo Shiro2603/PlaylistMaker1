@@ -25,7 +25,7 @@ interface PlayListDao {
     @Query("SELECT * FROM playlist_table WHERE id = :playListIds")
     suspend fun getPlayListByIds(playListIds: Int) : PlayListEntity
 
-    @Query("SELECT COUNT(*) > 0 FROM playlist_table WHERE tracksIds LIKE '%' || :trackId || '%'")
+    @Query("SELECT COUNT(*) > 0 FROM playlist_table WHERE tracksIds = :trackId IN (tracksIds)")
     suspend fun isTrackUsedInOtherPlaylists(trackId: Int) : Boolean
 
     @Delete

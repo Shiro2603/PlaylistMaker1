@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.domain.search.model.Track
 
 class PlayListConvertor(private val gson: Gson) {
 
-    val currentTimeMillis  = System.currentTimeMillis()
+    private val currentTimeMillis  = System.currentTimeMillis()
 
     fun map(playList: PlayList) : PlayListEntity {
         return PlayListEntity(

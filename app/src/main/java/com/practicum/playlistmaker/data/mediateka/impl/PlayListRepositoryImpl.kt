@@ -45,27 +45,27 @@ class PlayListRepositoryImpl(
 
     override suspend fun getTrackForPlayList(trackIds: List<Int?>): Flow<List<Track>> {
         return flow {
-            Log.d("PlayListInteractor", "Fetching tracks for IDs: $trackIds")
             val allTrack = appDatabase.playListTrackDao().getTracks()
-            Log.d("PlayListInteractor", "All tracks from DB: $allTrack")
             val filteredTracks = allTrack.filter { trackIds.contains(it.trackId) }
             emit(convertFromPlayListTrackEntity(filteredTracks))
         }
     }
 
-    override suspend fun deletePlayListTrack(trackId: Int, playList: PlayList) {
-        val updateTrackIds = playList.tracksIds.filter { it != trackId }
-        val updatedPlayList = playList.copy(
-            tracksIds = updateTrackIds.toMutableList(),
+    override suspend fun deletePlayListTrack(trackId: Int, playList: PlayList)  {
+        val updatedTrackIds = playList.tracksIds.filter { it != trackId }
+        val newPlayList = playList.copy(
+            tracksIds = updatedTrackIds,
             tracksCount = playList.tracksCount?.dec()
         )
-        appDatabase.playListDao().updatePlaylist(playListConvertor.map(updatedPlayList))
+
+        appDatabase.playListDao().updatePlaylist(playListConvertor.map(newPlayList))
 
         val isTrackUsedInOtherPlaylists = appDatabase.playListDao().isTrackUsedInOtherPlaylists(trackId)
 
         if(!isTrackUsedInOtherPlaylists) {
             appDatabase.playListTrackDao().deleteTrack(trackId)
         }
+
 
     }
 

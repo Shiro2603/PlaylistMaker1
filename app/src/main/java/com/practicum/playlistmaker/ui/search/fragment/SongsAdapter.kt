@@ -36,7 +36,7 @@ class SongsAdapter(
     }
 
     fun updateData(newSongs: List<Track>) {
-        tracks = newSongs
+        tracks = ArrayList(newSongs)
         notifyDataSetChanged()
 
     }

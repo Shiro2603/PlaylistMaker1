@@ -63,6 +63,7 @@ class PlayListInfo : Fragment() {
                 is PlayListState.SinglePlaylist -> {
                     displayPlaylistInfo(it.playList)
                     displayPlayListMoreMenu(it.playList)
+                    viewModel.loadPlayListTrack(it.playList.tracksIds)
                 }
 
                 else -> {}
@@ -76,6 +77,8 @@ class PlayListInfo : Fragment() {
         binding.rvTrackPlayList.adapter = tracksAdapter
 
         viewModel.stateTrackLiveData.observe(viewLifecycleOwner) { tracks ->
+            track.clear()
+            track.addAll(tracks)
             tracksAdapter?.updateData(tracks)
             val totalDuration = viewModel.calculateTotalDuration(tracks)
             binding.playListTotalTime.text = "${totalDuration} минут"
