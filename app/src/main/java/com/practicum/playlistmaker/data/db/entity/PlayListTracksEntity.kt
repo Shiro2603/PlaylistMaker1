@@ -18,3 +18,4 @@ data class PlayListTracksEntity(
     val previewUrl: String?,
     val orderTime: Long,
 )
+

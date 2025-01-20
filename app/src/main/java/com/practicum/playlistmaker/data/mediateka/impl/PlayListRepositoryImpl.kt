@@ -58,14 +58,16 @@ class PlayListRepositoryImpl(
             tracksCount = playList.tracksCount?.dec()
         )
 
-        appDatabase.playListDao().updatePlaylist(playListConvertor.map(newPlayList))
-
         val isTrackUsedInOtherPlaylists = appDatabase.playListDao().isTrackUsedInOtherPlaylists(trackId)
 
         if(!isTrackUsedInOtherPlaylists) {
             appDatabase.playListTrackDao().deleteTrack(trackId)
         }
 
+        Log.d("PlaylistRepo", "Трек удален: $trackId")
+        Log.d("PlaylistRepo", "Плейлист после обновление: $newPlayList")
+
+        appDatabase.playListDao().updatePlaylist(playListConvertor.map(newPlayList))
 
     }
 

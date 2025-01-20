@@ -66,9 +66,9 @@ class PlayListViewModel(private val playListInteractor: PlayListInteractor,
             playListInteractor.deletePlayListTrack(trackId, playList)
             val updatedPlayList = playListInteractor.getPlayListById(playList.id!!)
             _stateLiveData.postValue(PlayListState.SinglePlaylist(updatedPlayList))
-            loadPlayListTrack(playList.tracksIds)
         }
 
+         loadPlayListTrack(playList.tracksIds)
     }
 
     fun deletePlayList(playList: PlayList) {
