@@ -74,6 +74,7 @@ class PlayListViewModel(private val playListInteractor: PlayListInteractor,
     fun deletePlayList(playList: PlayList) {
         viewModelScope.launch {
             playListInteractor.deletePlayList(playList)
+            _stateLiveData.postValue(PlayListState.PlaylistDeleted)
         }
     }
 

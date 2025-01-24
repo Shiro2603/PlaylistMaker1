@@ -38,6 +38,7 @@ class PlayListInfo : Fragment() {
     lateinit var confirmDialog1: MaterialAlertDialogBuilder
     lateinit var confirmDialog2: MaterialAlertDialogBuilder
     private var track = ArrayList<Track>()
+    private lateinit var playList: PlayList
 
 
     override fun onCreateView(
@@ -56,11 +57,16 @@ class PlayListInfo : Fragment() {
             findNavController().navigateUp()
         }
 
-        val playList = args.playList
+        playList = args.playList
 
         viewModel.stateLiveData.observe(viewLifecycleOwner) {
             when(it) {
+                is PlayListState.PlaylistDeleted -> {
+                    Toast.makeText(requireContext(), "Плейлист ${playList.playListName} успешно удален", Toast.LENGTH_SHORT).show()
+                    findNavController().navigateUp()
+                }
                 is PlayListState.SinglePlaylist -> {
+                    playList = it.playList
                     displayPlaylistInfo(it.playList)
                     displayPlayListMoreMenu(it.playList)
                     viewModel.loadPlayListTrack(it.playList.tracksIds)
@@ -115,6 +121,8 @@ class PlayListInfo : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
+        binding.overlay.setOnClickListener {  }
+
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -140,7 +148,6 @@ class PlayListInfo : Fragment() {
             }
             .setPositiveButton(R.string.delete) {dialog, which ->
                 viewModel.deletePlayList(playList)
-                findNavController().navigateUp()
             }
 
 
@@ -150,15 +157,16 @@ class PlayListInfo : Fragment() {
 
         binding.icShare.setOnClickListener {
             if(track.isEmpty()) {
-                Toast.makeText(requireContext(),"В данном плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"У вас нету треков, которыми можно поделиться", Toast.LENGTH_LONG).show()
             } else {
                 sharePlayList(requireContext(), playList, track)
+
             }
         }
 
         binding.moreMenuShare.setOnClickListener {
             if(track.isEmpty()) {
-                Toast.makeText(requireContext(),"В данном плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"У вас нету треков, которыми можно поделиться", Toast.LENGTH_LONG).show()
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             } else {
                 sharePlayList(requireContext(), playList, track)

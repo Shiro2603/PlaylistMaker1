@@ -44,10 +44,12 @@ class ExternalNavigatorRepositoryImpl(private val context: Context) : ExternalNa
     override fun sharePlaylist(context: Context, playList: PlayList, trackList: List<Track>) {
 
         val shareMessage = buildString {
+
             append("Плейлист: ${playList.playListName}\n")
             append("Описание: ${playList.playListDescription}\n")
             append("\n")
             append("[${trackList.size}] ${playList.tracksCount?.let { getTrackWordForm(it) }}\n\n")
+
             trackList.forEachIndexed { index, track ->
                 append("${index + 1}. ${track.artistName} - ${track.trackName} (${
                     SimpleDateFormat("mm:ss", Locale.getDefault()).format(
@@ -59,9 +61,12 @@ class ExternalNavigatorRepositoryImpl(private val context: Context) : ExternalNa
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, shareMessage)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
         }
 
-        ContextCompat.startActivity(context, Intent.createChooser(shareIntent, "Поделиться плейлистом"), null)
-    }
+        val chooserIntent = Intent.createChooser(shareIntent, "Поделиться плейлистом")
+
+        ContextCompat.startActivity(context, chooserIntent, null)
+
+}
 }

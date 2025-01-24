@@ -8,5 +8,6 @@ sealed class PlayListState {
     class SinglePlaylist(val playList: PlayList) : PlayListState()
 
     object Empty : PlayListState()
+    object PlaylistDeleted : PlayListState()
 
 }

@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.data.mediateka.impl
 
-import android.util.Log
 import com.practicum.playlistmaker.data.converters.PlayListConvertor
 import com.practicum.playlistmaker.data.db.AppDatabase
 import com.practicum.playlistmaker.data.db.entity.PlayListTracksEntity
@@ -10,6 +9,7 @@ import com.practicum.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+
 
 class PlayListRepositoryImpl(
     private val appDatabase: AppDatabase,
@@ -58,29 +58,36 @@ class PlayListRepositoryImpl(
             tracksCount = playList.tracksCount?.dec()
         )
 
-        val isTrackUsedInOtherPlaylists = appDatabase.playListDao().isTrackUsedInOtherPlaylists(trackId)
-
-        if(!isTrackUsedInOtherPlaylists) {
-            appDatabase.playListTrackDao().deleteTrack(trackId)
-        }
-
-        Log.d("PlaylistRepo", "Трек удален: $trackId")
-        Log.d("PlaylistRepo", "Плейлист после обновление: $newPlayList")
-
         appDatabase.playListDao().updatePlaylist(playListConvertor.map(newPlayList))
+
+        removeTrackForPlayList(trackId)
 
     }
 
     override suspend fun deletePlayList(playList: PlayList) {
+
+        val trackList = playList.tracksIds
+
         val playListEntity = playListConvertor.map(playList)
         appDatabase.playListDao().deletePlayList(playListEntity)
+
+        trackList.forEach { trackId -> trackId?.let { removeTrackForPlayList(trackId) }
+        }
+
     }
 
+    private suspend fun removeTrackForPlayList(trackID: Int) {
+
+        val isTrackUsedInOtherPlaylists = appDatabase.playListDao().isTrackUsedInOtherPlaylists(trackID)
+
+        if (!isTrackUsedInOtherPlaylists) {
+            appDatabase.playListTrackDao().deleteTrack(trackID)
+
+        }
+    }
 
     private fun convertFromPlayListTrackEntity(tracks: List<PlayListTracksEntity>) : List<Track> {
         return tracks.map { track -> playListConvertor.map(track) }
     }
-
-
 
 }
