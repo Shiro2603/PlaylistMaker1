@@ -1,5 +1,5 @@
 package com.practicum.playlistmaker.domain.sharing.impl
-import android.content.Context
+
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.sharing.ExternalNavigatorRepository
 import com.practicum.playlistmaker.data.sharing.ResourceProvider
@@ -28,8 +28,8 @@ class SharingInteractorImpl(
         externalNavigator.openEmail(emailData)
     }
 
-    override fun sharePlaylist(context: Context, playList: PlayList, trackList: List<Track>) {
-        externalNavigator.sharePlaylist(context, playList, trackList)
+    override fun sharePlaylist(playList: PlayList, trackList: List<Track>) {
+        externalNavigator.sharePlaylist(playList, trackList)
     }
 
     private fun getShareAppLink(): String {

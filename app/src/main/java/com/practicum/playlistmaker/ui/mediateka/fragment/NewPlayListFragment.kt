@@ -25,8 +25,6 @@ import com.practicum.playlistmaker.ui.mediateka.view_model.NewPlayListViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
-
 open class NewPlayListFragment : Fragment() {
 
     private var _binding : FragmentNewPlayListBinding? = null
@@ -45,12 +43,10 @@ open class NewPlayListFragment : Fragment() {
     ): View {
         _binding = FragmentNewPlayListBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             if(it != null) {
@@ -95,8 +91,6 @@ open class NewPlayListFragment : Fragment() {
             .setNegativeButton(R.string.complete){dialog, which ->
                 findNavController().navigateUp()
             }
-
-
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             handleBackNavigation()

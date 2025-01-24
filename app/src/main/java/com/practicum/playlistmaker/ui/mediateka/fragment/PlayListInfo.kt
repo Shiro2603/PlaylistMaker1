@@ -88,7 +88,8 @@ class PlayListInfo : Fragment() {
             tracksAdapter?.updateData(tracks)
             val totalDuration = viewModel.calculateTotalDuration(tracks)
             binding.playListTotalTime.text = "${totalDuration} минут"
-            emptyTrackList(tracks)
+            binding.emptyTracks.isVisible = track.isEmpty()
+            binding.rvTrackPlayList.isVisible = !track.isEmpty()
         }
 
         viewModel.loadPlayListTrack(playList.tracksIds)
@@ -159,7 +160,7 @@ class PlayListInfo : Fragment() {
             if(track.isEmpty()) {
                 Toast.makeText(requireContext(),"У вас нету треков, которыми можно поделиться", Toast.LENGTH_LONG).show()
             } else {
-                sharePlayList(requireContext(), playList, track)
+                sharePlayList(playList, track)
 
             }
         }
@@ -169,7 +170,7 @@ class PlayListInfo : Fragment() {
                 Toast.makeText(requireContext(),"У вас нету треков, которыми можно поделиться", Toast.LENGTH_LONG).show()
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             } else {
-                sharePlayList(requireContext(), playList, track)
+                sharePlayList(playList, track)
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
@@ -205,23 +206,13 @@ class PlayListInfo : Fragment() {
         binding.moreMenuTrackCount.text = "${playList.tracksCount} ${playList.tracksCount?.let { getTrackWordForm(it) }}"
     }
 
-    private fun emptyTrackList(track: List<Track>) {
-        if(track.isEmpty()) {
-            binding.emptyTracks.isVisible = true
-            binding.rvTrackPlayList.isVisible = false
-        } else {
-            binding.emptyTracks.isVisible = false
-            binding.rvTrackPlayList.isVisible = true
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    private fun sharePlayList(context: Context, playList: PlayList, track: List<Track>) {
-        viewModel.sharingPlayList(context, playList, track)
+    private fun sharePlayList(playList: PlayList, track: List<Track>) {
+        viewModel.sharingPlayList(playList, track)
     }
 
 }

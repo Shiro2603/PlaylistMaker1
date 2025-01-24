@@ -16,7 +16,7 @@ class PlayListInteractorImpl(
         repository.createPlayList(playList)
     }
 
-    override suspend fun getPlayList(): Flow<List<PlayList>> {
+    override fun getPlayList(): Flow<List<PlayList>> {
         return repository.getPlayList()
     }
 
@@ -28,7 +28,7 @@ class PlayListInteractorImpl(
         return repository.getPlayListById(playListId)
     }
 
-    override suspend fun getTrackForPlayList(trackIds: List<Int?>): Flow<List<Track>> {
+    override fun getTrackForPlayList(trackIds: List<Int?>): Flow<List<Track>> {
         return repository.getTrackForPlayList(trackIds)
     }
 

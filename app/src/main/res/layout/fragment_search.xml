@@ -72,7 +72,8 @@
         android:layout_marginStart="@dimen/margin_13dp"
         android:layout_marginEnd="@dimen/margin_12dp"
         android:id="@+id/recycleView"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:paddingBottom="100dp"/>
 
 
     <LinearLayout
@@ -179,7 +180,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_search_title"
                 android:layout_marginTop="@dimen/margin_8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <Button
                 style="@style/ButtonStyleForSearch"

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -78,6 +79,10 @@ class EditPlayListFragment : NewPlayListFragment() {
             findNavController().navigateUp()
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
+
         viewModel.playlistData.observe(viewLifecycleOwner) { playlist ->
             binding.playListName.setText(playlist.playListName)
             binding.playListDescription.setText(playlist.playListDescription)
@@ -86,6 +91,7 @@ class EditPlayListFragment : NewPlayListFragment() {
                 selectedImageUri = it
             }
             binding.btnCreatePlayList.text = getString(R.string.save)
+            binding.textView.text = getString(R.string.edit)
         }
 
         binding.btnCreatePlayList.setOnClickListener {

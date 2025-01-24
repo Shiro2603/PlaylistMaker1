@@ -41,7 +41,7 @@ class ExternalNavigatorRepositoryImpl(private val context: Context) : ExternalNa
         ContextCompat.startActivity(context, userAgreement, null)
     }
 
-    override fun sharePlaylist(context: Context, playList: PlayList, trackList: List<Track>) {
+    override fun sharePlaylist(playList: PlayList, trackList: List<Track>) {
 
         val shareMessage = buildString {
 
@@ -61,12 +61,14 @@ class ExternalNavigatorRepositoryImpl(private val context: Context) : ExternalNa
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, shareMessage)
-
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
 
-        val chooserIntent = Intent.createChooser(shareIntent, "Поделиться плейлистом")
+        val chooserIntent = Intent.createChooser(shareIntent, "Поделиться плейлистом").apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
 
         ContextCompat.startActivity(context, chooserIntent, null)
 
-}
+    }
 }

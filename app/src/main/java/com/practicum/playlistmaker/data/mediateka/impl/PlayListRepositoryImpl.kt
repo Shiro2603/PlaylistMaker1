@@ -20,7 +20,7 @@ class PlayListRepositoryImpl(
          appDatabase.playListDao().addPlayList(playListEntity)
     }
 
-    override suspend fun getPlayList(): Flow<List<PlayList>> {
+    override fun getPlayList(): Flow<List<PlayList>> {
         return appDatabase.playListDao()
             .getPlayList()
             .map { playListEntities ->
@@ -43,7 +43,7 @@ class PlayListRepositoryImpl(
        return playListConvertor.map(playListEntity)
     }
 
-    override suspend fun getTrackForPlayList(trackIds: List<Int?>): Flow<List<Track>> {
+    override fun getTrackForPlayList(trackIds: List<Int?>): Flow<List<Track>> {
         return flow {
             val allTrack = appDatabase.playListTrackDao().getTracks()
             val filteredTracks = allTrack.filter { trackIds.contains(it.trackId) }

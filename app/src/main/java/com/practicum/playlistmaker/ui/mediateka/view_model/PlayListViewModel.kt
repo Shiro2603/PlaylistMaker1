@@ -78,8 +78,8 @@ class PlayListViewModel(private val playListInteractor: PlayListInteractor,
         }
     }
 
-    fun sharingPlayList(context: Context, playList: PlayList, track: List<Track>) {
-        sharingInteractor.sharePlaylist(context, playList, track)
+    fun sharingPlayList(playList: PlayList, track: List<Track>) {
+        sharingInteractor.sharePlaylist(playList, track)
     }
 
 }
