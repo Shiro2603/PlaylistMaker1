@@ -6,4 +6,7 @@
     <string name="NewPlayListDescription">Описание</string>
     <string name="CreateNewPlayList">Создать</string>
     <string name="addToPlayList">Добавить в плейлист</string>
+    <string name="moreMenuShare">Поделиться</string>
+    <string name="moreMenuDeletePlayList">Удалить плейлист</string>
+    <string name="emptyTracksForPlayList">В данном плейлисте нету треков</string>
 </resources>

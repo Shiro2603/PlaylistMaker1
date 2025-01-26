@@ -8,8 +8,12 @@ import kotlinx.coroutines.flow.Flow
 interface PlayListInteractor {
 
     suspend fun createPlayList(playList: PlayList)
-    suspend fun getPlayList() : Flow<List<PlayList>>
+    fun getPlayList() : Flow<List<PlayList>>
     suspend fun addTrackToPlayList(track: Track, playList: PlayList)
+    suspend fun getPlayListById(playListId: Int) : PlayList
+    fun getTrackForPlayList(trackIds: List<Int?>) : Flow<List<Track>>
+    suspend fun deletePlayListTrack(trackId: Int, playList: PlayList)
+    suspend fun deletePlayList(playList: PlayList)
     fun saveToStorage(uri: Uri) : String
     fun getImageToStorage(image: String) : Uri
 }

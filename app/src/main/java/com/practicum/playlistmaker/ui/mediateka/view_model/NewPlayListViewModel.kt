@@ -7,7 +7,7 @@ import com.practicum.playlistmaker.domain.mediateka.PlayListInteractor
 import com.practicum.playlistmaker.domain.mediateka.model.PlayList
 import kotlinx.coroutines.launch
 
-class NewPlayListViewModel(private val playListInteractor: PlayListInteractor) : ViewModel() {
+open class NewPlayListViewModel(private val playListInteractor: PlayListInteractor) : ViewModel() {
 
     private fun createPlayList(playList: PlayList) {
         viewModelScope.launch {
@@ -15,7 +15,7 @@ class NewPlayListViewModel(private val playListInteractor: PlayListInteractor) :
         }
     }
 
-    fun savePlayList(
+    open fun savePlayList(
         name: String,
         description: String,
         imageUri: String?,

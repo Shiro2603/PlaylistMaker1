@@ -42,6 +42,12 @@ class PlayListFragment : Fragment() {
         binding.rvPlayList.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         binding.rvPlayList.adapter = playListAdapter
 
+        playListAdapter?.onClickedTrack = {
+            val action = MediatekaFragmentDirections.actionMediatekaFragmentToPlayListInfo(it)
+            findNavController().navigate(action)
+
+        }
+
 
         viewModel.stateLiveData.observe(viewLifecycleOwner) {
             when(it) {

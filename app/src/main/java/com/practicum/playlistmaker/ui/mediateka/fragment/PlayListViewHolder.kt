@@ -17,11 +17,7 @@ class PlayListViewHolder(private val binding: PlayListViewInMediatekaBinding) : 
                 .centerCrop()
                 .into(binding.playListPicture)
             binding.playListName.text = playList.playListName
-            binding.playListCount.text = "${playList.tracksCount} ${playList.tracksCount?.let {
-                getTrackWordForm(
-                    it
-                )
-            }}"
+            binding.playListCount.text = "${playList.tracksCount} ${playList.tracksCount?.let { getTrackWordForm(it) }}"
         }
 
 }
