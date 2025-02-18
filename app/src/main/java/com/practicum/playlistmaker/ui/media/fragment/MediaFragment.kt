@@ -72,15 +72,20 @@ class MediaFragment : Fragment() {
             viewModel.preparePlayer(it.previewUrl)
         }
 
-        binding.buttonPlay.setOnClickListener {
-            viewModel.playbackControl()
-        }
+//        binding.buttonPlay.setOnClickListener {
+//            viewModel.playbackControl()
+//        }
 
         viewModel.mediaPlayerState.observe(viewLifecycleOwner) {
             binding.trackTime.text = it.progress
-            binding.buttonPlay.setImageResource(
-                if (it.isPlaying) R.drawable.ic_button_stop else R.drawable.ic_button_play
-            )
+            binding.buttonPlay.setPlaybackState(it.isPlaying)
+            binding.buttonPlay.playbackListener = { isPlaying ->
+                if (isPlaying) {
+                    viewModel.playbackControl()
+                } else {
+                    viewModel.pausePlayer()
+                }
+            }
         }
 
         binding.btnLikeSong.setOnClickListener {
