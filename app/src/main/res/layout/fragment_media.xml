@@ -261,7 +261,6 @@
         android:background="@drawable/rectangle_media"
         android:gravity="center"
         app:behavior_peekHeight="505dp"
-        android:visibility="gone"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View

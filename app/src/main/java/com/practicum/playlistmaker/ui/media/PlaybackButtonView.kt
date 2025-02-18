@@ -2,8 +2,6 @@ package com.practicum.playlistmaker.ui.media
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -24,6 +22,7 @@ class PlaybackButtonView @JvmOverloads constructor(
     private var playIconRes: Int = R.drawable.ic_button_play
     private var pauseIconRes: Int = R.drawable.ic_button_stop
     private var buttonRect = RectF()
+    private var drawable = ContextCompat.getDrawable(context, playIconRes)
 
     init {
         attrs?.let {
@@ -42,20 +41,22 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     }
 
-    private fun toggleState() {
-        isPlaying = !isPlaying
-        invalidate()
-        playbackListener?.invoke(isPlaying)
+     fun toggleState() {
+         isPlaying = !isPlaying
+         updateDrawable()
+         invalidate()
+         playbackListener?.invoke(isPlaying)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         buttonRect.set(0f, 0f, w.toFloat(), h.toFloat())
+        updateDrawable()
+
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val drawable = ContextCompat.getDrawable(context, if (isPlaying) pauseIconRes else playIconRes)
         drawable?.setBounds(buttonRect.left.toInt(), buttonRect.top.toInt(), buttonRect.right.toInt(), buttonRect.bottom.toInt())
         drawable?.draw(canvas)
     }
@@ -63,7 +64,12 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     fun setPlaybackState(isPlaying: Boolean) {
         this.isPlaying = isPlaying
+        updateDrawable()
         invalidate()
+    }
+
+    private fun updateDrawable() {
+        drawable = ContextCompat.getDrawable(context, if (isPlaying) pauseIconRes else playIconRes)
     }
 
     var playbackListener: ((Boolean) -> Unit)? = null
