@@ -156,14 +156,14 @@
                 app:layout_constraintStart_toStartOf="@+id/buttonPlay"
                 app:layout_constraintTop_toBottomOf="@+id/buttonPlay" />
 
-            <ImageView
+            <com.practicum.playlistmaker.ui.media.PlaybackButtonView
                 android:id="@+id/buttonPlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/ic_button_play"
+                app:playIcon="@drawable/ic_button_play"
+                app:pauseIcon="@drawable/ic_button_stop"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trackGroup" />
 
