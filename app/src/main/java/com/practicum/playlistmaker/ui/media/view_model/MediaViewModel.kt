@@ -12,12 +12,8 @@ import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.media.MediaPlayerState
 import com.practicum.playlistmaker.ui.mediateka.PlayListState
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import com.practicum.playlistmaker.ui.media.fragment.AudioPlayerControl
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 
 class MediaViewModel(
@@ -25,8 +21,6 @@ class MediaViewModel(
     private val favoriteTrackInteractor: FavoriteTrackInteractor,
     private val playListInteractor: PlayListInteractor,
 ) : ViewModel() {
-
-    private var timeJob: Job? = null
 
     private val _mediaPlayerState = MutableLiveData<MediaPlayerState>(MediaPlayerState.Default())
     val mediaPlayerState: LiveData<MediaPlayerState> = _mediaPlayerState
@@ -40,58 +34,35 @@ class MediaViewModel(
     private val _stateAddTrack = MutableLiveData<Boolean?>(null)
     val stateAddTrack: LiveData<Boolean?> = _stateAddTrack
 
-    override fun onCleared() {
-        super.onCleared()
-        mediaPlayerInteractor.release()
-        _mediaPlayerState.value = MediaPlayerState.Default()
-    }
+    private var audioPlayerControl: AudioPlayerControl? = null
 
-    fun preparePlayer(trackPreview: String?) {
-        Log.d("MediaViewModel", "Preparing player with trackPreview: $trackPreview")
-        mediaPlayerInteractor.preparePlayer(trackPreview)
-        _mediaPlayerState.value = MediaPlayerState.Prepared()
-        mediaPlayerInteractor.setOnCompletionListener{
-            _mediaPlayerState.value = MediaPlayerState.Prepared()
-            timeJob?.cancel()
-        }
-    }
+    fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
+        this.audioPlayerControl = audioPlayerControl
 
-    private fun startPlayer() {
-        mediaPlayerInteractor.starPlayer()
-        _mediaPlayerState.value = MediaPlayerState.Playing(getFormattedTrackTime())
-        startTimer()
-
-    }
-
-    fun pausePlayer() {
-        mediaPlayerInteractor.pausePlayer()
-        _mediaPlayerState.value = MediaPlayerState.Paused(getFormattedTrackTime())
-        timeJob?.cancel()
-    }
-
-    fun playbackControl() {
-        when (_mediaPlayerState.value) {
-            is MediaPlayerState.Playing -> pausePlayer()
-            is MediaPlayerState.Prepared, is MediaPlayerState.Paused -> startPlayer()
-
-            else -> {}
-        }
-    }
-
-    private fun startTimer() {
-        timeJob?.cancel()
-        timeJob = viewModelScope.launch {
-            while (_mediaPlayerState.value is MediaPlayerState.Playing) {
-                delay(DELAY)
-                _mediaPlayerState.postValue(MediaPlayerState.Playing(getFormattedTrackTime()))
+        viewModelScope.launch {
+            audioPlayerControl.getPlayerState().collect {
+                _mediaPlayerState.postValue(it)
             }
         }
     }
 
-    private fun getFormattedTrackTime(): String {
-        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(mediaPlayerInteractor.getCurrentPosition().toLong()))
+    fun onPlayerButtonClicked() {
+        if (_mediaPlayerState.value is MediaPlayerState.Playing) {
+            audioPlayerControl?.pausePlayer()
+        } else {
+            audioPlayerControl?.startPlayer()
+        }
     }
 
+
+    fun removeAudioPlayerControl() {
+        audioPlayerControl = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        audioPlayerControl = null
+    }
 
      fun onFavoriteClicked(track: Track) {
          viewModelScope.launch {
@@ -138,10 +109,6 @@ class MediaViewModel(
         } else {
             _stateAddTrack.postValue(false)
         }
-    }
-
-    companion object{
-        const val DELAY = 300L
     }
 
 }

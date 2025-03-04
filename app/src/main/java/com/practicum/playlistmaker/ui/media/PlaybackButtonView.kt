@@ -34,11 +34,16 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        when(event?.action) {
-            MotionEvent.ACTION_UP -> toggleState()
+        if (event?.action == MotionEvent.ACTION_UP) {
+            performClick()
+            toggleState()
         }
         return true
+    }
 
+    override fun performClick(): Boolean {
+        super.performClick()
+        return true
     }
 
      fun toggleState() {
@@ -70,6 +75,7 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     private fun updateDrawable() {
         drawable = ContextCompat.getDrawable(context, if (isPlaying) pauseIconRes else playIconRes)
+        invalidate()
     }
 
     var playbackListener: ((Boolean) -> Unit)? = null
