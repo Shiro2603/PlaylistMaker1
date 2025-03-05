@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.ui.media.fragment
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -12,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -67,7 +67,7 @@ class MediaFragment : Fragment() {
         if (isGranted) {
             bindMusicService()
         } else {
-            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Can't show notification!", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -91,7 +91,7 @@ class MediaFragment : Fragment() {
 
         val track = args.track
 
-        bindMusicService()
+        requestPermissionLauncher.launch(POST_NOTIFICATIONS)
 
         track?.let {
             it.trackId?.let { id -> viewModel.checkFavorite(id) }
@@ -210,14 +210,17 @@ class MediaFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-        if (viewModel.mediaPlayerState.value?.isPlaying == true) {
-            startMusicService()
-        }
+        viewModel.startForegroundPlaying()
     }
 
     override fun onResume() {
         super.onResume()
-        stopMusicService()
+        viewModel.stopForegroundPlaying()
+    }
+
+    override fun onStop() {
+        viewModel.startForegroundPlaying()
+        super.onStop()
     }
 
     override fun onDestroyView() {
@@ -252,14 +255,12 @@ class MediaFragment : Fragment() {
     }
 
     private fun bindMusicService() {
-
         val intent = Intent(requireContext(), MusicService::class.java).apply {
             putExtra("song_url", args.track.previewUrl)
             putExtra("track_name", args.track.trackName)
             putExtra("artist_name", args.track.artistName)
 
         }
-
         requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
@@ -268,23 +269,9 @@ class MediaFragment : Fragment() {
         requireContext().unbindService(serviceConnection)
     }
 
-    private fun startMusicService() {
-        val intent = Intent(requireContext(), MusicService::class.java).apply {
-            putExtra("song_url", args.track.previewUrl)
-            putExtra("track_name", args.track.trackName)
-            putExtra("artist_name", args.track.artistName)
-        }
-        ContextCompat.startForegroundService(requireContext(), intent)
-    }
-
-    private fun stopMusicService() {
-        val intent = Intent(requireContext(), MusicService::class.java)
-        requireContext().stopService(intent)
-    }
 
     private fun updateButtonAndProgress(state: MediaPlayerState) {
         binding.buttonPlay.setPlaybackState(state.isPlaying)
-
         binding.trackTime.text = state.progress
     }
 

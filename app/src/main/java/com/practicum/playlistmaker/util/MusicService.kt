@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.media.MediaPlayer
@@ -12,10 +11,9 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.core.app.ServiceCompat
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.ui.media.MediaPlayerState
-import com.practicum.playlistmaker.ui.media.fragment.AudioPlayerControl
+import com.practicum.playlistmaker.ui.media.AudioPlayerControl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -66,7 +64,6 @@ class MusicService : Service(), AudioPlayerControl {
 
     override fun onUnbind(intent: Intent?): Boolean {
         releasePlayer()
-        stopForegroundService()
         return super.onUnbind(intent)
     }
 
@@ -75,20 +72,12 @@ class MusicService : Service(), AudioPlayerControl {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-        startForegroundService()
-
-        val isPlaying = _playerState.value is MediaPlayerState.Playing
-
-        if (!isPlaying) {
-            stopForegroundService()
-            stopSelf()
-        }
-
-        return START_NOT_STICKY
+        startForeground()
+        return START_STICKY
     }
 
     private fun initMediaPlayer() {
+
         if (songUrl.isEmpty()) return
 
         mediaPlayer?.reset()
@@ -99,8 +88,8 @@ class MusicService : Service(), AudioPlayerControl {
         }
         mediaPlayer?.setOnCompletionListener {
             _playerState.value = MediaPlayerState.Prepared()
-            stopForegroundService()
-            stopSelf()
+            stopForeground()
+            timerJob?.cancel()
         }
 
     }
@@ -118,8 +107,20 @@ class MusicService : Service(), AudioPlayerControl {
 
     override fun pausePlayer() {
         mediaPlayer?.pause()
+        timerJob?.cancel()
         _playerState.value = MediaPlayerState.Paused(getCurrentPlayerPosition())
-        stopForegroundService()
+    }
+
+    override fun startForeground() {
+        startForeground(
+            SERVICE_NOTIFICATION_ID,
+            createServiceNotification(),
+            getForegroundServiceTypeConstant())
+    }
+
+    override fun stopForeground() {
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
     private fun releasePlayer() {
@@ -130,14 +131,14 @@ class MusicService : Service(), AudioPlayerControl {
         mediaPlayer?.setOnCompletionListener(null)
         mediaPlayer?.release()
         mediaPlayer = null
-        stopForegroundService()
+        stopForeground()
 
     }
 
     private fun starTimer() {
         timerJob?.cancel()
         timerJob = CoroutineScope(Dispatchers.Default).launch {
-            while (mediaPlayer?.isPlaying == true) {
+            while (_playerState.value is MediaPlayerState.Playing) {
                 delay(300L)
                _playerState.value = MediaPlayerState.Playing(getCurrentPlayerPosition())
             }
@@ -178,28 +179,10 @@ class MusicService : Service(), AudioPlayerControl {
         }
     }
 
-    private fun startForegroundService() {
-        startForeground(
-            SERVICE_NOTIFICATION_ID,
-            createServiceNotification(),
-            getForegroundServiceTypeConstant())
-    }
-
-    private fun stopForegroundService() {
-        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-    }
-
-    private fun updateNotification() {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notification = createServiceNotification()
-        notificationManager.notify(SERVICE_NOTIFICATION_ID, notification)
-    }
 
 
     private fun getCurrentPlayerPosition(): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(mediaPlayer?.currentPosition?.toLong() ?: 0))
     }
-
-
 
 }

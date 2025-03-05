@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.data.settings.impl
 
 import android.content.Context
-import com.practicum.playlistmaker.App
+import com.practicum.playlistmaker.util.App
 import com.practicum.playlistmaker.data.settings.ThemeRepository
 
 class ThemeRepositoryImpl(private val context : Context) : ThemeRepository {

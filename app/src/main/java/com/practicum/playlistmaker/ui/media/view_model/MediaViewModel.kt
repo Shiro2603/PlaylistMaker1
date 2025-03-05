@@ -12,7 +12,7 @@ import com.practicum.playlistmaker.domain.player.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.search.model.Track
 import com.practicum.playlistmaker.ui.media.MediaPlayerState
 import com.practicum.playlistmaker.ui.mediateka.PlayListState
-import com.practicum.playlistmaker.ui.media.fragment.AudioPlayerControl
+import com.practicum.playlistmaker.ui.media.AudioPlayerControl
 import kotlinx.coroutines.launch
 
 
@@ -41,15 +41,19 @@ class MediaViewModel(
 
         viewModelScope.launch {
             audioPlayerControl.getPlayerState().collect {
+                Log.d("MediaViewModel", "New state received: $it")
                 _mediaPlayerState.postValue(it)
             }
         }
     }
 
     fun onPlayerButtonClicked() {
+        Log.d("MediaViewModel", "Button clicked. Current state: ${_mediaPlayerState.value}")
         if (_mediaPlayerState.value is MediaPlayerState.Playing) {
+            Log.d("MediaViewModel", "Pausing player")
             audioPlayerControl?.pausePlayer()
         } else {
+            Log.d("MediaViewModel", "Starting player")
             audioPlayerControl?.startPlayer()
         }
     }
@@ -57,6 +61,16 @@ class MediaViewModel(
 
     fun removeAudioPlayerControl() {
         audioPlayerControl = null
+    }
+
+    fun startForegroundPlaying() {
+        if (_mediaPlayerState.value is MediaPlayerState.Playing) {
+            audioPlayerControl?.startForeground()
+        }
+    }
+
+    fun stopForegroundPlaying() {
+        audioPlayerControl?.stopForeground()
     }
 
     override fun onCleared() {
