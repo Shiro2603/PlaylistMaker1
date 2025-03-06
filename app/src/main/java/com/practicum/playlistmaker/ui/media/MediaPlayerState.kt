@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.ui.media
 
-sealed class MediaPlayerState( val progress: String, val isPlaying: Boolean) {
+sealed class MediaPlayerState(val progress: String, val isPlaying: Boolean) {
 
     class Default : MediaPlayerState("00:00", false)
 

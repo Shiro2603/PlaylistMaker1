@@ -1,10 +1,18 @@
 package com.practicum.playlistmaker.ui.media.fragment
 
+import android.Manifest.permission.POST_NOTIFICATIONS
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -19,8 +27,10 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediaBinding
 import com.practicum.playlistmaker.domain.mediateka.model.PlayList
 import com.practicum.playlistmaker.domain.search.model.Track
+import com.practicum.playlistmaker.ui.media.MediaPlayerState
 import com.practicum.playlistmaker.ui.media.view_model.MediaViewModel
 import com.practicum.playlistmaker.ui.mediateka.PlayListState
+import com.practicum.playlistmaker.util.MusicService
 import com.practicum.playlistmaker.util.Until.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -36,6 +46,30 @@ class MediaFragment : Fragment() {
     private var playListAdapter: PlayListMediaAdapter? = null
     private val playList = ArrayList<PlayList>()
     private val args: MediaFragmentArgs by navArgs()
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+           val binder = service as MusicService.MusicServiceBinder
+            viewModel.setAudioPlayerControl(binder.getService())
+            Log.i("MusicService", "Service connected")
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removeAudioPlayerControl()
+            Log.e("MusicService", "Service connected")
+        }
+
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            bindMusicService()
+        } else {
+            Toast.makeText(requireContext(), "Can't show notification!", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +91,8 @@ class MediaFragment : Fragment() {
 
         val track = args.track
 
+        requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+
         track?.let {
             it.trackId?.let { id -> viewModel.checkFavorite(id) }
         }
@@ -69,23 +105,16 @@ class MediaFragment : Fragment() {
 
         track?.let {
             setupTrackDetails(it)
-            viewModel.preparePlayer(it.previewUrl)
         }
 
-//        binding.buttonPlay.setOnClickListener {
-//            viewModel.playbackControl()
-//        }
 
         viewModel.mediaPlayerState.observe(viewLifecycleOwner) {
-            binding.trackTime.text = it.progress
-            binding.buttonPlay.setPlaybackState(it.isPlaying)
-            binding.buttonPlay.playbackListener = { isPlaying ->
-                if (isPlaying) {
-                    viewModel.playbackControl()
-                } else {
-                    viewModel.pausePlayer()
-                }
-            }
+            Log.d("MediaFragment", "New player state: $it")
+            updateButtonAndProgress(it)
+        }
+
+        binding.buttonPlay.playbackListener = {
+            viewModel.onPlayerButtonClicked()
         }
 
         binding.btnLikeSong.setOnClickListener {
@@ -180,12 +209,25 @@ class MediaFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.pausePlayer()
+
+        viewModel.startForegroundPlaying()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.stopForegroundPlaying()
+    }
+
+    override fun onStop() {
+        viewModel.startForegroundPlaying()
+        super.onStop()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        unBindMusicService()
+
     }
 
     private fun setupTrackDetails(track: Track) {
@@ -210,6 +252,27 @@ class MediaFragment : Fragment() {
 
         binding.genreSong.text = track.primaryGenreName
         binding.countrySong.text = track.country
+    }
+
+    private fun bindMusicService() {
+        val intent = Intent(requireContext(), MusicService::class.java).apply {
+            putExtra("song_url", args.track.previewUrl)
+            putExtra("track_name", args.track.trackName)
+            putExtra("artist_name", args.track.artistName)
+
+        }
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+
+    private fun unBindMusicService() {
+        requireContext().unbindService(serviceConnection)
+    }
+
+
+    private fun updateButtonAndProgress(state: MediaPlayerState) {
+        binding.buttonPlay.setPlaybackState(state.isPlaying)
+        binding.trackTime.text = state.progress
     }
 
 }
