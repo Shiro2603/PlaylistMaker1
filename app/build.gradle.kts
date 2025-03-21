@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.filament.android)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -85,6 +87,14 @@ dependencies {
     //Compose
     implementation("androidx.compose.ui:ui:1.7.8")
     implementation("androidx.compose.material:material:1.7.8")
+    implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.activity:activity-compose:1.10.1")
     debugImplementation("androidx.compose.ui:ui-tooling:1.7.8")
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+
+
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
 }

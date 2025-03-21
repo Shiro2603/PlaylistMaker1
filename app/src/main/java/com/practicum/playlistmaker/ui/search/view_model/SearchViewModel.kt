@@ -19,6 +19,8 @@ class SearchViewModel(
     private val _screenStateLiveData = MutableLiveData<SearchScreenState>()
     val screenState: LiveData<SearchScreenState> = _screenStateLiveData
 
+
+
     init {
         loadSearchHistory()
     }
@@ -61,7 +63,7 @@ class SearchViewModel(
 
     }
 
-    fun loadSearchHistory() {
+    private fun loadSearchHistory() {
         val historyTracks = searchHistoryInteractor.getSearchHistory()
         _screenStateLiveData.postValue(SearchScreenState.History(historyTracks))
     }
