@@ -1,27 +1,18 @@
 package com.practicum.playlistmaker.ui.mediateka
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -29,10 +20,9 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Tab
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -59,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.mediateka.model.PlayList
@@ -75,8 +64,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediatekaScreen(navController: NavController) {
-
+fun MediatekaScreen(
+    navController: NavController,
+) {
     val favoriteTracksViewModel : FavoriteTracksViewModel = koinViewModel()
     val playListViewModel : PlayListViewModel = koinViewModel()
 
@@ -156,12 +146,14 @@ fun FavoriteTrackScreen(viewModel: FavoriteTracksViewModel, navController: NavCo
 
     val favoriteState by viewModel.stateLiveDate.observeAsState()
 
-    fun handlerTrackClick (track: Track) {
-        val action = MediatekaFragmentDirections.actionMediatekaFragmentToMediaFragment(track)
-        navController.navigate(action)
+    val handlerTrackClick: (Track) -> Unit = remember(navController) {
+        { track ->
+            val action = MediatekaFragmentDirections.actionMediatekaFragmentToMediaFragment(track)
+            navController.navigate(action)
+        }
     }
 
-    viewModel.getFavoriteTrack()
+        viewModel.getFavoriteTrack()
 
 
    Column(
@@ -227,9 +219,11 @@ fun PlayListScreen(viewModel: PlayListViewModel,
 
     val playListState by viewModel.stateLiveData.observeAsState()
 
-    fun handlerPlayListClick (playList: PlayList) {
-        val action = MediatekaFragmentDirections.actionMediatekaFragmentToPlayListInfo(playList)
-        navController.navigate(action)
+    val handlerPlayListClick: (PlayList) -> Unit = remember(navController) {
+        { playList ->
+            val action = MediatekaFragmentDirections.actionMediatekaFragmentToPlayListInfo(playList)
+            navController.navigate(action)
+        }
     }
 
     viewModel.getPlayList()
@@ -361,7 +355,7 @@ fun PlayListItem(
 
 @Preview
 @Composable
-fun MediatekaScreenPreview() {
+private fun MediatekaScreenPreview() {
 
 }
 

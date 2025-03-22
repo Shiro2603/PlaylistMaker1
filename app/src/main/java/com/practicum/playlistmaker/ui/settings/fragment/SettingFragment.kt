@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
-import com.practicum.playlistmaker.databinding.FragmentSettingBinding
 import com.practicum.playlistmaker.ui.settings.SettingScreen
 import com.practicum.playlistmaker.ui.settings.view_model.SettingsViewModel
 import com.practicum.playlistmaker.ui.theme.AppTheme
