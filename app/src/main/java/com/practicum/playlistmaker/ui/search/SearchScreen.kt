@@ -190,7 +190,7 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
                     Spacer(modifier = Modifier
                         .height(24.dp))
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize().padding(bottom = 100.dp)
                     ) { items(state.tracks) { track ->
                         TrackItem(
                             track = track,

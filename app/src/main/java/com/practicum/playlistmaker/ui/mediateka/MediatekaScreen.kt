@@ -6,17 +6,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -43,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -52,7 +58,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.mediateka.model.PlayList
 import com.practicum.playlistmaker.domain.search.model.Track
@@ -227,18 +235,21 @@ fun PlayListScreen(viewModel: PlayListViewModel,
     viewModel.getPlayList()
 
    Column(
-       modifier = Modifier
-           .fillMaxSize(),
+       modifier = Modifier.fillMaxSize(),
        horizontalAlignment = Alignment.CenterHorizontally,
        verticalArrangement = Arrangement.Center
    ) {
        Button(
-           modifier = Modifier
-               .padding(top = 24.dp),
+           modifier = Modifier.padding(top = 24.dp),
            onClick = { navController.navigate(R.id.newPlayListFragment) }
        ) {
            Text(
-               text = stringResource(R.string.newPlayList)
+               text = stringResource(R.string.newPlayList),
+               style = TextStyle(
+                   fontSize = 14.sp,
+                   fontFamily = YsDisplayFont,
+                   fontWeight = FontWeight.Medium
+               )
            )
        }
 
@@ -251,10 +262,10 @@ fun PlayListScreen(viewModel: PlayListViewModel,
 
                LazyVerticalGrid(
                    columns = GridCells.Fixed(2),
-                   modifier = Modifier
-                       .fillMaxSize()
-                       .padding(horizontal = 16.dp)
-               ) {
+                   modifier = Modifier.fillMaxSize().padding(bottom = 100.dp),
+                   horizontalArrangement = Arrangement.Absolute.Center,
+                   contentPadding = PaddingValues(horizontal = 16.dp)
+                   ) {
                    items(state.playList) { playList ->
                        PlayListItem(
                            playList = playList,
@@ -266,6 +277,7 @@ fun PlayListScreen(viewModel: PlayListViewModel,
 
            is PlayListState.Empty -> {
                Column(
+                   modifier = Modifier.padding(top = 46.dp),
                    horizontalAlignment = Alignment.CenterHorizontally,
                    verticalArrangement = Arrangement.Center
                ) {
@@ -306,23 +318,26 @@ fun PlayListItem(
 ) {
     Column(
         modifier = Modifier
-            .padding(bottom = 16.dp)
             .clickable { onClick() }
+            .padding(bottom = 16.dp, end = 8.dp)
     ) {
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = playList.urlImager,
-                fallback = painterResource(R.drawable.pc_placeholder_playlist) // Когда картинка равна null
-            ),
-            modifier = Modifier
-                .size(160.dp)
-                .clip(RoundedCornerShape(8.dp)),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(playList.urlImager)
+                .placeholder(R.drawable.pc_placeholder)
+                .error(R.drawable.pc_placeholder)
+                .crossfade(true)
+                .build(),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop
         )
 
+        Spacer(modifier = Modifier.height(4.dp))
+
         Text(
-            modifier = Modifier.padding(top = 4.dp),
             text = playList.playListName!!,
             style = TextStyle(
                 fontSize = 12.sp,
