@@ -4,14 +4,23 @@ plugins {
     id("com.google.devtools.ksp")
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
     namespace = "com.practicum.playlistmaker"
-    compileSdk = 34
+    compileSdk = 35
 
     viewBinding {
         enable = true
+    }
+
+    buildFeatures{
+        compose = true
+    }
+
+    composeOptions{
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
 
     defaultConfig {
@@ -34,6 +43,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
         
@@ -49,6 +59,8 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.filament.android)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,4 +83,18 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
 
     implementation("com.markodevcic:peko:3.0.5")
+
+    //Compose
+    implementation("androidx.compose.ui:ui:1.7.8")
+    implementation("androidx.compose.material:material:1.7.8")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.activity:activity-compose:1.10.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.8")
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+
+
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
 }
