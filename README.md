@@ -7,7 +7,7 @@
 
 Асинхронность: Coroutines
 
-UI: XML
+UI: XML и Jetpack Compose
 
 Сетевые запросы: Retrofit
 
